@@ -50,6 +50,10 @@ export interface Spot {
   extraMinutes?: number;
   /** Typical visit duration in hours (used to pick the best time window). */
   visitHours: number;
+  /** Curated "how much is this worth a day" (0–8). Only affects ranking, never the weather score. */
+  appeal: number;
+  /** Usually exposed to the prevailing winds — a calm day here is a rare opportunity worth flagging. */
+  calmDayGem?: boolean;
   access: {
     bus: BusAccess;
     difficulty: 'easy' | 'moderate' | 'hard';
@@ -224,7 +228,13 @@ export type FactorKey =
   | 'trait'
   | 'crowds'
   | 'dirtRoad'
-  | 'pleasant';
+  | 'pleasant'
+  | 'indoor'
+  | 'appeal'
+  | 'typePref'
+  | 'opportunity'
+  | 'closed'
+  | 'notForProfile';
 
 export interface Factor {
   key: FactorKey;
@@ -238,11 +248,15 @@ export type Verdict = 'go' | 'caution' | 'avoid' | 'unsuitable';
 export interface SpotScore {
   spotId: string;
   profile: ProfileId;
-  score: number; // 0..100
+  /** Weather/sea suitability for this profile in the best window (0..100). Drives the verdict. */
+  score: number;
+  /** Ordering value: weather score + fit (travel, appeal, profile preferences, opportunity). */
+  rank: number;
   verdict: Verdict;
   window: { start: number; end: number }; // local hours
   hourly: { hour: number; score: number }[];
-  factors: Factor[]; // sorted by |impact|
+  factors: Factor[]; // weather factors, sorted by |impact|
+  fit: Factor[]; // non-weather ranking factors
   unsuitableReason?: Factor;
   confidence: 'high' | 'medium' | 'low';
   travelMinutes: number;
