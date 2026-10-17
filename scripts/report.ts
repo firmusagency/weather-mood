@@ -24,7 +24,7 @@ console.log(
   `Wind (open sea N): ${compass(syn.wind.dir, 'en')} ${syn.wind.dir}° ${syn.wind.speed} km/h (Bf ${syn.wind.bf}), gusts ${syn.wind.gust}, agreement ${syn.agreement} (spread ${syn.wind.speedSpread} km/h / ${syn.wind.dirSpread}°)`,
 );
 for (const m of syn.models) console.log(`   ${m.model.padEnd(22)} ${m.speed} km/h from ${m.dir}°  gust ${m.gust}`);
-for (const c of syn.coasts) console.log(`Coast ${c.id}: wind ${c.wind.speed} km/h ${c.wind.dir}°, waves mean ${c.waveMean} max ${c.waveMax} m from ${c.waveDir}°, sst ${c.sst}, exposed=${c.exposed}`);
+for (const c of syn.coasts) console.log(`Coast ${c.id}: wind ${c.wind.speed} km/h ${c.wind.dir}°, waves mean ${c.waveMean} max ${c.waveMax} m from ${c.waveDir}°, sst ${c.sst}, ${c.exposure}`);
 console.log('Town:', syn.town);
 console.log('Takeaways:', syn.takeaways.map((t) => `${t.key}${JSON.stringify(t.params)}`).join(' | '));
 

@@ -212,6 +212,7 @@ export type FactorKey =
   | 'rain'
   | 'thunder'
   | 'cool'
+  | 'cold'
   | 'coldWater'
   | 'heat'
   | 'heatEarlyStart'

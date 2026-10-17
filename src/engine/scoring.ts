@@ -81,6 +81,8 @@ function evalTrail(c: HourConditions, spot: Spot, _p: Profile, isGorge: boolean)
   if (c.wind.gust >= lim) push(out, 'closureRisk', -30, { gust: Math.round(c.wind.gust), limit: lim, kind: 'wind' });
 
   if (c.apparent != null) {
+    // walkers tolerate a cool start, but near-freezing mornings in the mountains are unpleasant
+    push(out, 'cold', -ramp(8 - c.apparent, 0, 8) * 15, { apparent: Math.round(c.apparent) });
     const [lo, hi, w] = isGorge ? [27, 35, 25] : [25, 33, 30];
     push(out, 'heat', -ramp(c.apparent, lo, hi) * w * (spot.traits.shade ? 0.6 : 1), { apparent: Math.round(c.apparent) });
   }
@@ -114,7 +116,10 @@ function evalBoat(c: HourConditions, spot: Spot, p: Profile): HourEval {
 function evalOutdoorCulture(c: HourConditions, spot: Spot): HourEval {
   const out: Factor[] = [];
   weatherBasics(c, out, spot.type === 'town' ? 20 : 35, 30);
-  if (c.apparent != null) push(out, 'heat', -ramp(c.apparent, 30, 37) * (spot.traits.shade ? 12 : 25), { apparent: Math.round(c.apparent) });
+  if (c.apparent != null) {
+    push(out, 'heat', -ramp(c.apparent, 30, 37) * (spot.traits.shade ? 12 : 25), { apparent: Math.round(c.apparent) });
+    push(out, 'cold', -ramp(15 - c.apparent, 0, 8) * 20, { apparent: Math.round(c.apparent) });
+  }
   push(out, 'gusts', -ramp(c.wind.gust, 45, 80) * 15, { gust: Math.round(c.wind.gust) });
   if (!out.some((x) => x.impact < -2) && c.apparent != null && c.apparent >= 17 && c.apparent <= 29) {
     push(out, 'pleasant', 3, { apparent: Math.round(c.apparent) });

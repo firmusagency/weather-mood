@@ -1,0 +1,458 @@
+import { compass, windNameEl } from '../engine/geo';
+import type { Factor, Lang, SpotType, Verdict } from '../engine/types';
+import { REF_POINTS } from '../data/region';
+
+const UI = {
+  el: {
+    brandTag: 'Ο καιρός γίνεται πρόγραμμα',
+    region: 'Χανιά, Κρήτη',
+    tabOverview: 'Εικόνα ημέρας',
+    tabAnalysis: 'Ανάλυση σημείων',
+    tabRecs: 'Προτάσεις',
+    tabMethod: 'Μέθοδος & πηγές',
+    profile: 'Προφίλ επισκέπτη',
+    base: 'Κατάλυμα στην περιοχή',
+    day: 'Ημέρα',
+    today: 'Σήμερα',
+    tomorrow: 'Αύριο',
+    dayAfter: 'Μεθαύριο',
+    dataFrom: 'Δεδομένα Open-Meteo',
+    fetched: 'λήψη',
+    refresh: 'Ζωντανή ανανέωση',
+    refreshing: 'Λήψη…',
+    liveFailed: 'Η ζωντανή λήψη απέτυχε — εμφανίζονται τα αποθηκευμένα δεδομένα.',
+    loading: 'Φόρτωση προγνώσεων…',
+    loadFailed: 'Δεν βρέθηκαν δεδομένα πρόγνωσης.',
+    openSeaWind: 'Άνεμος στο ανοιχτό πέλαγος (βόρεια)',
+    gusts: 'ριπές',
+    coasts: 'Θάλασσα ανά ακτή',
+    waveMax: 'κύμα έως',
+    waveMean: 'μέσο',
+    exposed: 'Εκτεθειμένη',
+    shelteredCoast: 'Υπήνεμη',
+    calmWind: 'Ασθενής άνεμος',
+    roughSea: 'Κύμα',
+    sst: 'θάλασσα',
+    models: 'Τι λένε τα 5 μοντέλα',
+    modelsHint: 'Μέσος άνεμος 10:00–18:00 στο ανοιχτό πέλαγος βόρεια των Χανίων. Όσο πιο κοντά είναι μεταξύ τους, τόσο πιο σίγουρη η πρόγνωση.',
+    model: 'Μοντέλο',
+    speed: 'Ένταση',
+    direction: 'Διεύθυνση',
+    gust: 'Ριπή',
+    agreement: 'Συμφωνία',
+    agreeHigh: 'Υψηλή',
+    agreeMedium: 'Μέτρια',
+    agreeLow: 'Χαμηλή',
+    town: 'Στην πόλη',
+    maxTemp: 'Μέγιστη',
+    feels: 'Αίσθηση',
+    uv: 'UV',
+    rain: 'Βροχή',
+    sunrise: 'Ανατολή',
+    sunset: 'Δύση',
+    hourlyWind: 'Άνεμος ανά ώρα',
+    keyPoints: 'Τι σημαίνουν για τις εκδρομές',
+    seeAnalysis: 'Δείτε την ανάλυση ανά σημείο',
+    filterAll: 'Όλα',
+    colPlace: 'Σημείο',
+    colWeather: 'Καιρός',
+    colSea: 'Θάλασσα στην ακτή',
+    colWind: 'Άνεμος στο σημείο',
+    colGust: 'Ριπές',
+    colTemp: 'Αίσθηση',
+    colRain: 'Βροχή',
+    colWindow: 'Καλύτερη ώρα',
+    colTravel: 'Διαδρομή',
+    colConf: 'Βεβαιότητα',
+    sortRank: 'Σειρά πρότασης',
+    sortScore: 'Βαθμός καιρού',
+    sortName: 'Όνομα',
+    sortBy: 'Ταξινόμηση',
+    analysisHint: 'Ο βαθμός καιρού (0–100) δείχνει πόσο κατάλληλες είναι οι συνθήκες για το επιλεγμένο προφίλ στην καλύτερη ώρα της ημέρας. Πατήστε ένα σημείο για την πλήρη ανάλυση.',
+    confHigh: 'υψηλή',
+    confMedium: 'μέτρια',
+    confLow: 'χαμηλή',
+    min: '΄',
+    close: 'Κλείσιμο',
+    weatherScore: 'Βαθμός καιρού',
+    rankScore: 'Βαθμός πρότασης',
+    bestWindow: 'Καλύτερη ώρα',
+    travel: 'Διαδρομή',
+    confidence: 'Βεβαιότητα πρόγνωσης',
+    stepData: '1. Τα δεδομένα',
+    stepGeometry: '2. Τι φτάνει στο σημείο',
+    stepJudgement: '3. Η κρίση για το προφίλ',
+    stepFit: '4. Ταιριάζει στο πρόγραμμα;',
+    windConsensus: 'Άνεμος (διάμεσος 5 μοντέλων)',
+    shoreFaces: 'Η ακτή κοιτάει',
+    windFrom: 'ο άνεμος έρχεται από',
+    windExposure: 'έκθεση στον άνεμο',
+    waveOffshore: 'Κύμα ανοιχτά',
+    waveExposure: 'φτάνει στην ακτή',
+    localWindSea: 'τοπικός κυματισμός από τον άνεμο',
+    waveAtShore: 'Εκτιμώμενο κύμα στην ακτή',
+    hourByHour: 'Ώρα προς ώρα',
+    legendWind: 'άνεμος km/h',
+    legendGust: 'ριπή',
+    legendWave: 'κύμα στην ακτή (m)',
+    legendScore: 'βαθμός ανά ώρα',
+    noFactors: 'Καμία αρνητική επίδραση — ιδανικές συνθήκες.',
+    unverified: 'Τα στοιχεία του σημείου (προσανατολισμός, όρια) δεν έχουν ακόμη επαληθευτεί επιτόπου.',
+    notes: 'Σημειώσεις',
+    modelsAtWindow: 'Μοντέλα στο μέσο του παραθύρου',
+    recsFor: 'Προτάσεις για',
+    recsTitleTomorrow: 'Πού να πάτε αύριο',
+    recsTitleToday: 'Πού να πάτε σήμερα',
+    recsTitleOther: 'Πού να πάτε',
+    topPicks: 'Κορυφαίες επιλογές',
+    alternatives: 'Εναλλακτικές',
+    avoid: 'Αποφύγετε αυτή τη μέρα',
+    badDay: 'Δύσκολη μέρα για εξορμήσεις: προτείνουμε πρόγραμμα σε πόλη, μουσεία ή κοντινές διαδρομές.',
+    noTop: 'Δεν βρέθηκε κατάλληλη επιλογή για αυτό το προφίλ.',
+    go: 'Πηγαίνετε',
+    when: 'Πότε',
+    why: 'Γιατί',
+    message: 'Μήνυμα προς επισκέπτες',
+    messageHint: 'Έτοιμο κείμενο για WhatsApp, email ή την οθόνη της reception.',
+    copy: 'Αντιγραφή',
+    copied: 'Αντιγράφηκε',
+    copyFailed: 'Επιλέξτε το κείμενο και αντιγράψτε το χειροκίνητα.',
+    details: 'Ανάλυση',
+    disclaimer: 'Οι προτάσεις είναι ενδεικτικές και βασίζονται σε προγνώσεις. Ακολουθείτε πάντα τις οδηγίες ναυαγοσωστών, λιμενικού και φορέων.',
+    verdict: { go: 'Προτείνεται', caution: 'Με επιφύλαξη', avoid: 'Αποφύγετε', unsuitable: 'Δεν ταιριάζει' } as Record<Verdict, string>,
+    types: {
+      beach: 'Παραλία',
+      lake: 'Λίμνη',
+      gorge: 'Φαράγγι',
+      hike: 'Πεζοπορία',
+      boat: 'Καραβάκι',
+      culture: 'Πολιτισμός',
+      village: 'Χωριό',
+      nature: 'Φύση',
+      town: 'Πόλη',
+      museum: 'Μουσείο',
+    } as Record<SpotType, string>,
+  },
+  en: {
+    brandTag: 'Weather, turned into plans',
+    region: 'Chania, Crete',
+    tabOverview: 'Day overview',
+    tabAnalysis: 'Spot analysis',
+    tabRecs: 'Recommendations',
+    tabMethod: 'Method & sources',
+    profile: 'Guest profile',
+    base: 'Accommodation area',
+    day: 'Day',
+    today: 'Today',
+    tomorrow: 'Tomorrow',
+    dayAfter: 'Day after',
+    dataFrom: 'Open-Meteo data',
+    fetched: 'fetched',
+    refresh: 'Live refresh',
+    refreshing: 'Fetching…',
+    liveFailed: 'Live fetch failed — showing stored data.',
+    loading: 'Loading forecasts…',
+    loadFailed: 'No forecast data found.',
+    openSeaWind: 'Open-sea wind (north)',
+    gusts: 'gusts',
+    coasts: 'Sea by coast',
+    waveMax: 'waves up to',
+    waveMean: 'mean',
+    exposed: 'Exposed',
+    shelteredCoast: 'Sheltered',
+    calmWind: 'Light wind',
+    roughSea: 'Rough sea',
+    sst: 'sea',
+    models: 'What the 5 models say',
+    modelsHint: 'Mean wind 10:00–18:00 over the open sea north of Chania. The closer they are, the more reliable the forecast.',
+    model: 'Model',
+    speed: 'Speed',
+    direction: 'Direction',
+    gust: 'Gust',
+    agreement: 'Agreement',
+    agreeHigh: 'High',
+    agreeMedium: 'Medium',
+    agreeLow: 'Low',
+    town: 'In town',
+    maxTemp: 'Max',
+    feels: 'Feels like',
+    uv: 'UV',
+    rain: 'Rain',
+    sunrise: 'Sunrise',
+    sunset: 'Sunset',
+    hourlyWind: 'Wind by hour',
+    keyPoints: 'What it means for day trips',
+    seeAnalysis: 'See the per-spot analysis',
+    filterAll: 'All',
+    colPlace: 'Place',
+    colWeather: 'Weather',
+    colSea: 'Sea at shore',
+    colWind: 'Wind at spot',
+    colGust: 'Gusts',
+    colTemp: 'Feels',
+    colRain: 'Rain',
+    colWindow: 'Best time',
+    colTravel: 'Travel',
+    colConf: 'Confidence',
+    sortRank: 'Recommendation order',
+    sortScore: 'Weather score',
+    sortName: 'Name',
+    sortBy: 'Sort',
+    analysisHint: 'The weather score (0–100) shows how suitable conditions are for the selected profile at the best time of day. Tap a place for the full analysis.',
+    confHigh: 'high',
+    confMedium: 'medium',
+    confLow: 'low',
+    min: ' min',
+    close: 'Close',
+    weatherScore: 'Weather score',
+    rankScore: 'Recommendation score',
+    bestWindow: 'Best time',
+    travel: 'Travel',
+    confidence: 'Forecast confidence',
+    stepData: '1. The data',
+    stepGeometry: '2. What reaches the spot',
+    stepJudgement: '3. Judgement for this profile',
+    stepFit: '4. Does it fit the plan?',
+    windConsensus: 'Wind (median of 5 models)',
+    shoreFaces: 'The shore faces',
+    windFrom: 'wind comes from',
+    windExposure: 'wind exposure',
+    waveOffshore: 'Offshore waves',
+    waveExposure: 'reaches the shore',
+    localWindSea: 'local wind chop',
+    waveAtShore: 'Estimated waves at the shore',
+    hourByHour: 'Hour by hour',
+    legendWind: 'wind km/h',
+    legendGust: 'gust',
+    legendWave: 'waves at shore (m)',
+    legendScore: 'hourly score',
+    noFactors: 'Nothing holding it back — ideal conditions.',
+    unverified: 'Spot details (orientation, limits) have not been verified on the ground yet.',
+    notes: 'Notes',
+    modelsAtWindow: 'Models at mid-window',
+    recsFor: 'Recommendations for',
+    recsTitleTomorrow: 'Where to go tomorrow',
+    recsTitleToday: 'Where to go today',
+    recsTitleOther: 'Where to go',
+    topPicks: 'Top picks',
+    alternatives: 'Alternatives',
+    avoid: 'Avoid on this day',
+    badDay: 'A tough day for trips: we suggest the town, museums or short outings.',
+    noTop: 'No suitable option found for this profile.',
+    go: 'Go',
+    when: 'When',
+    why: 'Why',
+    message: 'Message to guests',
+    messageHint: 'Ready-made text for WhatsApp, email or the reception screen.',
+    copy: 'Copy',
+    copied: 'Copied',
+    copyFailed: 'Select the text and copy it manually.',
+    details: 'Analysis',
+    disclaimer: 'Recommendations are indicative and based on forecasts. Always follow lifeguards, coast guard and local authorities.',
+    verdict: { go: 'Recommended', caution: 'With caution', avoid: 'Avoid', unsuitable: 'Not a fit' } as Record<Verdict, string>,
+    types: {
+      beach: 'Beach',
+      lake: 'Lake',
+      gorge: 'Gorge',
+      hike: 'Hike',
+      boat: 'Boat trip',
+      culture: 'Culture',
+      village: 'Village',
+      nature: 'Nature',
+      town: 'Town',
+      museum: 'Museum',
+    } as Record<SpotType, string>,
+  },
+};
+
+export type UIStrings = (typeof UI)['el'];
+export const strings = (lang: Lang): UIStrings => UI[lang];
+
+const TRAITS: Record<string, { el: string; en: string }> = {
+  kidFriendly: { el: 'φιλικό για παιδιά', en: 'kid-friendly' },
+  shallow: { el: 'ρηχά νερά', en: 'shallow water' },
+  facilities: { el: 'παροχές', en: 'facilities' },
+  shade: { el: 'σκιά', en: 'shade' },
+  easyAccess: { el: 'εύκολη πρόσβαση', en: 'easy access' },
+  scenic: { el: 'εντυπωσιακό τοπίο', en: 'stunning scenery' },
+  sunset: { el: 'ηλιοβασίλεμα', en: 'sunset' },
+  snorkeling: { el: 'snorkeling', en: 'snorkelling' },
+  bus: { el: 'με λεωφορείο', en: 'by bus' },
+  hiking: { el: 'πεζοπορία', en: 'hiking' },
+};
+
+/** "Μαΐστρος (ΒΔ)" in Greek, "NW" in English. */
+export function windLabel(deg: number, lang: Lang): string {
+  return lang === 'el' ? `${windNameEl(deg)} (${compass(deg, 'el')})` : compass(deg, 'en');
+}
+
+const num = (x: string | number) => (typeof x === 'number' ? x : Number(x));
+
+/** Human sentence for one factor, with its numbers. */
+export function factorText(fct: Factor, lang: Lang): string {
+  const p = fct.params;
+  const el = lang === 'el';
+  const dir = (d: string | number) => windLabel(num(d), lang);
+  switch (fct.key) {
+    case 'seaRough':
+      return el
+        ? `Κύμα ~${p.wave} m στην ακτή (ανοιχτά ${p.offshore} m από ${dir(p.dir)}, φτάνει το ${p.exposure}%)`
+        : `~${p.wave} m waves at the shore (${p.offshore} m offshore from ${dir(p.dir)}, ${p.exposure}% reaches it)`;
+    case 'seaCalm':
+      return el ? `Ήρεμη θάλασσα: ~${p.wave} m στην ακτή (ανοιχτά ${p.offshore} m)` : `Calm sea: ~${p.wave} m at the shore (${p.offshore} m offshore)`;
+    case 'onshoreWind':
+      return el ? `Άνεμος ${p.bf} Bf (${p.kmh} km/h) από ${dir(p.dir)} προς την ακτή` : `${p.bf} Bf (${p.kmh} km/h) wind from ${dir(p.dir)} blowing onshore`;
+    case 'offshoreWind':
+      return el ? `Ο άνεμος (${dir(p.dir)}) φυσάει από τη στεριά: πιο ήρεμα νερά κοντά στην ακτή` : `Wind (${dir(p.dir)}) blows off the land: calmer water near the shore`;
+    case 'sheltered':
+      return el ? `Προστατευμένο από τον ${dir(p.dir)} ${p.bf} Bf` : `Sheltered from the ${dir(p.dir)} ${p.bf} Bf wind`;
+    case 'gusts':
+      return el ? `Ριπές έως ${p.gust} km/h` : `Gusts up to ${p.gust} km/h`;
+    case 'downslopeGusts':
+      return el ? `Ριπές από τα βουνά με βοριά (~${p.gust} km/h)` : `Downslope gusts off the mountains in northerlies (~${p.gust} km/h)`;
+    case 'rain':
+      return el
+        ? `Βροχή: πιθανότητα ${p.pp}%${num(p.mm) > 0 ? `, έως ${p.mm} mm/ώρα` : ''}`
+        : `Rain: ${p.pp}% chance${num(p.mm) > 0 ? `, up to ${p.mm} mm/h` : ''}`;
+    case 'thunder':
+      return el ? 'Πιθανές καταιγίδες' : 'Thunderstorms possible';
+    case 'cool':
+      return el ? `Δροσερά για μπάνιο (αίσθηση ${p.apparent}°C)` : `Cool for swimming (feels like ${p.apparent}°C)`;
+    case 'cold':
+      return el ? `Κρύο: αίσθηση ${p.apparent}°C` : `Cold: feels like ${p.apparent}°C`;
+    case 'coldWater':
+      return el ? `Θάλασσα ${p.sst}°C` : `Sea at ${p.sst}°C`;
+    case 'heat':
+      return el ? `Ζέστη: αίσθηση ${p.apparent}°C` : `Heat: feels like ${p.apparent}°C`;
+    case 'cloudy':
+      return el ? `Συννεφιά ${p.cloud}%` : `${p.cloud}% cloud cover`;
+    case 'ripCurrents':
+      return el ? `Επικίνδυνα ρεύματα με κύμα ${p.wave} m` : `Dangerous currents with ${p.wave} m waves`;
+    case 'boatCancel':
+      return el
+        ? `Κίνδυνος ακύρωσης ~${p.risk}% (άνεμος ${p.bf} Bf από ${dir(p.dir)}, κύμα ${p.wave} m)`
+        : `~${p.risk}% cancellation risk (${p.bf} Bf from ${dir(p.dir)}, ${p.wave} m waves)`;
+    case 'boatRough':
+      return el ? `Κουνημένη διαδρομή (κύμα ${p.wave} m)` : `Bumpy crossing (${p.wave} m waves)`;
+    case 'returnBoat':
+      return el ? `Πλοίο επιστροφής: κίνδυνος ~${p.risk}% (κύμα ${p.wave} m)` : `Return boat: ~${p.risk}% risk (${p.wave} m waves)`;
+    case 'closureRisk':
+      return p.kind === 'wind'
+        ? el
+          ? `Πιθανό κλείσιμο: ριπές ${p.gust} km/h (όριο ~${p.limit})`
+          : `May close: gusts ${p.gust} km/h (limit ~${p.limit})`
+        : el
+          ? `Πιθανό κλείσιμο λόγω βροχής (${p.mm} mm/ώρα)`
+          : `May close due to rain (${p.mm} mm/h)`;
+    case 'pleasant':
+      return el ? `Ευχάριστη θερμοκρασία (${p.apparent}°C)` : `Pleasant temperature (${p.apparent}°C)`;
+    case 'indoor':
+      return el ? 'Εσωτερικός χώρος: προτείνεται κυρίως όταν ο καιρός έξω δεν βοηθά' : 'Indoors: suggested mainly when the weather outside is poor';
+    case 'goodForBadWeather':
+      return el ? 'Καλή επιλογή όσο έξω βρέχει ή καίει' : 'A good choice while it is wet or hot outside';
+    case 'drive':
+      return el ? `${p.min}΄ με αυτοκίνητο` : `${p.min} min by car`;
+    case 'bus':
+      return el ? `~${p.min}΄ με λεωφορείο` : `~${p.min} min by bus`;
+    case 'trait':
+      return (el ? 'Ταιριάζει: ' : 'Good fit: ') + String(p.traits).split(',').map((t) => TRAITS[t]?.[lang] ?? t).join(', ');
+    case 'appeal':
+      return el ? `Αξίζει την εκδρομή (${p.appeal}/8)` : `Worth the trip (${p.appeal}/8)`;
+    case 'typePref':
+      return el ? 'Τέτοιες δραστηριότητες ταιριάζουν στο προφίλ' : 'This kind of activity suits the profile';
+    case 'opportunity':
+      return el ? 'Σπάνια ευκαιρία: συνήθως έχει αέρα/κύμα, αυτή τη μέρα είναι ήρεμα' : 'Rare opportunity: usually windy or wavy, calm on this day';
+    case 'dirtRoad':
+      return el ? 'Χωματόδρομος' : 'Dirt road';
+    case 'crowds':
+      return el ? 'Πολύς κόσμος 11:00–16:00: πηγαίνετε νωρίς ή αργά' : 'Crowded 11:00–16:00: go early or late';
+    case 'closed':
+      return p.kind === 'tooLate'
+        ? el
+          ? 'Δεν προλαβαίνετε πια σήμερα'
+          : 'Too late to go today'
+        : el
+          ? `Κλειστό εκτός σεζόν (λειτουργεί μήνες ${p.from}–${p.to})`
+          : `Closed out of season (open months ${p.from}–${p.to})`;
+    case 'notForProfile':
+      return p.why === 'kids'
+        ? el
+          ? 'Δεν ενδείκνυται για μικρά παιδιά'
+          : 'Not suitable for young children'
+        : p.why === 'mobility'
+          ? el
+            ? 'Δύσκολη πρόσβαση'
+            : 'Difficult access'
+          : el
+            ? 'Δεν εξυπηρετείται με λεωφορείο'
+            : 'Not served by bus';
+    default:
+      return fct.key;
+  }
+}
+
+const coastName = (id: string, lang: Lang) => REF_POINTS.find((r) => r.id === id)?.name[lang] ?? id;
+
+export function takeawayText(t: { key: string; params: Record<string, string | number> }, lang: Lang): string {
+  const p = t.params;
+  const el = lang === 'el';
+  switch (t.key) {
+    case 'wind':
+      return num(p.bf) <= 2
+        ? el
+          ? `Σχεδόν άπνοια: ${windLabel(num(p.dir), lang)} ${p.bf} Bf (~${p.kmh} km/h).`
+          : `Almost no wind: ${windLabel(num(p.dir), lang)} ${p.bf} Bf (~${p.kmh} km/h).`
+        : el
+          ? `Άνεμος ${windLabel(num(p.dir), lang)} ${p.bf} Bf (~${p.kmh} km/h), ριπές έως ${p.gust} km/h.`
+          : `${windLabel(num(p.dir), lang)} wind ${p.bf} Bf (~${p.kmh} km/h), gusts up to ${p.gust} km/h.`;
+    case 'roughCoast':
+      return el ? `${coastName(String(p.coast), lang)}: κύμα έως ${p.wave} m.` : `${coastName(String(p.coast), lang)}: waves up to ${p.wave} m.`;
+    case 'calmCoasts': {
+      const names = String(p.coasts).split(',').map((c) => coastName(c, lang)).join(el ? ' και ' : ' and ');
+      return el ? `Ήρεμη θάλασσα: ${names}.` : `Calm sea: ${names}.`;
+    }
+    case 'southGusts':
+      return el
+        ? `Με βοριά ${p.bf} Bf πέφτουν δυνατές ριπές από τα Λευκά Όρη στη νότια ακτή (Σφακιά, Φραγκοκάστελλο).`
+        : `With a ${p.bf} Bf northerly, strong gusts come down the White Mountains onto the south coast (Sfakia, Frangokastello).`;
+    case 'windPicksUp':
+      return el
+        ? `Ο άνεμος δυναμώνει μέσα στη μέρα (${p.from} → ${p.to} km/h): οι πρωινές ώρες είναι καλύτερες για θάλασσα.`
+        : `The wind builds during the day (${p.from} → ${p.to} km/h): mornings are better for the sea.`;
+    case 'heat':
+      return el ? `Ζέστη με αίσθηση έως ${p.apparent}°C: σκιά και νερό, φαράγγια νωρίς το πρωί.` : `Heat, feels like up to ${p.apparent}°C: shade and water, gorges early in the morning.`;
+    case 'uv':
+      return el ? `Υψηλός δείκτης UV (${p.uv}): αντηλιακό και καπέλο 11:00–16:00.` : `High UV index (${p.uv}): sunscreen and a hat 11:00–16:00.`;
+    case 'rain':
+      return el ? `Πιθανότητα βροχής έως ${p.pp}% (σύνολο ~${p.mm} mm στην πόλη).` : `Rain chance up to ${p.pp}% (~${p.mm} mm in town).`;
+    case 'agreement':
+      return p.level === 'high'
+        ? el
+          ? 'Τα 5 μοντέλα συμφωνούν: υψηλή βεβαιότητα πρόγνωσης.'
+          : 'All 5 models agree: high forecast confidence.'
+        : p.level === 'medium'
+          ? el
+            ? 'Τα μοντέλα διαφωνούν λίγο: μέτρια βεβαιότητα, ελέγξτε ξανά το πρωί.'
+            : 'Models differ somewhat: medium confidence, re-check in the morning.'
+          : el
+            ? 'Τα μοντέλα διαφωνούν αρκετά: χαμηλή βεβαιότητα, κρατήστε εναλλακτική.'
+            : 'Models disagree: low confidence, keep a backup plan.';
+    default:
+      return '';
+  }
+}
+
+export function relativeDayLabel(date: string, today: string, lang: Lang): string {
+  const s = strings(lang);
+  const diff = Math.round((Date.parse(date) - Date.parse(today)) / 86_400_000);
+  const named = diff === 0 ? s.today : diff === 1 ? s.tomorrow : diff === 2 ? s.dayAfter : '';
+  const fmt = new Intl.DateTimeFormat(lang === 'el' ? 'el-GR' : 'en-GB', { weekday: 'short', day: 'numeric', month: 'short', timeZone: 'UTC' });
+  const d = fmt.format(new Date(`${date}T12:00:00Z`));
+  return named ? `${named} · ${d}` : d;
+}
+
+export function longDate(date: string, lang: Lang): string {
+  return new Intl.DateTimeFormat(lang === 'el' ? 'el-GR' : 'en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }).format(
+    new Date(`${date}T12:00:00Z`),
+  );
+}

@@ -20,8 +20,8 @@ export interface CoastSummary {
   waveMax: number | null;
   waveDir: number | null;
   sst: number | null;
-  /** Is the wind blowing onto this coast? */
-  exposed: boolean;
+  /** Is the wind blowing onto this coast, away from it, or is there hardly any wind? */
+  exposure: 'exposed' | 'sheltered' | 'calm';
 }
 
 export interface ModelRow {
@@ -100,7 +100,7 @@ export function buildSynopsis(data: Dataset, refs: RefPoint[]): Synopsis {
         waveMax: waves.length ? round(Math.max(...waves), 1) : null,
         waveDir: wdirs.length ? Math.round(circularMean(wdirs)) : null,
         sst: marine.length ? marine[Math.floor(marine.length / 2)].sst : null,
-        exposed: angleDiff(dir, r.facing!) <= 70 && speed >= 12,
+        exposure: speed < 12 ? 'calm' : angleDiff(dir, r.facing!) <= 70 ? 'exposed' : 'sheltered',
       };
     });
 
