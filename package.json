@@ -13,9 +13,11 @@
     "typecheck": "tsc --noEmit",
     "snapshot:fetch": "tsx scripts/fetch-snapshot.ts",
     "report": "tsx scripts/report.ts",
-    "demo:page": "vite build --mode single && node scripts/export-demo.mjs"
+    "demo:page": "vite build --mode single && node scripts/export-demo.mjs index",
+    "demo:guest": "ENTRY=guest vite build --mode single && node scripts/export-demo.mjs guest"
   },
   "dependencies": {
+    "qrcode-generator": "^1.4.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
   },
