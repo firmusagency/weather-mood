@@ -12,7 +12,8 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "snapshot:fetch": "tsx scripts/fetch-snapshot.ts",
-    "report": "tsx scripts/report.ts"
+    "report": "tsx scripts/report.ts",
+    "demo:page": "vite build --mode single && node scripts/export-demo.mjs"
   },
   "dependencies": {
     "react": "^19.1.0",

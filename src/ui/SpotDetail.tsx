@@ -192,7 +192,7 @@ export function SpotDetail({
             ) : (
               <p className="geo-line">
                 {lang === 'el' ? 'Η διαδρομή είναι εκτεθειμένη σε ανέμους από' : 'The route is exposed to winds from'}{' '}
-                {spot.exposedFrom!.map(([a, b]) => `${windLabel(a, lang)}–${windLabel(b, lang)}`).join(', ')}.
+                {spot.exposedFrom!.map(([a, b]) => (lang === 'el' ? `${windLabel(a, lang)} έως ${windLabel(b, lang)}` : `${windLabel(a, lang)} to ${windLabel(b, lang)}`)).join(', ')}.
               </p>
             )}
             {mid.sea && spot.facing !== undefined && (
