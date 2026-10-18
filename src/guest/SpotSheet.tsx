@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import type { HourConditions, ProfileId, Spot, SpotScore } from '../engine/types';
-import { guestReasons, guestTips, mainProblem, mapsUrl, seaLevel, travelLabel, windLevel } from './advice';
+import { guestReasons, guestTips, mainProblem, mapsUrl, seaLevel, shareSpotText, travelLabel, windLevel } from './advice';
+import { ShareButton } from './Share';
 import { compassG, g, pick } from './i18n';
 import type { GuestLang, Property } from './property';
 
@@ -13,6 +14,7 @@ export function SpotSheet({
   property,
   profile,
   lang,
+  dayLabel,
   onClose,
 }: {
   spot: Spot;
@@ -21,6 +23,7 @@ export function SpotSheet({
   property: Property;
   profile: ProfileId;
   lang: GuestLang;
+  dayLabel: string;
   onClose: () => void;
 }) {
   const d = g(lang);
@@ -135,9 +138,12 @@ export function SpotSheet({
           <p className="g-about">{pick(spot.notes, lang)}</p>
         </section>
 
-        <a className="g-btn g-btn-brand g-btn-wide" href={mapsUrl(spot, profile)} target="_blank" rel="noreferrer">
-          {d.directions}
-        </a>
+        <div className="g-sheet-actions">
+          <a className="g-btn g-btn-brand g-btn-wide" href={mapsUrl(spot, profile)} target="_blank" rel="noreferrer">
+            {d.directions}
+          </a>
+          <ShareButton text={shareSpotText(spot, sc, lines, property.name, dayLabel, profile, lang)} title={pick(spot.name, lang)} lang={lang} wide />
+        </div>
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { SPOTS, spotById } from '../src/data/spots';
 import { analyzeDay } from '../src/engine/recommend';
-import { guestReasons, guestTips, mainProblem, seaLevel } from '../src/guest/advice';
+import { guestReasons, guestTips, mainProblem, seaLevel, sharePlanText, shareSpotText } from '../src/guest/advice';
 import { GUEST_LANGS } from '../src/guest/property';
 import { DEMO_PROPERTY } from '../src/guest/property';
 import { scenario } from './helpers';
@@ -34,5 +34,23 @@ describe('guest wording', () => {
 
   it('maps wave heights to plain words', () => {
     expect([0.1, 0.4, 0.8, 1.5].map(seaLevel)).toEqual([0, 1, 2, 3]);
+  });
+});
+
+describe('share text', () => {
+  it('writes a self-contained message with a map link', () => {
+    const sc = westerly.scores.kolymbari;
+    const spot = spotById('kolymbari')!;
+    const text = shareSpotText(spot, sc, guestReasons(sc, 'en'), 'Alkyoni Suites', 'Monday 19 October', 'couple', 'en');
+    expect(text).toContain('Kolymbari');
+    expect(text).toContain('Best time');
+    expect(text).toContain('https://www.google.com/maps/dir/?api=1&destination=');
+    expect(text).toContain('Tip from Alkyoni Suites');
+  });
+  it('lists the picks of the day in order', () => {
+    const picks = ['kolymbari', 'marathi'].map((id) => ({ spot: spotById(id)!, sc: westerly.scores[id], lines: guestReasons(westerly.scores[id], 'el') }));
+    const text = sharePlanText(picks, 'Alkyoni Suites', 'Δευτέρα 19 Οκτωβρίου', ['Δυτικός άνεμος.'], 'el');
+    expect(text.indexOf('1. Κολυμπάρι')).toBeLessThan(text.indexOf('2. Μαράθι'));
+    expect(text).toContain('Δυτικός άνεμος.');
   });
 });

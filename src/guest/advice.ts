@@ -300,3 +300,36 @@ export function daySummary(syn: Synopsis, lang: GuestLang): string[] {
   if ((syn.town.apparentMax ?? 0) >= 32) out.push(t(SUMMARY.hot, lang, { temp: Math.round(syn.town.apparentMax!) }));
   return out;
 }
+
+const SHARE: Record<'via' | 'bestTime' | 'directions' | 'plan', L> = {
+  via: { el: 'Πρόταση από', en: 'Tip from', de: 'Tipp von', fr: 'Conseil de' },
+  bestTime: { el: 'Καλύτερη ώρα', en: 'Best time', de: 'Beste Zeit', fr: 'Meilleur moment' },
+  directions: { el: 'Οδηγίες', en: 'Directions', de: 'Route', fr: 'Itinéraire' },
+  plan: { el: 'Πού να πάμε', en: 'Where to go', de: 'Wohin', fr: 'Où aller' },
+};
+
+/** Plain text a guest can paste into any chat: one place, its time, the reasons and a map link. */
+export function shareSpotText(spot: Spot, sc: SpotScore, lines: GuestLine[], propertyName: string, dayLabel: string, profile: ProfileId, lang: GuestLang): string {
+  const pad = (h: number) => `${String(h).padStart(2, '0')}:00`;
+  const out = [`${spot.name[lang === 'el' ? 'el' : 'en']} · ${dayLabel}`];
+  if (sc.window.start >= 0) out.push(`${t(SHARE.bestTime, lang)}: ${pad(sc.window.start)}–${pad(sc.window.end)}`);
+  for (const l of lines) out.push(`${l.kind === 'warn' ? '!' : '✓'} ${l.text}`);
+  out.push(`${t(SHARE.directions, lang)}: ${mapsUrl(spot, profile)}`);
+  out.push(`${t(SHARE.via, lang)} ${propertyName}`);
+  return out.join('\n');
+}
+
+/** The whole day's picks as one message. */
+export function sharePlanText(picks: { spot: Spot; sc: SpotScore; lines: GuestLine[] }[], propertyName: string, dayLabel: string, summary: string[], lang: GuestLang): string {
+  const pad = (h: number) => `${String(h).padStart(2, '0')}:00`;
+  const out = [`${t(SHARE.plan, lang)} · ${dayLabel}`, ...summary, ''];
+  picks.forEach(({ spot, sc, lines }, i) => {
+    out.push(`${i + 1}. ${spot.name[lang === 'el' ? 'el' : 'en']}${sc.window.start >= 0 ? ` · ${pad(sc.window.start)}–${pad(sc.window.end)}` : ''}`);
+    const why = lines.filter((l) => l.kind === 'pos').slice(0, 2).map((l) => l.text).join('; ');
+    if (why) out.push(`   ${why}`);
+  });
+  out.push('', `${t(SHARE.via, lang)} ${propertyName}`);
+  return out.join('\n');
+}
+
+export const whatsappUrl = (text: string) => `https://wa.me/?text=${encodeURIComponent(text)}`;

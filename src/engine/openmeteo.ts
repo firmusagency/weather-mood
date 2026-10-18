@@ -59,6 +59,9 @@ export function seaPointFor(spot: Spot) {
 }
 
 export const depSeaId = (spotId: string) => `${spotId}:dep`;
+/** Atmospheric point just off the shore: the wind a swimmer feels comes from there, and coastal land
+ *  grid cells (sheltered by terrain in the model) can read 2–3× too low on sea-breeze afternoons. */
+export const seaWindId = (spotId: string) => `${spotId}:wind`;
 
 export function planPoints(spots: Spot[], refs: RefPoint[]): PointPlan {
   const land: PointRef[] = [...spots.map(({ id, lat, lon }) => ({ id, lat, lon })), ...refs.map(({ id, lat, lon }) => ({ id, lat, lon }))];
@@ -66,6 +69,7 @@ export function planPoints(spots: Spot[], refs: RefPoint[]): PointPlan {
   for (const s of spots) {
     const p = (s.type === 'beach' || s.type === 'boat') && seaPointFor(s);
     if (p) marine.push({ id: s.id, ...p });
+    if (p) land.push({ id: seaWindId(s.id), ...p });
     if (s.dependsOnSea) marine.push({ id: depSeaId(s.id), lat: s.dependsOnSea.lat, lon: s.dependsOnSea.lon });
   }
   for (const r of refs) if (r.facing !== undefined) marine.push({ id: r.id, lat: r.lat, lon: r.lon });

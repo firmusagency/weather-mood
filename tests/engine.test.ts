@@ -118,3 +118,20 @@ describe('profiles', () => {
     expect(act).toBeGreaterThan(fam);
   });
 });
+
+describe('sea-side wind point', () => {
+  it('uses the stronger of the land and sea-side wind estimates for a beach', () => {
+    const data = scenario({ windKmh: 8, windDir: 270, waveM: 0.3, waveDir: 270 });
+    const seaId = 'falasarna:wind';
+    expect(data.land[seaId]).toBeDefined();
+    for (const m of Object.keys(data.land[seaId].models)) data.land[seaId].models[m as keyof typeof data.land[string]['models']].forEach((w) => { w.wind = 28; w.gust = 40; });
+    const { scores } = analyzeDay(SPOTS, data, 'couple', chania);
+    expect(scores.falasarna.factors.some((f) => f.key === 'onshoreWind')).toBe(true);
+  });
+  it('still works with snapshots that predate the sea-side points', () => {
+    const data = scenario({ windKmh: 8, windDir: 270, waveM: 0.3, waveDir: 270 });
+    for (const id of Object.keys(data.land)) if (id.endsWith(':wind')) delete data.land[id];
+    const { scores } = analyzeDay(SPOTS, data, 'couple', chania);
+    expect(scores.falasarna.verdict).toBe('go');
+  });
+});

@@ -18,6 +18,11 @@ type Dict = {
   byBus: string;
   onFoot: string;
   directions: string;
+  share: string;
+  sharePlan: string;
+  copy: string;
+  copied: string;
+  copyFailed: string;
   details: string;
   close: string;
   why: string;
@@ -61,6 +66,11 @@ const EL: Dict = {
   byBus: 'με λεωφορείο',
   onFoot: 'με τα πόδια',
   directions: 'Οδηγίες',
+  share: 'Μοιραστείτε',
+  sharePlan: 'Μοιραστείτε το πρόγραμμα της μέρας',
+  copy: 'Αντιγραφή',
+  copied: 'Αντιγράφηκε',
+  copyFailed: 'Επιλέξτε και αντιγράψτε το κείμενο',
   details: 'Λεπτομέρειες',
   close: 'Κλείσιμο',
   why: 'Γιατί τώρα',
@@ -122,6 +132,11 @@ const EN: Dict = {
   byBus: 'by bus',
   onFoot: 'on foot',
   directions: 'Directions',
+  share: 'Share',
+  sharePlan: "Share the day's plan",
+  copy: 'Copy',
+  copied: 'Copied',
+  copyFailed: 'Select and copy the text',
   details: 'Details',
   close: 'Close',
   why: 'Why now',
@@ -183,6 +198,11 @@ const DE: Dict = {
   byBus: 'mit dem Bus',
   onFoot: 'zu Fuß',
   directions: 'Route',
+  share: 'Teilen',
+  sharePlan: 'Tagesplan teilen',
+  copy: 'Kopieren',
+  copied: 'Kopiert',
+  copyFailed: 'Text markieren und kopieren',
   details: 'Details',
   close: 'Schließen',
   why: 'Warum jetzt',
@@ -244,6 +264,11 @@ const FR: Dict = {
   byBus: 'en bus',
   onFoot: 'à pied',
   directions: 'Itinéraire',
+  share: 'Partager',
+  sharePlan: 'Partager le programme du jour',
+  copy: 'Copier',
+  copied: 'Copié',
+  copyFailed: 'Sélectionnez et copiez le texte',
   details: 'Détails',
   close: 'Fermer',
   why: 'Pourquoi maintenant',

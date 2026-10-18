@@ -1,6 +1,6 @@
 import { angleDiff, beaufort, circularMean, inAnySector, median } from './geo';
 import { hourOf } from './dates';
-import { depSeaId } from './openmeteo';
+import { depSeaId, seaWindId } from './openmeteo';
 import { MODELS, type Dataset, type Exposure, type HourConditions, type Spot, type WindConsensus } from './types';
 
 /*
@@ -45,6 +45,11 @@ export function windConsensus(data: Dataset, pointId: string, k: number): WindCo
   };
 }
 
+/** Take the stronger of the two estimates, never the weaker: an under-read beach is the costly mistake. */
+export function blendWind(sea: WindConsensus, land: WindConsensus): WindConsensus {
+  return sea.speed >= land.speed ? sea : { ...land, speedSpread: Math.max(sea.speedSpread, land.speedSpread), dirSpread: Math.max(sea.dirSpread, land.dirSpread) };
+}
+
 /**
  * How exposed a shore facing `facing` is to wind/waves coming FROM `from` (0..1).
  * Head-on (onshore) = 1, parallel to the shore ≈ 0.35, blowing off the land ≈ 0.05.
@@ -84,7 +89,9 @@ export function analyzeSpot(spot: Spot, data: Dataset): HourConditions[] {
   land.atmos.forEach((a, k) => {
     const hour = hourOf(a.time);
     if (hour < FIRST_HOUR || hour > LAST_HOUR) return;
-    const wind = windConsensus(data, spot.id, k);
+    // wind from the sea-side point when the snapshot has it (older snapshots fall back to the land cell)
+    const windPoint = data.land[seaWindId(spot.id)] ? seaWindId(spot.id) : spot.id;
+    const wind = blendWind(windConsensus(data, windPoint, k), windConsensus(data, spot.id, k));
     const shelteredNow = inAnySector(wind.dir, spot.shelteredFrom);
     // Downslope gusts on the lee side depend on the wind crossing the mountains, so we look at the
     // open-sea wind north of the island rather than the (often weak) model wind at the spot itself.

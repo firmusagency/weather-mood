@@ -796,3 +796,56 @@ body[data-view='lobby'],
 .g-stale {
   color: var(--warn);
 }
+
+/* ---------- share ---------- */
+.g-share {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.g-share-wide {
+  width: 100%;
+}
+.g-share-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--brand-soft);
+}
+.g-share-menu .g-btn {
+  flex: 1 1 120px;
+}
+.g-btn-wa {
+  background: #25d366;
+  border-color: #25d366;
+  color: #062a16;
+}
+.g-share-text {
+  width: 100%;
+  font: inherit;
+  font-size: 0.8125rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px;
+  background: var(--card);
+  color: var(--ink);
+}
+.g-plan-share {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.g-plan-share-label {
+  font-size: 0.8125rem;
+  color: var(--muted);
+  text-align: center;
+}
+.g-sheet-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
