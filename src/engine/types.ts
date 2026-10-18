@@ -186,6 +186,9 @@ export interface HourConditions {
     waveDir: number;
     swell: number | null;
     period: number | null;
+    swellPeriod: number | null;
+    /** Long-period swell breaks higher than its offshore height when it shoals (1 = no effect). */
+    periodFactor: number;
     waveExposure: number;
     localWindSea: number;
     effectiveWave: number; // estimated at the shore
@@ -204,6 +207,7 @@ export interface HourConditions {
 export type FactorKey =
   | 'seaRough'
   | 'seaCalm'
+  | 'longSwell'
   | 'onshoreWind'
   | 'offshoreWind'
   | 'sheltered'

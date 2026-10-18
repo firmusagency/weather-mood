@@ -135,3 +135,16 @@ describe('sea-side wind point', () => {
     expect(scores.falasarna.verdict).toBe('go');
   });
 });
+
+describe('long-period swell on a calm day', () => {
+  const chop = run({ windKmh: 5, windDir: 90, waveM: 0.7, waveDir: 290, periodS: 4 }, 'family');
+  const swell = run({ windKmh: 5, windDir: 90, waveM: 0.7, waveDir: 290, periodS: 11 }, 'family');
+  it('rates the same offshore height worse when the period is long', () => {
+    expect(swell.scores.falasarna.score).toBeLessThan(chop.scores.falasarna.score);
+    expect(swell.scores.falasarna.verdict).toBe('avoid');
+    expect(swell.scores.falasarna.factors.some((f) => f.key === 'longSwell')).toBe(true);
+  });
+  it('does not touch sheltered shores', () => {
+    expect(swell.scores.marathi.verdict).toBe('go');
+  });
+});

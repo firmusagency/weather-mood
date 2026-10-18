@@ -43,6 +43,10 @@ function evalBeach(c: HourConditions, spot: Spot, p: Profile): HourEval {
     };
     if (seaPen >= 0.5) push(out, 'seaRough', -seaPen, params);
     else if (eff < ok * 0.8) push(out, 'seaCalm', 4, params);
+    // the "glassy sea, big surf" trap: long swell on a calm day breaks harder than it looks
+    if (c.sea.period != null && c.sea.period >= 8 && eff >= 0.4 && c.wind.speed < 15) {
+      push(out, 'longSwell', -ramp(c.sea.period, 8, 12) * 8, { period: round(c.sea.period, 0), wave: round(eff, 1) });
+    }
     if (spot.ripRisk && eff > 0.7) push(out, 'ripCurrents', -15, { wave: round(eff, 1) });
     if (c.sea.sst != null) push(out, 'coldWater', -ramp(21 - c.sea.sst, 0, 4) * 10, { sst: round(c.sea.sst, 1) });
   }

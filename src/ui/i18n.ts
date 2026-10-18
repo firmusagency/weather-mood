@@ -316,6 +316,10 @@ export function factorText(fct: Factor, lang: Lang): string {
       return el
         ? `Κύμα ~${p.wave} m στην ακτή (ανοιχτά ${p.offshore} m από ${dir(p.dir)}, φτάνει το ${p.exposure}%)`
         : `~${p.wave} m waves at the shore (${p.offshore} m offshore from ${dir(p.dir)}, ${p.exposure}% reaches it)`;
+    case 'longSwell':
+      return el
+        ? `Μακρύ κύμα (swell ${p.period} s): σπάει πιο δυνατά απ' ό,τι φαίνεται από την ακτή`
+        : `Long swell (${p.period} s period): breaks harder than it looks from the shore`;
     case 'seaCalm':
       return el ? `Ήρεμη θάλασσα: ~${p.wave} m στην ακτή (ανοιχτά ${p.offshore} m)` : `Calm sea: ~${p.wave} m at the shore (${p.offshore} m offshore)`;
     case 'onshoreWind':

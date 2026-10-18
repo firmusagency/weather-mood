@@ -161,6 +161,15 @@ export function SpotDetail({
                   </dd>
                 </div>
               )}
+              {mid.sea?.swell != null && (
+                <div>
+                  <dt>Swell</dt>
+                  <dd>
+                    {mid.sea.swell.toFixed(1)} m{mid.sea.swellPeriod != null && ` · ${mid.sea.swellPeriod.toFixed(0)} s`}
+                    {mid.sea.periodFactor > 1 && <span className="pill pill-warn">×{mid.sea.periodFactor} {lang === 'el' ? 'στην ακτή' : 'at the shore'}</span>}
+                  </dd>
+                </div>
+              )}
             </dl>
             {k != null && k >= 0 && (
               <details className="models-detail">
@@ -211,6 +220,14 @@ export function SpotDetail({
                 <span>
                   {s.waveExposure} <strong>{Math.round(mid.sea.waveExposure * 100)}%</strong>
                 </span>
+                {mid.sea.periodFactor > 1 && (
+                  <>
+                    <span className="op">×</span>
+                    <span>
+                      {lang === 'el' ? 'μακρύ κύμα' : 'long swell'} <strong>{mid.sea.periodFactor}</strong>
+                    </span>
+                  </>
+                )}
                 {spot.waveFactor && spot.waveFactor !== 1 && (
                   <>
                     <span className="op">×</span>

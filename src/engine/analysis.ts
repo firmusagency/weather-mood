@@ -71,6 +71,18 @@ export function exposureClass(from: number, facing: number): Exposure {
   return 'offshore';
 }
 
+/**
+ * Long-period swell grows as it shoals: a 0.8 m / 10 s swell breaks noticeably higher than a 0.8 m / 4 s
+ * wind chop. Rough breaker-height multipliers; a 5 s chop is left as is.
+ */
+export function shoalingFactor(periodS: number | null): number {
+  if (periodS == null) return 1;
+  if (periodS >= 11) return 1.5;
+  if (periodS >= 8) return 1.3;
+  if (periodS >= 6.5) return 1.12;
+  return 1;
+}
+
 /** Fetch-limited wind-sea height (JONSWAP): what an onshore wind whips up over a short stretch of water. */
 export function localWindSea(windKmh: number, fetchKm: number): number {
   const u = windKmh / 3.6;
@@ -140,14 +152,17 @@ export function analyzeSpot(spot: Spot, data: Dataset): HourConditions[] {
       }
       const factor = spot.waveFactor ?? 1;
       const windSea = spot.facing !== undefined ? localWindSea(wind.speed * windExposure, spot.localFetchKm ?? 12) : 0;
+      const periodFactor = shoalingFactor(m.wavePeriod);
       c.sea = {
         offshoreWave: m.wave,
         waveDir,
         swell: m.swell,
         period: m.wavePeriod,
+        swellPeriod: m.swellPeriod,
+        periodFactor,
         waveExposure,
         localWindSea: windSea,
-        effectiveWave: Math.max(m.wave * waveExposure, windSea) * factor,
+        effectiveWave: Math.max(m.wave * waveExposure * periodFactor, windSea) * factor,
         sst: m.sst,
       };
     }

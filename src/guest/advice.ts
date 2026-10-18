@@ -76,6 +76,12 @@ const WARN: Partial<Record<Factor['key'], L>> = {
     de: 'Etwas Wellengang (~{wave} m), vorsichtig baden',
     fr: 'Quelques vagues (~{wave} m), baignade prudente',
   },
+  longSwell: {
+    el: 'Μακρύ κύμα από ανοιχτά: η θάλασσα σπάει πιο δυνατά απ\' ό,τι φαίνεται',
+    en: 'Long swell from offshore: the waves break harder than they look',
+    de: 'Lange Dünung: die Wellen brechen stärker, als es aussieht',
+    fr: "Houle longue du large : les vagues cassent plus fort qu'il n'y paraît",
+  },
   onshoreWind: {
     el: 'Ο αέρας φυσάει προς την παραλία',
     en: 'The wind blows onto the beach',

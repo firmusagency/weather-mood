@@ -9,6 +9,7 @@ export interface Scenario {
   gustKmh?: number;
   waveM: number;
   waveDir: number;
+  periodS?: number;
   apparent?: number;
   precipProb?: number;
   precip?: number;
@@ -48,11 +49,11 @@ export function scenario(s: Scenario): Dataset {
       time,
       wave: s.waveM,
       waveDir: s.waveDir,
-      wavePeriod: 5,
+      wavePeriod: s.periodS ?? 5,
       windWave: s.waveM,
       swell: null,
       swellDir: null,
-      swellPeriod: null,
+      swellPeriod: s.periodS ?? null,
       sst: 25,
     }));
   }
