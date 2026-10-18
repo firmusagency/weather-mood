@@ -1422,3 +1422,182 @@ a {
     }
   }
 }
+
+/* ---------- round 2: glance strip ---------- */
+.glance {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.glance-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 8px;
+}
+.glance-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 2px 10px;
+  align-items: start;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--surface-2);
+}
+.glance-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--sc, var(--muted));
+  margin-top: 6px;
+}
+.glance-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.glance-name {
+  font-weight: 600;
+  font-size: var(--fs-sm);
+}
+.glance-count {
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.glance-best {
+  background: none;
+  border: 0;
+  padding: 0;
+  text-align: left;
+  font-size: var(--fs-xs);
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 2px;
+}
+.glance-verdict {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--sc, var(--muted));
+  white-space: nowrap;
+  padding-top: 3px;
+}
+
+/* ---------- round 2: analysis counts, why column, mobile cards ---------- */
+.an-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font-size: var(--fs-sm);
+  color: var(--muted);
+}
+.an-counts span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.an-counts i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--sc, var(--muted));
+}
+.why-cell {
+  max-width: 260px;
+}
+.why {
+  display: block;
+  font-size: var(--fs-xs);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.why-neg {
+  color: var(--avoid);
+}
+.why-pos {
+  color: var(--go);
+}
+.spots-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.spot-cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.spot-card.is-muted {
+  opacity: 0.6;
+}
+.spot-card-btn {
+  width: 100%;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+}
+.spot-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.spot-card-top .row-name {
+  text-decoration: none;
+}
+.spot-card-meta {
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+.spot-card-why {
+  font-size: var(--fs-sm);
+}
+
+/* ---------- round 2: profile comparison, stale badge ---------- */
+.compare {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.compare li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 130px;
+  gap: 12px;
+  align-items: center;
+  font-size: var(--fs-sm);
+  padding: 5px 8px;
+  border-radius: 6px;
+}
+.compare li.is-current {
+  background: var(--accent-soft);
+  font-weight: 600;
+}
+.compare-name {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+.data-badge.is-stale {
+  color: var(--caution);
+  border-color: var(--caution);
+}

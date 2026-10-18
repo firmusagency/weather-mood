@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { MODELS, MODEL_LABELS, type Dataset, type Factor, type HourConditions, type Lang, type Spot, type SpotScore } from '../engine/types';
+import { MODELS, MODEL_LABELS, type Base, type Dataset, type Factor, type HourConditions, type Lang, type Spot, type SpotScore } from '../engine/types';
+import { scoreSpot } from '../engine/scoring';
+import { PROFILES } from '../data/profiles';
 import { hourOf } from '../engine/dates';
 import { FlowArrow, HourlyChart, ScoreBar } from './charts';
 import { expoLabel, midWindow, pad } from './AnalysisTable';
@@ -28,6 +30,8 @@ export function SpotDetail({
   score,
   conditions,
   data,
+  base,
+  daysAhead,
   lang,
   onClose,
 }: {
@@ -35,6 +39,8 @@ export function SpotDetail({
   score: SpotScore;
   conditions: HourConditions[];
   data: Dataset;
+  base: Base;
+  daysAhead: number;
   lang: Lang;
   onClose: () => void;
 }) {
@@ -50,6 +56,7 @@ export function SpotDetail({
   }, [onClose]);
 
   const k = mid ? data.land[spot.id]?.atmos.findIndex((a) => hourOf(a.time) === mid.hour) : -1;
+  const byProfile = PROFILES.map((p) => ({ p, sc: p.id === score.profile ? score : scoreSpot(spot, conditions, p.id, base, data.date, { daysAhead }) }));
   const confLabel = { high: s.confHigh, medium: s.confMedium, low: s.confLow }[score.confidence];
 
   return (
@@ -236,6 +243,21 @@ export function SpotDetail({
             {s.stepFit} <span className="step-at">({s.rankScore} {Math.round(score.rank)})</span>
           </h3>
           <FactorList factors={score.fit} lang={lang} />
+        </section>
+
+        <section className="sd-step">
+          <h3 className="step-title">{s.compareProfiles}</h3>
+          <p className="hint">{s.compareHint}</p>
+          <ul className="compare">
+            {byProfile.map(({ p, sc }) => (
+              <li key={p.id} className={p.id === score.profile ? 'is-current' : ''}>
+                <span className="compare-name">
+                  <span aria-hidden="true">{p.icon}</span> {p.name[lang]}
+                </span>
+                {sc.verdict === 'unsuitable' ? <span className="pill v-unsuitable">{s.verdict.unsuitable}</span> : <ScoreBar score={sc.score} verdict={sc.verdict} />}
+              </li>
+            ))}
+          </ul>
         </section>
 
         <section className="sd-step">

@@ -5,6 +5,7 @@ import { PROFILES, profileById } from '../data/profiles';
 import { athensDate } from '../engine/dates';
 import { analyzeDay, recommend } from '../engine/recommend';
 import { buildSynopsis } from '../engine/synopsis';
+import { dayGlance } from '../engine/glance';
 import type { Dataset, Lang, ProfileId } from '../engine/types';
 import { AnalysisTable } from './AnalysisTable';
 import { Method } from './Method';
@@ -75,7 +76,7 @@ export function App() {
     const daysAhead = Math.max(0, Math.round((Date.parse(date) - Date.parse(today)) / 86_400_000));
     const nowHour = Number(new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hourCycle: 'h23', timeZone: 'Europe/Athens' }).format(new Date()));
     const day = analyzeDay(SPOTS, data, profileId, base, { daysAhead, earliestStart: date === today ? nowHour + 1 : 0 });
-    return { ...day, syn: buildSynopsis(data, REF_POINTS), rec: recommend(SPOTS, day.scores) };
+    return { ...day, syn: buildSynopsis(data, REF_POINTS), rec: recommend(SPOTS, day.scores), glance: dayGlance(SPOTS, day.scores), daysAhead };
   }, [data, date, today, profileId, base]);
 
   const refreshLive = useCallback(async () => {
@@ -101,6 +102,9 @@ export function App() {
   };
 
   const dayTitle = date === today ? s.recsTitleToday : date === athensDate(1) ? s.recsTitleTomorrow : s.recsTitleOther;
+  const fetchedAtMs = data ? Date.parse(data.source === 'live' ? data.fetchedAt : generatedAt || data.fetchedAt) : NaN;
+  const ageHours = Number.isNaN(fetchedAtMs) ? 0 : Math.floor((Date.now() - fetchedAtMs) / 3_600_000);
+  const stale = ageHours >= 12;
   const fetchedLabel = data
     ? new Intl.DateTimeFormat(lang === 'el' ? 'el-GR' : 'en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Athens' }).format(
         new Date(data.source === 'live' ? data.fetchedAt : generatedAt || data.fetchedAt),
@@ -124,8 +128,8 @@ export function App() {
           </div>
           <div className="topbar-right">
             {data && (
-              <span className={`data-badge ${data.source}`} title={data.source}>
-                {s.dataFrom} · {s.fetched} {fetchedLabel}
+              <span className={`data-badge ${data.source} ${stale ? 'is-stale' : ''}`} title={data.source}>
+                {stale ? `${s.staleData} · ${s.hoursAgo.replace('{h}', String(ageHours))}` : `${s.dataFrom} · ${s.fetched} ${fetchedLabel}`}
               </span>
             )}
             {!EMBEDDED && (
@@ -193,7 +197,7 @@ export function App() {
         {status === 'error' && <p className="callout callout-warn">{s.loadFailed}</p>}
         {analysis && data && (
           <>
-            {tab === 'overview' && <Overview syn={analysis.syn} lang={lang} onAnalysis={() => go('analysis')} />}
+            {tab === 'overview' && <Overview syn={analysis.syn} glance={analysis.glance} lang={lang} onAnalysis={() => go('analysis')} onOpen={setOpenSpot} />}
             {tab === 'analysis' && <AnalysisTable spots={SPOTS} scores={analysis.scores} conditions={analysis.conditions} lang={lang} onOpen={setOpenSpot} />}
             {tab === 'recs' && (
               <Recommendations
@@ -223,7 +227,16 @@ export function App() {
       </footer>
 
       {spot && analysis && data && (
-        <SpotDetail spot={spot} score={analysis.scores[spot.id]} conditions={analysis.conditions[spot.id]} data={data} lang={lang} onClose={() => setOpenSpot(null)} />
+        <SpotDetail
+          spot={spot}
+          score={analysis.scores[spot.id]}
+          conditions={analysis.conditions[spot.id]}
+          data={data}
+          base={base}
+          daysAhead={analysis.daysAhead}
+          lang={lang}
+          onClose={() => setOpenSpot(null)}
+        />
       )}
     </div>
   );

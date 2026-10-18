@@ -1,5 +1,6 @@
 import { haversineKm } from '../engine/geo';
 import type { Factor, HourConditions, ProfileId, Spot, SpotScore } from '../engine/types';
+import type { Synopsis } from '../engine/synopsis';
 import type { GuestLang } from './property';
 import { compassG } from './i18n';
 
@@ -132,7 +133,7 @@ const WARN: Partial<Record<Factor['key'], L>> = {
   },
 };
 
-export function guestReasons(sc: SpotScore, lang: GuestLang): GuestLine[] {
+function candidates(sc: SpotScore, lang: GuestLang): { pos: GuestLine[]; warn?: GuestLine } {
   const pos: GuestLine[] = [];
   const all = [...sc.fit.filter((f) => f.key === 'opportunity'), ...sc.factors.filter((f) => f.impact > 0), ...sc.fit.filter((f) => f.key === 'goodForBadWeather')];
   for (const f of all) {
@@ -146,12 +147,40 @@ export function guestReasons(sc: SpotScore, lang: GuestLang): GuestLine[] {
   for (const tr of traits) pos.push({ kind: 'pos', text: TRAITS[tr][lang] });
 
   const warnFactor = sc.factors.find((f) => f.impact <= -5 && WARN[f.key]);
-  const out = pos.slice(0, warnFactor ? 2 : 3);
-  if (warnFactor) {
-    const p = warnFactor.params;
-    out.push({ kind: 'warn', text: t(WARN[warnFactor.key]!, lang, { wave: p.wave ?? '', gust: p.gust ?? '', pp: p.pp ?? '', temp: p.apparent ?? '', sst: p.sst ?? '' }) });
-  }
+  const p = warnFactor?.params;
+  const warn = warnFactor ? { kind: 'warn' as const, text: t(WARN[warnFactor.key]!, lang, { wave: p!.wave ?? '', gust: p!.gust ?? '', pp: p!.pp ?? '', temp: p!.apparent ?? '', sst: p!.sst ?? '' }) } : undefined;
+  return { pos, warn };
+}
+
+/** What earlier cards on the same page already said. */
+export interface ReasonContext {
+  seen: Set<string>;
+  /** Lines that already opened a card. */
+  leads: Set<string>;
+}
+export const newReasonContext = (): ReasonContext => ({ seen: new Set(), leads: new Set() });
+
+/** 2–3 short lines for a card: positives first (unseen ones preferred), then the main caveat. */
+export function guestReasons(sc: SpotScore, lang: GuestLang, ctx: ReasonContext = newReasonContext()): GuestLine[] {
+  const { pos, warn } = candidates(sc, lang);
+  const limit = warn ? 2 : 3;
+  const picked = [...pos.filter((l) => !ctx.seen.has(l.text)), ...pos.filter((l) => ctx.seen.has(l.text))].slice(0, limit);
+  // when every line was already used above, at least open with one that did not open another card
+  const freshLead = picked.findIndex((l) => !ctx.leads.has(l.text));
+  if (freshLead > 0) picked.unshift(...picked.splice(freshLead, 1));
+  const out = warn ? [...picked, warn] : picked;
+  for (const l of out) ctx.seen.add(l.text);
+  if (out[0]) ctx.leads.add(out[0].text);
   return out;
+}
+
+/**
+ * Three cards saying "rare chance" three times reads like a template: each card prefers lines
+ * the cards above it have not used yet.
+ */
+export function dedupeReasons(scores: SpotScore[], lang: GuestLang): GuestLine[][] {
+  const ctx = newReasonContext();
+  return scores.map((sc) => guestReasons(sc, lang, ctx));
 }
 
 /** The main problem with a place on this day — for the "better not" list. */
@@ -217,4 +246,57 @@ export function travelLabel(spot: Spot, sc: SpotScore, base: { lat: number; lon:
 export function mapsUrl(spot: Spot, profile: ProfileId) {
   const mode = profile === 'nocar' ? '&travelmode=transit' : '';
   return `https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lon}${mode}`;
+}
+
+const SUMMARY: Record<'calm' | 'wind' | 'rain' | 'hot', L> = {
+  calm: {
+    el: 'Ελαφρύς αέρας και ήρεμη θάλασσα σχεδόν παντού: καλή μέρα και για τα πιο εκτεθειμένα μέρη.',
+    en: 'Light wind and a calm sea almost everywhere: a good day even for the exposed spots.',
+    de: 'Leichter Wind und fast überall ruhiges Meer: ein guter Tag auch für die exponierten Orte.',
+    fr: 'Vent léger et mer calme presque partout : une bonne journée même pour les endroits exposés.',
+  },
+  wind: {
+    el: '{word} {dir} άνεμος: η {coast} ακτή έχει κύμα, προτιμήστε προστατευμένες παραλίες.',
+    en: '{word} {dir} wind: the {coast} coast is rough, prefer sheltered beaches.',
+    de: '{word} {dir}-Wind: die {coast}-Küste ist rau, lieber geschützte Strände.',
+    fr: 'Vent {dir} {word} : la côte {coast} est agitée, préférez les plages abritées.',
+  },
+  rain: {
+    el: 'Πιθανή βροχή ({pp}%): κρατήστε εναλλακτική σε πόλη ή μουσείο.',
+    en: 'Rain likely ({pp}%): keep a town or museum plan as backup.',
+    de: 'Regen wahrscheinlich ({pp}%): Stadt oder Museum als Alternative einplanen.',
+    fr: 'Pluie probable ({pp}%) : prévoyez la ville ou un musée en plan B.',
+  },
+  hot: {
+    el: 'Ζέστη (αίσθηση {temp}°C): νερό, σκιά και νωρίς το πρωί για πεζοπορία.',
+    en: 'Hot (feels like {temp}°C): water, shade, and early starts for walks.',
+    de: 'Heiß (gefühlt {temp}°C): Wasser, Schatten und früh los zum Wandern.',
+    fr: 'Chaud (ressenti {temp}°C) : eau, ombre et départs matinaux pour marcher.',
+  },
+};
+
+const COAST_WORD: Record<'north' | 'west' | 'south', L> = {
+  north: { el: 'βόρεια', en: 'north', de: 'Nord', fr: 'nord' },
+  west: { el: 'δυτική', en: 'west', de: 'West', fr: 'ouest' },
+  south: { el: 'νότια', en: 'south', de: 'Süd', fr: 'sud' },
+};
+const WIND_WORD: L[] = [
+  { el: 'Σχεδόν άπνοια,', en: 'Almost no', de: 'Kaum', fr: 'presque nul' },
+  { el: 'Ελαφρύς', en: 'Light', de: 'Leichter', fr: 'léger' },
+  { el: 'Μέτριος', en: 'Moderate', de: 'Mäßiger', fr: 'modéré' },
+  { el: 'Δυνατός', en: 'Strong', de: 'Starker', fr: 'fort' },
+];
+
+/** One sentence that explains the day, so the picks below make sense. */
+export function daySummary(syn: Synopsis, lang: GuestLang): string[] {
+  const out: string[] = [];
+  const rough = syn.coasts.filter((c) => (c.waveMax ?? 0) >= 1.0);
+  if (syn.wind.bf <= 2 && !rough.length) out.push(t(SUMMARY.calm, lang));
+  else if (rough.length) {
+    const coast = rough.sort((a, b) => (b.waveMax ?? 0) - (a.waveMax ?? 0))[0].id.replace('ref-', '') as 'north' | 'west' | 'south';
+    out.push(t(SUMMARY.wind, lang, { word: t(WIND_WORD[windLevel(syn.wind.bf)], lang), dir: compassG(syn.wind.dir, lang), coast: t(COAST_WORD[coast] ?? COAST_WORD.north, lang) }));
+  }
+  if ((syn.town.rainProbMax ?? 0) >= 50) out.push(t(SUMMARY.rain, lang, { pp: syn.town.rainProbMax! }));
+  if ((syn.town.apparentMax ?? 0) >= 32) out.push(t(SUMMARY.hot, lang, { temp: Math.round(syn.town.apparentMax!) }));
+  return out;
 }

@@ -254,10 +254,10 @@ select {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 2px;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  justify-content: end;
+  gap: 2px 14px;
   font-size: 0.875rem;
 }
 .g-coasts {
@@ -784,4 +784,15 @@ body[data-view='lobby'],
       opacity: 0.6;
     }
   }
+}
+
+/* ---------- round 2 ---------- */
+.g-summary {
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  border-top: 1px solid color-mix(in oklab, var(--brand-base) 20%, transparent);
+  padding-top: 10px;
+}
+.g-stale {
+  color: var(--warn);
 }

@@ -3,7 +3,7 @@ import { spotById } from '../data/spots';
 import { athensDate } from '../engine/dates';
 import type { ProfileId, Spot, SpotScore } from '../engine/types';
 import { PROFILES } from '../data/profiles';
-import { guestReasons, mainProblem, mapsUrl, seaLevel, travelLabel, windLevel } from './advice';
+import { daySummary, dedupeReasons, mainProblem, mapsUrl, seaLevel, travelLabel, windLevel, type GuestLine } from './advice';
 import { compassG, dayName, g, LANG_NAMES, pick } from './i18n';
 import { GUEST_LANGS, type GuestLang, type Property } from './property';
 import { SpotSheet } from './SpotSheet';
@@ -18,7 +18,7 @@ const COAST_LABEL: Record<GuestLang, string> = { el: 'Θάλασσα ανά ακ
 
 const pad = (h: number) => `${String(h).padStart(2, '0')}:00`;
 
-function PickCard({ sc, spot, property, profile, lang, onOpen }: { sc: SpotScore; spot: Spot; property: Property; profile: ProfileId; lang: GuestLang; onOpen: () => void }) {
+function PickCard({ sc, spot, lines, property, profile, lang, onOpen }: { sc: SpotScore; spot: Spot; lines: GuestLine[]; property: Property; profile: ProfileId; lang: GuestLang; onOpen: () => void }) {
   const d = g(lang);
   return (
     <li className="g-card">
@@ -31,7 +31,7 @@ function PickCard({ sc, spot, property, profile, lang, onOpen }: { sc: SpotScore
         <span>{travelLabel(spot, sc, property.base, profile, d, lang)}</span>
       </p>
       <ul className="g-lines">
-        {guestReasons(sc, lang).map((l) => (
+        {lines.map((l) => (
           <li key={l.text} className={`g-line g-${l.kind}`}>
             {l.text}
           </li>
@@ -82,6 +82,14 @@ export function PhoneView({
   };
   const isTomorrow = date === athensDate(1);
   const openSpot = open ? spotById(open) : undefined;
+  const allLines = dedupeReasons([...rec.top, ...rec.alternatives], lang);
+  const pickLines = allLines.slice(0, rec.top.length);
+  const altLines = allLines.slice(rec.top.length);
+  const futureDates = dates.filter((x) => x >= today);
+  const summary = daySummary(syn, lang);
+  const sst = syn.coasts.map((c) => c.sst).filter((x): x is number => x != null);
+  const seaTemp = sst.length ? Math.round(sst.reduce((a, b) => a + b, 0) / sst.length) : null;
+  const ageHours = updatedAt ? Math.floor((Date.now() - Date.parse(updatedAt)) / 3_600_000) : 0;
   const locale = { el: 'el-GR', en: 'en-GB', de: 'de-DE', fr: 'fr-FR' }[lang];
   const updated = updatedAt
     ? new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Athens' }).format(new Date(updatedAt))
@@ -114,7 +122,7 @@ export function PhoneView({
       <p className="g-greeting">{d.greeting}</p>
 
       <div className="g-days" role="group" aria-label="day">
-        {dates.map((x) => (
+        {futureDates.map((x) => (
           <button key={x} type="button" className={x === date ? 'is-on' : ''} aria-pressed={x === date} onClick={() => setDate(x)}>
             {rel(x)}
           </button>
@@ -136,9 +144,15 @@ export function PhoneView({
             <li>
               {d.rain}: {syn.town.rainProbMax ?? 0}%
             </li>
+            {seaTemp != null && (
+              <li>
+                {d.sea}: {seaTemp}°
+              </li>
+            )}
             {syn.town.uvMax != null && <li>UV {Math.round(syn.town.uvMax)}</li>}
           </ul>
         </div>
+        {summary.length > 0 && <p className="g-summary">{summary.join(' ')}</p>}
         <div className="g-coasts" aria-label={COAST_LABEL[lang]}>
           {syn.coasts.map((c) => {
             const lvl = seaLevel(c.waveMax ?? 0);
@@ -172,8 +186,8 @@ export function PhoneView({
         {rec.badWeatherDay && <p className="g-note">{d.planB}</p>}
         {rec.top.length ? (
           <ul className="g-cards">
-            {rec.top.map((sc) => (
-              <PickCard key={sc.spotId} sc={sc} spot={spotById(sc.spotId)!} property={property} profile={profile} lang={lang} onOpen={() => setOpen(sc.spotId)} />
+            {rec.top.map((sc, i) => (
+              <PickCard key={sc.spotId} sc={sc} spot={spotById(sc.spotId)!} lines={pickLines[i]} property={property} profile={profile} lang={lang} onOpen={() => setOpen(sc.spotId)} />
             ))}
           </ul>
         ) : (
@@ -187,9 +201,9 @@ export function PhoneView({
             {d.more}
           </h2>
           <ul className="g-rows">
-            {rec.alternatives.map((sc) => {
+            {rec.alternatives.map((sc, i) => {
               const spot = spotById(sc.spotId)!;
-              const first = guestReasons(sc, lang)[0];
+              const first = altLines[i]?.[0];
               return (
                 <li key={sc.spotId}>
                   <button type="button" className="g-row" onClick={() => setOpen(sc.spotId)}>
@@ -229,7 +243,7 @@ export function PhoneView({
 
       <footer className="g-foot">
         <p>{d.disclaimer}</p>
-        <p>
+        <p className={ageHours >= 12 ? 'g-stale' : ''}>
           {d.updated} {updated} · {d.poweredBy}
         </p>
       </footer>

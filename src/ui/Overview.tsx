@@ -2,12 +2,14 @@ import type { Synopsis } from '../engine/synopsis';
 import { MODEL_LABELS, type Lang } from '../engine/types';
 import { REF_POINTS } from '../data/region';
 import { Compass, FlowArrow, WindHours } from './charts';
+import { Glance } from './Glance';
+import type { GlanceGroup } from '../engine/glance';
 import { longDate, strings, takeawayText, windLabel } from './i18n';
 
 const fmtTime = (iso?: string) => (iso ? iso.slice(11, 16) : '–');
 const fmt = (v: number | null | undefined, digits = 0, unit = '') => (v == null || Number.isNaN(v) ? '–' : `${v.toFixed(digits)}${unit}`);
 
-export function Overview({ syn, lang, onAnalysis }: { syn: Synopsis; lang: Lang; onAnalysis: () => void }) {
+export function Overview({ syn, glance, lang, onAnalysis, onOpen }: { syn: Synopsis; glance: GlanceGroup[]; lang: Lang; onAnalysis: () => void; onOpen: (id: string) => void }) {
   const s = strings(lang);
   const agreeLabel = { high: s.agreeHigh, medium: s.agreeMedium, low: s.agreeLow }[syn.agreement];
   const [headline, ...rest] = syn.takeaways.map((t) => takeawayText(t, lang)).filter(Boolean);
@@ -20,6 +22,8 @@ export function Overview({ syn, lang, onAnalysis }: { syn: Synopsis; lang: Lang;
           {headline}
         </h2>
       </header>
+
+      <Glance groups={glance} lang={lang} onOpen={onOpen} />
 
       <div className="ov-grid">
         <article className="panel ov-wind">
