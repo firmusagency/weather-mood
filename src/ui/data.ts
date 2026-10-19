@@ -2,6 +2,7 @@ import { SPOTS } from '../data/spots';
 import { REF_POINTS } from '../data/region';
 import { datasetFromRaw, fetchRaw, planPoints, type RawBundle } from '../engine/openmeteo';
 import type { Dataset } from '../engine/types';
+import type { VerificationSummary } from '../engine/verify';
 
 export interface Snapshot {
   generatedAt: string;
@@ -25,6 +26,19 @@ export async function loadSnapshot(): Promise<Snapshot> {
 export async function fetchLive(date: string): Promise<Dataset> {
   const raw = await fetchRaw(planPoints(SPOTS, REF_POINTS), date);
   return datasetFromRaw(raw, 'live');
+}
+
+export async function loadVerification(): Promise<VerificationSummary | null> {
+  try {
+    if (EMBEDDED) {
+      const mod = await import('../../public/data/verification.json');
+      return (mod.default ?? mod) as unknown as VerificationSummary;
+    }
+    const res = await fetch(`${import.meta.env.BASE_URL}data/verification.json`, { cache: 'no-cache' });
+    return res.ok ? ((await res.json()) as VerificationSummary) : null;
+  } catch {
+    return null;
+  }
 }
 
 export function datasetsFromSnapshot(s: Snapshot): Record<string, Dataset> {

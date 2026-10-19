@@ -12,7 +12,8 @@ import { Method } from './Method';
 import { Overview } from './Overview';
 import { Recommendations } from './Recommendations';
 import { SpotDetail } from './SpotDetail';
-import { EMBEDDED, datasetsFromSnapshot, fetchLive, loadSnapshot, readPref, writePref } from './data';
+import { EMBEDDED, datasetsFromSnapshot, fetchLive, loadSnapshot, loadVerification, readPref, writePref } from './data';
+import type { VerificationSummary } from '../engine/verify';
 import { relativeDayLabel, strings } from './i18n';
 
 const TABS = ['overview', 'analysis', 'recs', 'method'] as const;
@@ -37,6 +38,10 @@ export function App() {
   const [openSpot, setOpenSpot] = useState<string | null>(null);
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [live, setLive] = useState<'idle' | 'busy' | 'failed'>('idle');
+  const [verification, setVerification] = useState<VerificationSummary | null>(null);
+  useEffect(() => {
+    loadVerification().then(setVerification);
+  }, []);
   const s = strings(lang);
   const today = athensDate(0);
 
@@ -210,7 +215,7 @@ export function App() {
                 onOpen={setOpenSpot}
               />
             )}
-            {tab === 'method' && <Method spots={SPOTS} lang={lang} types={s.types} />}
+            {tab === 'method' && <Method spots={SPOTS} lang={lang} types={s.types} verification={verification} />}
           </>
         )}
       </main>

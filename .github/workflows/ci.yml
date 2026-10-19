@@ -5,6 +5,7 @@ on:
     paths-ignore:
       - 'public/data/**'
       - 'data/archive/**'
+      - 'data/verification/**'
   pull_request:
 
 jobs:

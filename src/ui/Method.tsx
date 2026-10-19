@@ -1,4 +1,6 @@
 import type { Lang, Sector, Spot } from '../engine/types';
+import type { VerificationSummary } from '../engine/verify';
+import { strings } from './i18n';
 import { MODEL_LABELS, MODELS, WAVE_MODEL_LABELS, WAVE_MODELS } from '../engine/types';
 
 const MODELS_WAVE = WAVE_MODELS.map((m) => WAVE_MODEL_LABELS[m]).join(', ');
@@ -67,13 +69,106 @@ const TXT = {
 
 const sectors = (xs: Sector[] | undefined, lang: Lang) => (xs?.length ? xs.map(([a, b]) => `${windLabel(a, lang)}→${windLabel(b, lang)}`).join(', ') : '–');
 
-export function Method({ spots, lang, types }: { spots: Spot[]; lang: Lang; types: Record<string, string> }) {
+function Accuracy({ v, lang }: { v: VerificationSummary | null; lang: Lang }) {
+  const s = strings(lang);
+  const pct = (x: number) => `${Math.round(x * 100)}%`;
+  const signed = (x: number | null) => (x == null ? '–' : `${x > 0 ? '+' : ''}${x}`);
+  return (
+    <article className="panel accuracy">
+      <h3 className="panel-title">{s.accuracyTitle}</h3>
+      <p className="hint">{s.accuracyHint}</p>
+      {!v || v.days === 0 ? (
+        <p className="hint">{s.accuracyNone}</p>
+      ) : (
+        <>
+          <dl className="stat-row">
+            <div>
+              <dt>{s.accuracyDays}</dt>
+              <dd>{v.days}</dd>
+            </div>
+            <div>
+              <dt>{s.accuracyWind}</dt>
+              <dd>{v.wind.mae} km/h</dd>
+            </div>
+            <div>
+              <dt>{s.accuracyAfternoon}</dt>
+              <dd>{signed(v.wind.afternoonBias)} km/h</dd>
+            </div>
+            <div>
+              <dt>{s.accuracyTemp}</dt>
+              <dd>{v.temp.mae ?? '–'} °C</dd>
+            </div>
+            <div>
+              <dt>{s.accuracyBf}</dt>
+              <dd>{pct(v.bfWithin1Rate)}</dd>
+            </div>
+            <div>
+              <dt>{s.accuracyRain}</dt>
+              <dd>{pct(v.rainAgreeRate)}</dd>
+            </div>
+          </dl>
+          <h4 className="sub-title">{s.accuracyModels}</h4>
+          <ul className="model-rank">
+            {v.perModel.map((m, i) => (
+              <li key={m.model}>
+                <span className="model-rank-pos">{i + 1}</span>
+                <span className="model-rank-name">{MODEL_LABELS[m.model]}</span>
+                <span className="model-rank-val">{m.mae == null ? '–' : `${m.mae} km/h`}</span>
+              </li>
+            ))}
+          </ul>
+          <h4 className="sub-title">{s.accuracyRecent}</h4>
+          <div className="table-scroll">
+            <table className="data-table compact">
+              <thead>
+                <tr>
+                  <th scope="col">{lang === 'el' ? 'Ημέρα' : 'Day'}</th>
+                  <th scope="col" className="num">{s.accuracyWind}</th>
+                  <th scope="col">Bf</th>
+                  <th scope="col" className="num">{lang === 'el' ? 'Ριπή' : 'Gust'}</th>
+                  <th scope="col" className="num">{lang === 'el' ? 'Θερμ. max' : 'Max temp'}</th>
+                  <th scope="col">{lang === 'el' ? 'Βροχή' : 'Rain'}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {v.recent.map((r) => (
+                  <tr key={r.date}>
+                    <th scope="row">{r.date}</th>
+                    <td className="num">{r.wind.mae} km/h</td>
+                    <td>
+                      {r.bf.forecastMax}/{r.bf.observedMax} <span className={r.bf.within1 ? 'v-go conf' : 'v-avoid conf'} />
+                    </td>
+                    <td className="num">
+                      {r.gust.forecastMax}/{r.gust.observedMax}
+                    </td>
+                    <td className="num">
+                      {r.temp.forecastMax ?? '–'}/{r.temp.observedMax ?? '–'}
+                    </td>
+                    <td>
+                      {r.rain.observed ? (lang === 'el' ? 'ναι' : 'yes') : lang === 'el' ? 'όχι' : 'no'} <span className={r.rain.agree ? 'v-go conf' : 'v-avoid conf'} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="hint">
+            {lang === 'el' ? 'πρόγνωση/πραγματικό' : 'forecast/observed'} · {v.from} → {v.to}
+          </p>
+        </>
+      )}
+    </article>
+  );
+}
+
+export function Method({ spots, lang, types, verification }: { spots: Spot[]; lang: Lang; types: Record<string, string>; verification: VerificationSummary | null }) {
   const t = TXT[lang];
   return (
     <section className="method" aria-labelledby="m-title">
       <h2 id="m-title" className="section-title">
         {t.title}
       </h2>
+      <Accuracy v={verification} lang={lang} />
       <ol className="steps">
         {t.steps.map(([h, p]) => (
           <li key={h}>

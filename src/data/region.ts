@@ -24,6 +24,8 @@ export const REF_POINTS: RefPoint[] = [
   { id: 'ref-west', name: { el: 'Δυτική ακτή (Φαλάσαρνα)', en: 'West coast (Falasarna)' }, lat: 35.47, lon: 23.5, facing: 270 },
   { id: 'ref-south', name: { el: 'Νότια ακτή (Λιβυκό, Σφακιά)', en: 'South coast (Libyan Sea, Sfakia)' }, lat: 35.16, lon: 24.05, facing: 180 },
   { id: 'ref-town', name: { el: 'Χανιά (πόλη)', en: 'Chania town' }, lat: 35.5138, lon: 24.018 },
+  // the only weather station with public observations nearby: used to verify forecasts
+  { id: 'ref-airport', name: { el: 'Αεροδρόμιο Χανίων (σταθμός)', en: 'Chania airport (station)' }, lat: 35.5317, lon: 24.1497 },
 ];
 
 export const TIMEZONE = 'Europe/Athens';

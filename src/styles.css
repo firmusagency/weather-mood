@@ -1601,3 +1601,30 @@ a {
   color: var(--caution);
   border-color: var(--caution);
 }
+
+/* ---------- accuracy panel ---------- */
+.model-rank {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+.model-rank li {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  font-size: var(--fs-sm);
+}
+.model-rank-pos {
+  font-family: var(--font-data);
+  color: var(--muted);
+}
+.model-rank-val {
+  font-family: var(--font-data);
+  font-variant-numeric: tabular-nums;
+}
+.model-rank li:first-child .model-rank-name {
+  font-weight: 600;
+}
