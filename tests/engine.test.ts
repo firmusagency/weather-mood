@@ -148,3 +148,27 @@ describe('long-period swell on a calm day', () => {
     expect(swell.scores.marathi.verdict).toBe('go');
   });
 });
+
+describe('wave-model agreement', () => {
+  const agree = run({ windKmh: 10, windDir: 300, waveM: 0.8, waveDir: 300 }, 'couple');
+  const disagree = run({ windKmh: 10, windDir: 300, waveM: 0.8, waveDir: 300, waveSpreadM: 0.8 }, 'couple');
+  it('lowers confidence when the wave models disagree, without changing the median', () => {
+    expect(agree.scores.falasarna.confidence).toBe('high');
+    expect(disagree.scores.falasarna.confidence).toBe('low');
+    expect(disagree.scores.falasarna.score).toBe(agree.scores.falasarna.score);
+    const c = disagree.conditions.falasarna.find((x) => x.hour === 12)!;
+    expect(c.sea?.waveModelCount).toBe(4);
+    expect(c.sea?.waveSpread).toBeCloseTo(0.8, 5);
+  });
+  it('leaves places without a sea point unaffected', () => {
+    expect(disagree.scores.samaria.confidence).toBe(agree.scores.samaria.confidence);
+  });
+  it('falls back to the single marine model when a snapshot has no wave models', () => {
+    const data = scenario({ windKmh: 10, windDir: 300, waveM: 0.8, waveDir: 300 });
+    delete data.waveModels;
+    const { conditions } = analyzeDay(SPOTS, data, 'couple', chania);
+    const c = conditions.falasarna.find((x) => x.hour === 12)!;
+    expect(c.sea?.waveModelCount).toBe(1);
+    expect(c.sea?.offshoreWave).toBe(0.8);
+  });
+});

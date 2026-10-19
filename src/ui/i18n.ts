@@ -5,6 +5,10 @@ import { REF_POINTS } from '../data/region';
 const UI = {
   el: {
     brandTag: 'Ο καιρός γίνεται πρόγραμμα',
+    waveModels: 'Μοντέλα κύματος',
+    waveModelsHint: 'Μέσο ύψος 10:00–18:00 ανοιχτά της ακτής, από 4 ανεξάρτητα μοντέλα κύματος.',
+    waveModelsAt: 'Μοντέλα κύματος στο μέσο του παραθύρου',
+    waveMedianOf: 'διάμεσος {n} μοντέλων',
     glanceTitle: 'Η μέρα με μια ματιά',
     glanceOk: 'προτείνονται',
     glanceBest: 'Καλύτερο',
@@ -144,6 +148,10 @@ const UI = {
   },
   en: {
     brandTag: 'Weather, turned into plans',
+    waveModels: 'Wave models',
+    waveModelsHint: 'Mean height 10:00–18:00 offshore, from 4 independent wave models.',
+    waveModelsAt: 'Wave models at mid-window',
+    waveMedianOf: 'median of {n} models',
     glanceTitle: 'The day at a glance',
     glanceOk: 'recommended',
     glanceBest: 'Best bet',
@@ -447,6 +455,14 @@ export function takeawayText(t: { key: string; params: Record<string, string | n
       return el ? `Υψηλός δείκτης UV (${p.uv}): αντηλιακό και καπέλο 11:00–16:00.` : `High UV index (${p.uv}): sunscreen and a hat 11:00–16:00.`;
     case 'rain':
       return el ? `Πιθανότητα βροχής έως ${p.pp}% (σύνολο ~${p.mm} mm στην πόλη).` : `Rain chance up to ${p.pp}% (~${p.mm} mm in town).`;
+    case 'waveAgreement':
+      return p.level === 'low'
+        ? el
+          ? 'Τα μοντέλα κύματος διαφωνούν αρκετά: η θάλασσα μπορεί να είναι χειρότερη απ\' ό,τι δείχνουμε.'
+          : 'Wave models disagree: the sea may be rougher than shown.'
+        : el
+          ? 'Τα μοντέλα κύματος διαφωνούν λίγο για το ύψος του κύματος.'
+          : 'Wave models differ somewhat on the wave height.';
     case 'agreement':
       return p.level === 'high'
         ? el

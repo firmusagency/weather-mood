@@ -1,5 +1,5 @@
 import { offsetPoint } from './geo';
-import { MODELS, type AtmosHour, type Dataset, type MarineHour, type ModelId, type ModelWind, type Spot } from './types';
+import { MODELS, WAVE_MODELS, type AtmosHour, type Dataset, type MarineHour, type ModelId, type ModelWave, type ModelWind, type Spot, type WaveModelId } from './types';
 import type { RefPoint } from '../data/region';
 
 /*
@@ -29,6 +29,7 @@ const ATMOS_VARS = [
   'wind_gusts_10m',
 ];
 const MODEL_VARS = ['wind_speed_10m', 'wind_direction_10m', 'wind_gusts_10m'];
+const WAVE_MODEL_VARS = ['wave_height', 'wave_direction', 'wave_period'];
 const MARINE_VARS = [
   'wave_height',
   'wave_direction',
@@ -88,6 +89,7 @@ export function buildUrls(plan: PointPlan, date: string, apiKey?: string) {
     atmos: `${FORECAST_URL}?${q({ ...coords(plan.land), hourly: ATMOS_VARS.join(','), daily: 'sunrise,sunset', ...common })}`,
     models: `${FORECAST_URL}?${q({ ...coords(plan.land), hourly: MODEL_VARS.join(','), models: MODELS.join(','), ...common })}`,
     marine: `${MARINE_URL}?${q({ ...coords(plan.marine), hourly: MARINE_VARS.join(','), ...common })}`,
+    waves: `${MARINE_URL}?${q({ ...coords(plan.marine), hourly: WAVE_MODEL_VARS.join(','), models: WAVE_MODELS.join(','), ...common })}`,
   };
 }
 
@@ -99,6 +101,8 @@ export interface RawBundle {
   atmos: unknown;
   models: unknown;
   marine: unknown;
+  /** Multi-model wave request; optional so older snapshots still load. */
+  waves?: unknown;
 }
 
 type OMResponse = {
@@ -172,7 +176,26 @@ export function datasetFromRaw(raw: RawBundle, source: Dataset['source']): Datas
     );
   });
 
-  return { date: raw.date, fetchedAt: raw.fetchedAt, source, land, marine };
+  let waveModels: Dataset['waveModels'];
+  if (raw.waves) {
+    const waveList = asList(raw.waves, raw.plan.marine.length, 'wave models');
+    waveModels = {};
+    raw.plan.marine.forEach((pt, i) => {
+      const h = waveList[i].hourly ?? {};
+      const times = (h.time ?? []) as string[];
+      const perModel = {} as Record<WaveModelId, ModelWave[]>;
+      for (const m of WAVE_MODELS) {
+        perModel[m] = times.map((_, k) => ({
+          wave: num(h[`wave_height_${m}`]?.[k]),
+          dir: num(h[`wave_direction_${m}`]?.[k]),
+          period: num(h[`wave_period_${m}`]?.[k]),
+        }));
+      }
+      waveModels![pt.id] = perModel;
+    });
+  }
+
+  return { date: raw.date, fetchedAt: raw.fetchedAt, source, land, marine, waveModels };
 }
 
 export async function fetchRaw(plan: PointPlan, date: string, apiKey?: string, fetchImpl: typeof fetch = fetch): Promise<RawBundle> {
@@ -183,6 +206,6 @@ export async function fetchRaw(plan: PointPlan, date: string, apiKey?: string, f
     if (!res.ok) throw new Error(`Open-Meteo ${res.status}: ${body?.reason ?? res.statusText}`);
     return body;
   };
-  const [atmos, models, marine] = await Promise.all([get(urls.atmos), get(urls.models), get(urls.marine)]);
-  return { date, fetchedAt: new Date().toISOString(), plan, atmos, models, marine };
+  const [atmos, models, marine, waves] = await Promise.all([get(urls.atmos), get(urls.models), get(urls.marine), get(urls.waves)]);
+  return { date, fetchedAt: new Date().toISOString(), plan, atmos, models, marine, waves };
 }

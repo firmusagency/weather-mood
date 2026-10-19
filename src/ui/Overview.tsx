@@ -81,6 +81,12 @@ export function Overview({ syn, glance, lang, onAnalysis, onOpen }: { syn: Synop
                   <div className="coast-meta">
                     {windLabel(c.wind.dir, lang)} {c.wind.bf} Bf · {s.sst} {fmt(c.sst, 1, '°C')}
                   </div>
+                  {c.waveModels.length > 1 && (
+                    <div className="coast-meta coast-models" title={c.waveModels.map((m) => `${m.label}: ${m.wave} m`).join(' · ')}>
+                      {c.waveModels.length} {s.waveModels.toLowerCase()}: {fmt(Math.min(...c.waveModels.map((m) => m.wave)), 1)}–{fmt(Math.max(...c.waveModels.map((m) => m.wave)), 1)} m
+                      {c.waveAgreement && <span className={`conf conf-${c.waveAgreement}`}>{{ high: s.agreeHigh, medium: s.agreeMedium, low: s.agreeLow }[c.waveAgreement]}</span>}
+                    </div>
+                  )}
                   {rough ? (
                     <span className="pill pill-warn">{s.roughSea}</span>
                   ) : (

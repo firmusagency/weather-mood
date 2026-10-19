@@ -1,7 +1,7 @@
 import { SPOTS } from '../src/data/spots';
 import { REF_POINTS } from '../src/data/region';
 import { planPoints } from '../src/engine/openmeteo';
-import { MODELS, type Dataset, type ModelId, type ModelWind } from '../src/engine/types';
+import { MODELS, WAVE_MODELS, type Dataset, type ModelId, type ModelWave, type ModelWind, type WaveModelId } from '../src/engine/types';
 
 export interface Scenario {
   windKmh: number;
@@ -10,6 +10,8 @@ export interface Scenario {
   waveM: number;
   waveDir: number;
   periodS?: number;
+  /** Make the wave models disagree by this much (m), centred on waveM. */
+  waveSpreadM?: number;
   apparent?: number;
   precipProb?: number;
   precip?: number;
@@ -57,5 +59,14 @@ export function scenario(s: Scenario): Dataset {
       sst: 25,
     }));
   }
-  return { date, fetchedAt: '2026-07-14T18:00:00Z', source: 'snapshot', land, marine };
+  const waveModels: NonNullable<Dataset['waveModels']> = {};
+  for (const p of plan.marine) {
+    const perModel = {} as Record<WaveModelId, ModelWave[]>;
+    WAVE_MODELS.forEach((m, i) => {
+      const offset = s.waveSpreadM ? ((i / (WAVE_MODELS.length - 1)) - 0.5) * s.waveSpreadM : 0;
+      perModel[m] = hours.map(() => ({ wave: Math.max(0, s.waveM + offset), dir: s.waveDir, period: s.periodS ?? 5 }));
+    });
+    waveModels[p.id] = perModel;
+  }
+  return { date, fetchedAt: '2026-07-14T18:00:00Z', source: 'snapshot', land, marine, waveModels };
 }

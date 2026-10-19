@@ -98,6 +98,31 @@ export interface Base {
 export const MODELS = ['ecmwf_ifs025', 'icon_seamless', 'gfs_seamless', 'meteofrance_seamless', 'ukmo_seamless'] as const;
 export type ModelId = (typeof MODELS)[number];
 
+export const WAVE_MODELS = ['meteofrance_wave', 'ecmwf_wam025', 'gwam', 'ewam'] as const;
+export type WaveModelId = (typeof WAVE_MODELS)[number];
+export const WAVE_MODEL_LABELS: Record<WaveModelId, string> = {
+  meteofrance_wave: 'Météo-France MFWAM',
+  ecmwf_wam025: 'ECMWF WAM',
+  gwam: 'DWD GWAM',
+  ewam: 'DWD EWAM',
+};
+
+/** Waves from one wave model for one hour. */
+export interface ModelWave {
+  wave: number | null;
+  dir: number | null;
+  period: number | null;
+}
+
+/** Consensus sea state for one hour across the wave models. */
+export interface WaveConsensus {
+  wave: number; // m, median
+  dir: number; // deg, vector mean
+  period: number | null; // s, median
+  spread: number; // m, max-min across models
+  modelCount: number;
+}
+
 export const MODEL_LABELS: Record<ModelId, string> = {
   ecmwf_ifs025: 'ECMWF IFS',
   icon_seamless: 'DWD ICON',
@@ -154,6 +179,8 @@ export interface Dataset {
   source: 'live' | 'snapshot';
   land: Record<string, PointWeather>;
   marine: Record<string, MarineHour[]>;
+  /** Per marine point, waves from each wave model (absent in snapshots taken before this was added). */
+  waveModels?: Record<string, Record<WaveModelId, ModelWave[]>>;
 }
 
 // ---------- Analysis output ----------
@@ -192,6 +219,9 @@ export interface HourConditions {
     waveExposure: number;
     localWindSea: number;
     effectiveWave: number; // estimated at the shore
+    /** Disagreement between wave models on the offshore height (m); 0 when only one model is available. */
+    waveSpread: number;
+    waveModelCount: number;
     sst: number | null;
   };
   temp: number | null;

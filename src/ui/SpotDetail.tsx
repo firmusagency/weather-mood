@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { MODELS, MODEL_LABELS, type Base, type Dataset, type Factor, type HourConditions, type Lang, type Spot, type SpotScore } from '../engine/types';
+import { WAVE_MODELS, WAVE_MODEL_LABELS, MODELS, MODEL_LABELS, type Base, type Dataset, type Factor, type HourConditions, type Lang, type Spot, type SpotScore } from '../engine/types';
 import { scoreSpot } from '../engine/scoring';
 import { PROFILES } from '../data/profiles';
 import { hourOf } from '../engine/dates';
@@ -185,6 +185,30 @@ export function SpotDetail({
                             <td className="num">{w?.wind == null ? '–' : `${Math.round(w.wind)} km/h`}</td>
                             <td>{w?.dir == null ? '–' : windLabel(w.dir, lang)}</td>
                             <td className="num">{w?.gust == null ? '–' : `${Math.round(w.gust)} km/h`}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </details>
+            )}
+            {k != null && k >= 0 && mid?.sea && mid.sea.waveModelCount > 1 && data.waveModels?.[spot.id] && (
+              <details className="models-detail">
+                <summary>
+                  {s.waveModelsAt} · {s.waveMedianOf.replace('{n}', String(mid.sea.waveModelCount))}
+                </summary>
+                <div className="table-scroll">
+                  <table className="data-table compact">
+                    <tbody>
+                      {WAVE_MODELS.map((m) => {
+                        const w = data.waveModels![spot.id][m]?.[k];
+                        return (
+                          <tr key={m}>
+                            <th scope="row">{WAVE_MODEL_LABELS[m]}</th>
+                            <td className="num">{w?.wave == null ? '–' : `${w.wave.toFixed(2)} m`}</td>
+                            <td>{w?.dir == null ? '–' : windLabel(w.dir, lang)}</td>
+                            <td className="num">{w?.period == null ? '–' : `${w.period.toFixed(1)} s`}</td>
                           </tr>
                         );
                       })}

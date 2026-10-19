@@ -1,7 +1,7 @@
 import { angleDiff, beaufort, circularMean, inAnySector, median } from './geo';
 import { hourOf } from './dates';
 import { depSeaId, seaWindId } from './openmeteo';
-import { MODELS, type Dataset, type Exposure, type HourConditions, type Spot, type WindConsensus } from './types';
+import { MODELS, WAVE_MODELS, type Dataset, type Exposure, type HourConditions, type Spot, type WaveConsensus, type WindConsensus } from './types';
 
 /*
  * Step 1 of the pipeline: turn raw forecasts into per-hour, per-spot conditions.
@@ -42,6 +42,30 @@ export function windConsensus(data: Dataset, pointId: string, k: number): WindCo
     // direction disagreement only matters for winds strong enough to have a direction
     dirSpread: Math.max(...dirs.map((d, i) => (speeds[i] >= 8 ? angleDiff(d, dir) : 0))),
     modelCount: speeds.length,
+  };
+}
+
+/** Combine the wave models for one hour at one marine point; undefined when the snapshot has none. */
+export function waveConsensus(data: Dataset, pointId: string, k: number): WaveConsensus | undefined {
+  const pt = data.waveModels?.[pointId];
+  if (!pt) return undefined;
+  const waves: number[] = [];
+  const dirs: number[] = [];
+  const periods: number[] = [];
+  for (const m of WAVE_MODELS) {
+    const w = pt[m]?.[k];
+    if (w?.wave == null) continue;
+    waves.push(w.wave);
+    if (w.dir != null) dirs.push(w.dir);
+    if (w.period != null) periods.push(w.period);
+  }
+  if (!waves.length) return undefined;
+  return {
+    wave: median(waves),
+    dir: dirs.length ? circularMean(dirs) : 0,
+    period: periods.length ? median(periods) : null,
+    spread: Math.max(...waves) - Math.min(...waves),
+    modelCount: waves.length,
   };
 }
 
@@ -140,8 +164,12 @@ export function analyzeSpot(spot: Spot, data: Dataset): HourConditions[] {
     };
 
     const m = marine?.find((x) => x.time === a.time);
-    if (m && m.wave != null) {
-      const waveDir = m.waveDir ?? wind.dir;
+    // median of the wave models when available; the single best-match model otherwise
+    const wc = m ? waveConsensus(data, spot.id, k) : undefined;
+    const offshoreWave = wc?.wave ?? m?.wave ?? null;
+    if (m && offshoreWave != null) {
+      const waveDir = (wc && wc.modelCount > 1 ? wc.dir : null) ?? m.waveDir ?? wind.dir;
+      const wavePeriod = wc?.period ?? m.wavePeriod;
       let waveExposure = 1;
       if (spot.facing !== undefined) {
         // waves refract around headlands, so even "offshore" swell leaves a little at the shore
@@ -152,25 +180,28 @@ export function analyzeSpot(spot: Spot, data: Dataset): HourConditions[] {
       }
       const factor = spot.waveFactor ?? 1;
       const windSea = spot.facing !== undefined ? localWindSea(wind.speed * windExposure, spot.localFetchKm ?? 12) : 0;
-      const periodFactor = shoalingFactor(m.wavePeriod);
+      const periodFactor = shoalingFactor(wavePeriod);
       c.sea = {
-        offshoreWave: m.wave,
+        offshoreWave,
         waveDir,
         swell: m.swell,
-        period: m.wavePeriod,
+        period: wavePeriod,
         swellPeriod: m.swellPeriod,
         periodFactor,
         waveExposure,
         localWindSea: windSea,
-        effectiveWave: Math.max(m.wave * waveExposure * periodFactor, windSea) * factor,
+        effectiveWave: Math.max(offshoreWave * waveExposure * periodFactor, windSea) * factor,
+        waveSpread: wc?.spread ?? 0,
+        waveModelCount: wc?.modelCount ?? 1,
         sst: m.sst,
       };
     }
 
     const d = dep?.find((x) => x.time === a.time);
     if (spot.dependsOnSea && d?.wave != null) {
-      const expo = inAnySector(d.waveDir ?? 0, spot.dependsOnSea.exposedFrom) ? 1 : 0.5;
-      c.depSea = { wave: d.wave, wind: wind.speed, exposure: expo };
+      const dwc = waveConsensus(data, depSeaId(spot.id), k);
+      const expo = inAnySector(dwc?.dir ?? d.waveDir ?? 0, spot.dependsOnSea.exposedFrom) ? 1 : 0.5;
+      c.depSea = { wave: dwc?.wave ?? d.wave, wind: wind.speed, exposure: expo };
     }
     out.push(c);
   });

@@ -1,6 +1,8 @@
 import { angleDiff, beaufort, circularMean, round } from './geo';
 import { hourOf } from './dates';
-import { windConsensus } from './analysis';
+import { waveConsensus, windConsensus } from './analysis';
+import { waveAgreement } from './scoring';
+import { WAVE_MODELS, WAVE_MODEL_LABELS, type WaveModelId } from './types';
 import { MODELS, type Dataset, type ModelId } from './types';
 import type { RefPoint } from '../data/region';
 
@@ -17,6 +19,10 @@ export interface CoastSummary {
   id: string;
   wind: { speed: number; gust: number; dir: number; bf: number };
   waveMean: number | null;
+  /** Per wave model, mean height 10:00–18:00 (empty when the snapshot has no multi-model waves). */
+  waveModels: { model: WaveModelId; label: string; wave: number; period: number | null }[];
+  waveSpread: number | null;
+  waveAgreement: 'high' | 'medium' | 'low' | null;
   waveMax: number | null;
   waveDir: number | null;
   sst: number | null;
@@ -38,6 +44,8 @@ export interface Synopsis {
   coasts: CoastSummary[];
   models: ModelRow[];
   agreement: 'high' | 'medium' | 'low';
+  /** Agreement between the wave models across the coasts; null for snapshots without multi-model waves. */
+  waveAgreement: 'high' | 'medium' | 'low' | null;
   town: { tMax: number | null; apparentMax: number | null; uvMax: number | null; rainProbMax: number | null; rainSum: number; sunrise?: string; sunset?: string };
   takeaways: { key: string; params: Record<string, string | number> }[];
 }
@@ -92,6 +100,21 @@ export function buildSynopsis(data: Dataset, refs: RefPoint[]): Synopsis {
         return h >= DAY_FROM && h <= DAY_TO;
       });
       const waves = marine.map((m) => m.wave).filter((x): x is number => x != null);
+      const wmPoint = data.waveModels?.[r.id];
+      const waveModels = WAVE_MODELS.flatMap((m) => {
+        const vals = (wmPoint?.[m] ?? [])
+          .filter((_, k) => {
+            const h = hourOf(data.marine[r.id]?.[k]?.time ?? '');
+            return h >= DAY_FROM && h <= DAY_TO;
+          })
+          .filter((w) => w.wave != null);
+        if (!vals.length) return [];
+        const periods = vals.map((w) => w.period).filter((x): x is number => x != null);
+        return [{ model: m, label: WAVE_MODEL_LABELS[m], wave: round(mean(vals.map((w) => w.wave!)), 2), period: periods.length ? round(mean(periods)) : null }];
+      });
+      const consensus = dayIdx.map(({ k }) => waveConsensus(data, r.id, k)).filter((x): x is NonNullable<typeof x> => !!x && x.modelCount > 1);
+      const waveSpread = consensus.length ? round(mean(consensus.map((x) => x.spread)), 2) : null;
+      const waveAgr = waveSpread == null ? null : waveAgreement(waveSpread, mean(consensus.map((x) => x.wave)));
       const wdirs = marine.filter((m) => m.waveDir != null).map((m) => m.waveDir!);
       return {
         id: r.id,
@@ -101,6 +124,9 @@ export function buildSynopsis(data: Dataset, refs: RefPoint[]): Synopsis {
         waveDir: wdirs.length ? Math.round(circularMean(wdirs)) : null,
         sst: marine.length ? marine[Math.floor(marine.length / 2)].sst : null,
         exposure: speed < 12 ? 'calm' : angleDiff(dir, r.facing!) <= 70 ? 'exposed' : 'sheltered',
+        waveModels,
+        waveSpread,
+        waveAgreement: waveAgr,
       };
     });
 
@@ -135,6 +161,9 @@ export function buildSynopsis(data: Dataset, refs: RefPoint[]): Synopsis {
   if ((townSummary.apparentMax ?? 0) >= 32) takeaways.push({ key: 'heat', params: { apparent: Math.round(townSummary.apparentMax!) } });
   if ((townSummary.uvMax ?? 0) >= 7) takeaways.push({ key: 'uv', params: { uv: round(townSummary.uvMax!, 0) } });
   if ((townSummary.rainProbMax ?? 0) >= 40) takeaways.push({ key: 'rain', params: { pp: townSummary.rainProbMax!, mm: townSummary.rainSum } });
+  const worstWave = coasts.map((c) => c.waveAgreement).filter(Boolean);
+  const waveAgreementAll = worstWave.includes('low') ? 'low' : worstWave.includes('medium') ? 'medium' : worstWave.length ? 'high' : null;
+  if (waveAgreementAll && waveAgreementAll !== 'high') takeaways.push({ key: 'waveAgreement', params: { level: waveAgreementAll } });
   takeaways.push({ key: 'agreement', params: { level: agreement } });
 
   return {
@@ -144,6 +173,7 @@ export function buildSynopsis(data: Dataset, refs: RefPoint[]): Synopsis {
     coasts,
     models,
     agreement,
+    waveAgreement: waveAgreementAll,
     town: townSummary,
     takeaways,
   };

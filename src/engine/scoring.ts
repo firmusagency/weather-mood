@@ -253,6 +253,13 @@ const TYPE_PREF: Record<ProfileId, Partial<Record<Spot['type'], number>>> = {
   nocar: { town: 3, beach: 2 },
 };
 
+/** How much the wave models disagree, relative to the sea state: 0.3 m apart matters on a 0.5 m day, not on a 2 m day. */
+export function waveAgreement(spreadM: number, waveM: number): 'high' | 'medium' | 'low' {
+  if (spreadM > Math.max(0.35, 0.5 * waveM)) return 'low';
+  if (spreadM > Math.max(0.15, 0.25 * waveM)) return 'medium';
+  return 'high';
+}
+
 export function verdictOf(score: number): Verdict {
   return score >= 70 ? 'go' : score >= 50 ? 'caution' : 'avoid';
 }
@@ -263,6 +270,15 @@ function confidenceOf(window: HourConditions[], daysAhead: number): SpotScore['c
   const windy = window.filter((c) => c.wind.speed >= 12);
   const dirSpread = windy.length ? windy.reduce((s, c) => s + c.wind.dirSpread, 0) / windy.length : 0;
   let level: SpotScore['confidence'] = speedSpread > 20 || dirSpread > 90 ? 'low' : speedSpread <= 12 && dirSpread <= 50 ? 'high' : 'medium';
+  // wave models disagreeing on the offshore height counts the same way as wind models disagreeing
+  const sea = window.filter((c) => c.sea && c.sea.waveModelCount > 1);
+  if (sea.length) {
+    const spread = sea.reduce((s, c) => s + c.sea!.waveSpread, 0) / sea.length;
+    const wave = sea.reduce((s, c) => s + c.sea!.offshoreWave, 0) / sea.length;
+    const waveLevel = waveAgreement(spread, wave);
+    if (waveLevel === 'low') level = 'low';
+    else if (waveLevel === 'medium' && level === 'high') level = 'medium';
+  }
   if (daysAhead >= 2 && level === 'high') level = 'medium';
   return level;
 }
