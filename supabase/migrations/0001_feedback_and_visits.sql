@@ -53,3 +53,10 @@ revoke all on public.feedback from anon;
 revoke all on public.visits from anon;
 grant insert on public.feedback to anon;
 grant insert on public.visits to anon;
+
+-- The nightly export (GitHub Action) reads with the service key. With "Automatically expose
+-- new tables" switched off in the project, privileges must be granted explicitly.
+grant select on public.feedback to service_role;
+grant select on public.visits to service_role;
+grant delete on public.feedback to service_role;
+grant delete on public.visits to service_role;
