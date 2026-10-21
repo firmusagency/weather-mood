@@ -104,7 +104,7 @@ async function main() {
   } else {
     const since = new Date(Date.now() - VISIT_DAYS * 86_400_000).toISOString();
     [feedback, visits] = await Promise.all([
-      fetchAll<FeedbackRow>('feedback', 'select=id,created_at,property_id,source,visit_date,spot_id,verdict,tag,profile,lang,note,party_size&order=created_at.asc'),
+      fetchAll<FeedbackRow>('feedback', 'select=id,created_at,property_id,source,visit_date,spot_id,verdict,tag,profile,lang,note,party_size&client_id=not.like.test-*&order=created_at.asc'),
       fetchAll<VisitRow>('visits', `select=created_at,view,lang,profile&created_at=gte.${since}&order=created_at.asc`),
     ]);
   }
