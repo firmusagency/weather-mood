@@ -6,6 +6,9 @@ import type { Profile } from '../data/profiles';
 import { ScoreBar } from './charts';
 import { pad } from './AnalysisTable';
 import { factorText, longDate, strings, takeawayText } from './i18n';
+import { eveningMessage, mailtoUrl, whatsappTo } from '../guest/evening';
+import { DEMO_PROPERTY, GUEST_LANGS, LANG_NAMES_SHORT, type GuestLang } from '../guest/property';
+import type { HourConditions, ProfileId } from '../engine/types';
 
 /** The 1–2 reasons a guest needs: best positives first, plus the main caveat if it matters. */
 function reasons(sc: SpotScore): Factor[] {
@@ -40,6 +43,55 @@ function buildMessage(rec: Recommendation, syn: Synopsis, spots: Map<string, Spo
   }
   lines.push('', s.disclaimer);
   return lines.join('\n');
+}
+
+function EveningPanel({ rec, syn, scores, conditions, profileId, lang, isTomorrow }: { rec: Recommendation; syn: Synopsis; scores: Record<string, SpotScore>; conditions: Record<string, HourConditions[]>; profileId: ProfileId; lang: Lang; isTomorrow: boolean }) {
+  const s = strings(lang);
+  const [glang, setGlang] = useState<GuestLang>(lang);
+  const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle');
+  const text = eveningMessage({ rec, syn, scores, conditions }, DEMO_PROPERTY, profileId, glang);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopyState('copied');
+    } catch {
+      setCopyState('failed');
+    }
+    window.setTimeout(() => setCopyState('idle'), 2500);
+  };
+  return (
+    <section className="panel message evening" aria-labelledby="evening-title">
+      <div className="message-head">
+        <div>
+          <h3 id="evening-title" className="panel-title">
+            {s.eveningTitle}
+          </h3>
+          <p className="hint">{s.eveningHint}</p>
+        </div>
+        <div className="lang-toggle" role="group" aria-label={s.eveningLang}>
+          {GUEST_LANGS.map((l) => (
+            <button key={l} type="button" className={glang === l ? 'is-on' : ''} aria-pressed={glang === l} onClick={() => setGlang(l)}>
+              {LANG_NAMES_SHORT[l]}
+            </button>
+          ))}
+        </div>
+      </div>
+      {!isTomorrow && <p className="hint warn-text">{lang === 'el' ? 'Το βραδινό μήνυμα αφορά την αυριανή μέρα· εδώ βλέπετε το κείμενο για την επιλεγμένη μέρα.' : 'The evening message is about tomorrow; this is the text for the selected day.'}</p>}
+      <textarea className="message-text" readOnly value={text} rows={Math.min(22, text.split('\n').length + 1)} />
+      <div className="message-actions">
+        <button type="button" className="btn btn-primary" onClick={copy}>
+          {copyState === 'copied' ? s.copied : s.copy}
+        </button>
+        <a className="btn" href={whatsappTo(undefined, text)} target="_blank" rel="noreferrer">
+          {s.sendWhatsapp}
+        </a>
+        <a className="btn" href={mailtoUrl(`${DEMO_PROPERTY.name} · ${longDate(syn.date, lang)}`, text)}>
+          {s.sendEmail}
+        </a>
+      </div>
+      {copyState === 'failed' && <p className="hint warn-text">{s.copyFailed}</p>}
+    </section>
+  );
 }
 
 function PickCard({ sc, spot, lang, onOpen, primary }: { sc: SpotScore; spot: Spot; lang: Lang; onOpen: () => void; primary?: boolean }) {
@@ -81,6 +133,9 @@ export function Recommendations({
   lang,
   dayTitle,
   onOpen,
+  scores,
+  conditions,
+  isTomorrow,
 }: {
   rec: Recommendation;
   syn: Synopsis;
@@ -89,6 +144,9 @@ export function Recommendations({
   lang: Lang;
   dayTitle: string;
   onOpen: (id: string) => void;
+  scores: Record<string, SpotScore>;
+  conditions: Record<string, HourConditions[]>;
+  isTomorrow: boolean;
 }) {
   const s = strings(lang);
   const byId = new Map(spots.map((x) => [x.id, x]));
@@ -174,6 +232,8 @@ export function Recommendations({
           </ul>
         </>
       )}
+
+      <EveningPanel rec={rec} syn={syn} scores={scores} conditions={conditions} profileId={profile.id} lang={lang} isTomorrow={isTomorrow} />
 
       <section className="panel message" aria-labelledby="msg-title">
         <div className="message-head">

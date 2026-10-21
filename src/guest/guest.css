@@ -1031,3 +1031,23 @@ body[data-view='lobby'],
     grid-column: auto;
   }
 }
+
+/* Evening message opt-in */
+.g-evening {
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: 1px dashed color-mix(in oklab, var(--brand-base) 35%, var(--line));
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.g-evening p {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+.g-evening .g-btn {
+  text-align: center;
+  text-decoration: none;
+}

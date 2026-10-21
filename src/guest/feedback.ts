@@ -9,9 +9,10 @@ import type { FeedbackSource, FeedbackTag, FeedbackVerdict } from '../engine/fee
 
 export const APP_VERSION = '0.2.0';
 
+const viteEnv = (import.meta as unknown as { env?: Record<string, string | undefined> }).env ?? {};
 export const FEEDBACK_API = {
-  url: (import.meta.env.VITE_SUPABASE_URL as string | undefined) ?? '',
-  key: (import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined) ?? '',
+  url: viteEnv.VITE_SUPABASE_URL ?? '',
+  key: viteEnv.VITE_SUPABASE_ANON_KEY ?? '',
 };
 export const feedbackEnabled = () => Boolean(FEEDBACK_API.url && FEEDBACK_API.key);
 

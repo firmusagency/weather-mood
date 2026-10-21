@@ -10,6 +10,7 @@ import { GUEST_LANGS, type GuestLang, type Property } from './property';
 import { SpotSheet } from './SpotSheet';
 import { FeedbackPanel } from './Feedback';
 import { rememberPlan } from './feedback';
+import { askEveningText, whatsappTo } from './evening';
 import type { DayPlan } from './useGuestData';
 
 const COASTS: Record<string, Record<GuestLang, string>> = {
@@ -218,6 +219,12 @@ export function PhoneView({
             <span className="g-plan-share-label">{d.sharePlan}</span>
           </div>
         )}
+        <div className="g-evening">
+          <p>{d.fb.evening}</p>
+          <a className="g-btn g-btn-wa" href={whatsappTo(property.whatsapp, askEveningText(lang))} target="_blank" rel="noreferrer">
+            {d.fb.eveningBtn}
+          </a>
+        </div>
       </section>
 
       {rec.alternatives.length > 0 && (

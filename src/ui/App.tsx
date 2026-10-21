@@ -14,6 +14,7 @@ import { Recommendations } from './Recommendations';
 import { SpotDetail } from './SpotDetail';
 import { EMBEDDED, datasetsFromSnapshot, fetchLive, loadCalibration, loadFeedback, loadSnapshot, loadVerification, readPref, writePref } from './data';
 import { applyCalibration, type Calibration, type FeedbackSummary } from '../engine/feedback';
+import { loadPlanB, type PlanBReport } from './data';
 import type { VerificationSummary } from '../engine/verify';
 import { relativeDayLabel, strings } from './i18n';
 
@@ -26,6 +27,33 @@ const BASE_IDS = BASES.map((b) => b.id);
 function initialTab(): Tab {
   const h = typeof location !== 'undefined' ? location.hash.slice(1) : '';
   return (TABS as readonly string[]).includes(h) ? (h as Tab) : readPref('tab', TABS, 'overview');
+}
+
+function PlanBBanner({ report, profileId, lang }: { report: PlanBReport; profileId: ProfileId; lang: Lang }) {
+  const s = strings(lang);
+  const entry = report.byProfile[profileId];
+  const text = entry?.messages?.[lang] ?? Object.values(report.byProfile).find((e) => e?.messages)?.messages?.[lang] ?? '';
+  return (
+    <section className="callout callout-warn planb" aria-labelledby="planb-title">
+      <h2 id="planb-title" className="planb-title">
+        {s.planBTitle}
+      </h2>
+      <p className="hint">{s.planBHint}</p>
+      {text && (
+        <>
+          <textarea className="message-text" readOnly value={text} rows={Math.min(12, text.split('\n').length + 1)} />
+          <div className="message-actions">
+            <a className="btn btn-primary" href={`https://wa.me/?text=${encodeURIComponent(text)}`} target="_blank" rel="noreferrer">
+              {s.sendWhatsapp}
+            </a>
+            <a className="btn" href={`mailto:?subject=${encodeURIComponent(s.planBTitle)}&body=${encodeURIComponent(text)}`}>
+              {s.sendEmail}
+            </a>
+          </div>
+        </>
+      )}
+    </section>
+  );
 }
 
 export function App() {
@@ -42,7 +70,9 @@ export function App() {
   const [verification, setVerification] = useState<VerificationSummary | null>(null);
   const [feedback, setFeedback] = useState<FeedbackSummary | null>(null);
   const [calibration, setCalibration] = useState<Calibration | null>(null);
+  const [planB, setPlanB] = useState<PlanBReport | null>(null);
   useEffect(() => {
+    loadPlanB().then(setPlanB);
     loadVerification().then(setVerification);
     loadFeedback().then(setFeedback);
     loadCalibration().then(setCalibration);
@@ -207,6 +237,9 @@ export function App() {
         {live === 'failed' && <p className="callout callout-warn">{s.liveFailed}</p>}
         {status === 'loading' && <p className="hint">{s.loading}</p>}
         {status === 'error' && <p className="callout callout-warn">{s.loadFailed}</p>}
+        {planB && planB.date === today && planB.changed && (
+          <PlanBBanner report={planB} profileId={profileId} lang={lang} />
+        )}
         {analysis && data && (
           <>
             {tab === 'overview' && <Overview syn={analysis.syn} glance={analysis.glance} lang={lang} onAnalysis={() => go('analysis')} onOpen={setOpenSpot} />}
@@ -220,6 +253,9 @@ export function App() {
                 lang={lang}
                 dayTitle={dayTitle}
                 onOpen={setOpenSpot}
+                scores={analysis.scores}
+                conditions={analysis.conditions}
+                isTomorrow={date === athensDate(1)}
               />
             )}
             {tab === 'method' && <Method spots={spots} lang={lang} types={s.types} verification={verification} feedback={feedback} calibration={calibration} />}

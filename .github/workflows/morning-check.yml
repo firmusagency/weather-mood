@@ -1,0 +1,51 @@
+name: Morning plan-B check
+
+# ~05:50 Athens, after the 05:17 snapshot: compare today's fresh forecast with the evening message
+# we sent yesterday. If the picture moved, write the plan-B note (and email the reception).
+on:
+  schedule:
+    - cron: '50 2 * * *' # 05:50 Athens (summer) / 04:50 (winter)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: snapshot-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run snapshot:fetch
+        env:
+          OPEN_METEO_API_KEY: ${{ secrets.OPEN_METEO_API_KEY }}
+      - run: npm run morning-check
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+          RECEPTION_EMAIL: ${{ secrets.RECEPTION_EMAIL }}
+          VITE_GUEST_URL: ${{ vars.VITE_GUEST_URL || 'https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP' }}
+          VITE_RECEPTION_WHATSAPP: ${{ vars.VITE_RECEPTION_WHATSAPP }}
+      - name: Commit
+        run: |
+          git config user.name "weather-mood-bot"
+          git config user.email "weather-mood-bot@users.noreply.github.com"
+          git add public/data data/archive
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "data: morning plan-B check $(date -u +%Y-%m-%d)"
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

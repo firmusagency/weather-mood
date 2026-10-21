@@ -47,6 +47,20 @@
   δεν διορθώνονται αυτόματα.
 - Μετράμε και ανώνυμα ανοίγματα σελίδας (κινητό/οθόνη, γλώσσα, προφίλ) για την αναφορά χρήσης προς το κατάλυμα. Χωρίς προσωπικά δεδομένα.
 
+## Βραδινό μήνυμα και Plan B
+
+- **18:40 Αθήνας** (`.github/workflows/evening.yml`): φρέσκια πρόγνωση, μετά το πρόγραμμα της επόμενης μέρας για κάθε προφίλ και το
+  έτοιμο μήνυμα σε EL/EN/DE/FR (`public/data/evening.json`, αρχείο ανά μέρα στο `data/messages/`). Το ίδιο κείμενο βλέπει ο ξενοδόχος
+  ζωντανά στην καρτέλα «Προτάσεις» → «Βραδινό μήνυμα», με κουμπιά Αντιγραφή / WhatsApp / Email.
+- **05:50 Αθήνας** (`.github/workflows/morning-check.yml`): ξαναϋπολογίζει τη σημερινή μέρα με την πρωινή πρόγνωση και τη συγκρίνει με
+  το βραδινό μήνυμα (`src/engine/planchange.ts`). Αν άλλαξε κάτι που νοιάζει τον επισκέπτη (πρόταση έγινε «αποφύγετε», ο άνεμος
+  ανέβηκε ≥ 2 Bf, βροχή, κύμα), γράφει το `public/data/plan-b.json` και το dashboard δείχνει banner με το νέο μήνυμα.
+- **Email στη reception** (προαιρετικό): με secrets `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, `RECEPTION_EMAIL`
+  τα δύο Actions στέλνουν τα κείμενα έτοιμα για προώθηση. Χωρίς SMTP απλώς γράφουν τα αρχεία.
+- **Ο επισκέπτης ζητάει το μήνυμα**: κουμπί στη σελίδα κινητού που ανοίγει WhatsApp προς τη reception με έτοιμο κείμενο
+  (variable `VITE_RECEPTION_WHATSAPP`, διεθνής μορφή χωρίς +). Τα στοιχεία επαφής μένουν στο ξενοδοχείο, όχι σε εμάς.
+- Variable `VITE_GUEST_URL`: ο σύνδεσμος της σελίδας επισκέπτη που μπαίνει στα μηνύματα και στο QR.
+
 ## Εντολές
 
 ```bash
@@ -57,6 +71,8 @@ npm run report -- 2026-10-18 family chania   # αναφορά κειμένου �
 npm run demo:page      # dashboard ως ένα αρχείο HTML με ενσωματωμένα δεδομένα
 npm run demo:guest     # οθόνες επισκέπτη ως ένα αρχείο HTML (VITE_GUEST_URL=... για το QR)
 npm run snapshot:fetch # λήψη νέων δεδομένων (χρειάζεται πρόσβαση στο open-meteo.com)
+npm run evening        # βραδινό μήνυμα για αύριο από το τελευταίο snapshot (VITE_GUEST_URL=... για τον σύνδεσμο)
+npm run morning-check  # σύγκριση σημερινής πρόγνωσης με το βραδινό μήνυμα → plan-b.json
 npm run feedback:export # εξαγωγή ψήφων από τη βάση (SUPABASE_URL, SUPABASE_SERVICE_KEY) ή -- --from-file rows.json
 ```
 

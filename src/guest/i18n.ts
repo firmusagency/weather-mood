@@ -26,6 +26,8 @@ export type FeedbackDict = {
   rcLogged: string;
   rcView: string;
   rcGuestsSaid: string;
+  evening: string;
+  eveningBtn: string;
 };
 
 type Dict = {
@@ -145,6 +147,8 @@ const EL: Dict = {
     rcLogged: 'Καταχωρήθηκαν σήμερα',
     rcView: 'Φόρμα reception',
     rcGuestsSaid: 'Οι επισκέπτες είπαν',
+    evening: 'Θέλετε κάθε απόγευμα τις προτάσεις για την επόμενη μέρα στο WhatsApp σας;',
+    eveningBtn: 'Ναι, στείλτε μου το βραδινό μήνυμα',
   },
   profiles: {
     family: 'Οικογένεια με παιδιά',
@@ -237,6 +241,8 @@ const EN: Dict = {
     rcLogged: 'Logged today',
     rcView: 'Reception form',
     rcGuestsSaid: 'Guests said',
+    evening: 'Want tomorrow’s picks on your WhatsApp every afternoon?',
+    eveningBtn: 'Yes, send me the evening message',
   },
   profiles: {
     family: 'Family with kids',
@@ -329,6 +335,8 @@ const DE: Dict = {
     rcLogged: 'Heute eingetragen',
     rcView: 'Rezeptionsformular',
     rcGuestsSaid: 'Gäste sagten',
+    evening: 'Möchten Sie jeden Nachmittag die Tipps für morgen per WhatsApp?',
+    eveningBtn: 'Ja, Abendnachricht senden',
   },
   profiles: {
     family: 'Familie mit Kindern',
@@ -421,6 +429,8 @@ const FR: Dict = {
     rcLogged: "Enregistrés aujourd'hui",
     rcView: 'Formulaire réception',
     rcGuestsSaid: 'Les clients ont dit',
+    evening: 'Vous voulez chaque après-midi les conseils du lendemain sur WhatsApp ?',
+    eveningBtn: 'Oui, envoyez-moi le message du soir',
   },
   profiles: {
     family: 'Famille avec enfants',

@@ -29,11 +29,29 @@ export async function fetchLive(date: string): Promise<Dataset> {
   return datasetFromRaw(raw, 'live');
 }
 
-async function loadJson<T>(name: 'verification' | 'feedback' | 'calibration'): Promise<T | null> {
+import type { PlanDiff } from '../engine/planchange';
+import type { ProfileId } from '../engine/types';
+
+export interface PlanBReport {
+  date: string;
+  checkedAt: string;
+  eveningGeneratedAt: string | null;
+  changed: boolean;
+  byProfile: Partial<Record<ProfileId, { diff: PlanDiff; messages: Record<string, string> | null }>>;
+}
+
+async function loadJson<T>(name: 'verification' | 'feedback' | 'calibration' | 'plan-b'): Promise<T | null> {
   try {
     if (EMBEDDED) {
       // static import paths so the bundler can inline them
-      const mod = name === 'verification' ? await import('../../public/data/verification.json') : name === 'feedback' ? await import('../../public/data/feedback.json') : await import('../../public/data/calibration.json');
+      const mod =
+        name === 'verification'
+          ? await import('../../public/data/verification.json')
+          : name === 'feedback'
+            ? await import('../../public/data/feedback.json')
+            : name === 'plan-b'
+              ? await import('../../public/data/plan-b.json')
+              : await import('../../public/data/calibration.json');
       return (mod.default ?? mod) as unknown as T;
     }
     const res = await fetch(`${import.meta.env.BASE_URL}data/${name}.json`, { cache: 'no-cache' });
@@ -46,6 +64,7 @@ async function loadJson<T>(name: 'verification' | 'feedback' | 'calibration'): P
 export const loadVerification = () => loadJson<VerificationSummary>('verification');
 export const loadFeedback = () => loadJson<FeedbackSummary>('feedback');
 export const loadCalibration = () => loadJson<Calibration>('calibration');
+export const loadPlanB = () => loadJson<PlanBReport>('plan-b');
 
 export function datasetsFromSnapshot(s: Snapshot): Record<string, Dataset> {
   const out: Record<string, Dataset> = {};

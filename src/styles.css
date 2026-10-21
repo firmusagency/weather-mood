@@ -1656,3 +1656,25 @@ a {
 .fb-note {
   color: var(--muted);
 }
+
+/* Evening message / plan B */
+.message-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.message-actions .btn {
+  text-decoration: none;
+}
+.planb {
+  display: block;
+  margin-bottom: 18px;
+}
+.planb-title {
+  margin: 0 0 4px;
+  font-size: 1.1rem;
+}
+.planb .message-text {
+  margin-top: 8px;
+}
