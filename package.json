@@ -18,7 +18,8 @@
     "verify": "tsx scripts/verify.ts",
     "feedback:export": "tsx scripts/export-feedback.ts",
     "evening": "tsx scripts/evening.ts",
-    "morning-check": "tsx scripts/morning-check.ts"
+    "morning-check": "tsx scripts/morning-check.ts",
+    "photos": "tsx scripts/photos.ts"
   },
   "dependencies": {
     "nodemailer": "^7.0.13",
