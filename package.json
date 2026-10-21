@@ -20,7 +20,8 @@
     "evening": "tsx scripts/evening.ts",
     "morning-check": "tsx scripts/morning-check.ts",
     "photos": "tsx scripts/photos.ts",
-    "photos:inline": "node scripts/photos-inline.mjs"
+    "photos:inline": "node scripts/photos-inline.mjs",
+    "demo:accuracy": "ENTRY=accuracy vite build --mode single && node scripts/export-demo.mjs accuracy"
   },
   "dependencies": {
     "nodemailer": "^7.0.13",

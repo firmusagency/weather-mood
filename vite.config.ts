@@ -24,7 +24,7 @@ const scriptsFromCdn = (srcs: string[]): Plugin => ({
  */
 export default defineConfig(({ mode }) => {
   const single = mode === 'single';
-  const entry = process.env.ENTRY === 'guest' ? 'guest' : 'index';
+  const entry = process.env.ENTRY === 'guest' ? 'guest' : process.env.ENTRY === 'accuracy' ? 'accuracy' : 'index';
   const libs = entry === 'guest' ? [CDN.react, CDN.reactDom, CDN.qrcode] : [CDN.react, CDN.reactDom];
   return {
     plugins: single ? [react({ jsxRuntime: 'classic' }), scriptsFromCdn(libs), viteSingleFile()] : [react()],
@@ -42,7 +42,7 @@ export default defineConfig(({ mode }) => {
               globals: { react: 'React', 'react-dom': 'ReactDOM', 'react-dom/client': 'ReactDOM', 'qrcode-generator': 'qrcode' },
             },
           }
-        : { input: { index: resolve(__dirname, 'index.html'), guest: resolve(__dirname, 'guest.html') } },
+        : { input: { index: resolve(__dirname, 'index.html'), guest: resolve(__dirname, 'guest.html'), accuracy: resolve(__dirname, 'accuracy.html') } },
     },
     test: { include: ['tests/**/*.test.ts'] },
   };

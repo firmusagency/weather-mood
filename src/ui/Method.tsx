@@ -282,6 +282,11 @@ export function Method({
         {t.title}
       </h2>
       <Accuracy v={verification} lang={lang} />
+      <p className="hint">
+        <a href="accuracy.html" target="_blank" rel="noreferrer">
+          {lang === 'el' ? 'Δημόσια σελίδα ακρίβειας για ξενοδόχους →' : 'Public accuracy page for hoteliers →'}
+        </a>
+      </p>
       <GuestFeedback f={feedback} c={calibration} spots={spots} lang={lang} />
       <ol className="steps">
         {t.steps.map(([h, p]) => (

@@ -1,0 +1,208 @@
+/* Public accuracy page: the dashboard's visual language, as one scrolling story. */
+.acc-wrap {
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 var(--gutter-r) 0 var(--gutter-l);
+}
+.acc-top {
+  background: linear-gradient(180deg, var(--top) 0%, var(--top-2) 100%);
+  color: var(--top-ink);
+  padding-bottom: 40px;
+}
+.acc-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+.acc-top .brand-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+.acc-top .brand-sub {
+  margin: 0;
+  color: var(--top-muted);
+  font-size: var(--fs-sm);
+}
+.acc-hero {
+  padding-top: 24px;
+}
+.acc-eyebrow {
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--top-muted);
+}
+.acc-title {
+  margin: 0 0 14px;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.6rem, 1.1rem + 2.4vw, 2.6rem);
+  line-height: 1.15;
+  max-width: 22ch;
+}
+.acc-lede {
+  margin: 0;
+  max-width: 62ch;
+  font-size: var(--fs-lg);
+  line-height: 1.5;
+  color: var(--top-ink);
+  opacity: 0.9;
+}
+.acc main {
+  padding-top: 24px;
+  padding-bottom: 40px;
+}
+.acc-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin: -46px 0 14px;
+}
+.acc-stat {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 16px;
+}
+.acc-stat-hero {
+  grid-column: span 2;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: transparent;
+}
+.acc-stat-hero .acc-stat-sub,
+.acc-stat-hero .acc-stat-label {
+  color: inherit;
+  opacity: 0.9;
+}
+.acc-stat-value {
+  margin: 0;
+  font-family: var(--font-data);
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 1.1;
+}
+.acc-stat-hero .acc-stat-value {
+  font-size: 3rem;
+}
+.acc-stat-value small {
+  font-size: 1rem;
+}
+.acc-stat-label {
+  margin: 6px 0 0;
+  font-weight: 600;
+  font-size: var(--fs-md);
+}
+.acc-stat-sub {
+  margin: 2px 0 0;
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+.acc-panel {
+  margin-top: 18px;
+}
+.acc-how {
+  margin-top: 28px;
+}
+.acc-cols {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+}
+@media (min-width: 820px) {
+  .acc-cols {
+    grid-template-columns: 3fr 2fr;
+  }
+}
+.acc-honest {
+  margin-top: 28px;
+}
+.acc-cta {
+  margin-top: 32px;
+  background: var(--accent-soft);
+  border-radius: var(--radius);
+  padding: 22px 20px;
+}
+.acc-cta-title {
+  margin: 0 0 6px;
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+}
+.acc-cta p {
+  margin: 0 0 14px;
+  max-width: 60ch;
+}
+.acc-cta-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.acc-cta-actions .btn {
+  text-decoration: none;
+}
+
+/* Beaufort chart */
+.chart-scroll {
+  overflow-x: auto;
+}
+.bf-chart {
+  display: block;
+  max-width: 100%;
+  font-family: var(--font-data);
+}
+.bf-grid {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+.bf-tick {
+  font-size: 10px;
+  fill: var(--muted);
+}
+.bf-fc {
+  fill: var(--wind);
+}
+.bf-obs {
+  fill: var(--gust);
+}
+.bf-hit {
+  fill: var(--go);
+}
+.bf-miss {
+  fill: var(--avoid);
+}
+.bf-label {
+  font-size: 10px;
+  fill: var(--muted);
+}
+.bf-legend {
+  margin: 6px 0 0;
+  font-size: var(--fs-sm);
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bf-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+.bf-swatch.bf-fc {
+  background: var(--wind);
+}
+.bf-swatch.bf-obs {
+  background: var(--gust);
+}
+@media (max-width: 600px) {
+  .acc-stat-hero {
+    grid-column: 1 / -1;
+  }
+}
