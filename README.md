@@ -61,6 +61,14 @@
   (variable `VITE_RECEPTION_WHATSAPP`, διεθνής μορφή χωρίς +). Τα στοιχεία επαφής μένουν στο ξενοδοχείο, όχι σε εμάς.
 - Variable `VITE_GUEST_URL`: ο σύνδεσμος της σελίδας επισκέπτη που μπαίνει στα μηνύματα και στο QR.
 
+## Φωτογραφίες σημείων
+
+Μία φωτογραφία ανά σημείο από το Wikimedia Commons, μόνο με άδεια ελεύθερης χρήσης (CC BY, CC BY-SA, CC0, public domain) και
+με αναφορά δημιουργού πάνω στη φωτογραφία. Το Action «Spot photos» (`.github/workflows/photos.yml`, χειροκίνητο) ψάχνει με τους
+όρους του `src/data/photo-queries.ts`, φιλτράρει άδεια/μέγεθος/περιοχή (`src/engine/photos.ts`), κατεβάζει αντίγραφο 1200 px
+στο `public/photos/` και γράφει τα στοιχεία στο `src/data/photos.json`. Για δικές σας φωτογραφίες: αντικαταστήστε το αρχείο,
+διορθώστε author/license και βάλτε `"locked": true` ώστε να μην αλλάξει ποτέ αυτόματα.
+
 ## Εντολές
 
 ```bash
@@ -73,6 +81,7 @@ npm run demo:guest     # οθόνες επισκέπτη ως ένα αρχεί�
 npm run snapshot:fetch # λήψη νέων δεδομένων (χρειάζεται πρόσβαση στο open-meteo.com)
 npm run evening        # βραδινό μήνυμα για αύριο από το τελευταίο snapshot (VITE_GUEST_URL=... για τον σύνδεσμο)
 npm run morning-check  # σύγκριση σημερινής πρόγνωσης με το βραδινό μήνυμα → plan-b.json
+npm run photos -- falasarna balos   # (ξανα)επιλογή φωτογραφίας για σημεία· χωρίς ορίσματα: μόνο όσα δεν έχουν
 npm run feedback:export # εξαγωγή ψήφων από τη βάση (SUPABASE_URL, SUPABASE_SERVICE_KEY) ή -- --from-file rows.json
 ```
 
