@@ -20,7 +20,7 @@ export interface Candidate {
 
 const ALLOWED = [/^cc0$/i, /^public domain$/i, /^cc by(-sa)? \d(\.\d)?$/i, /^cc by(-sa)? \d(\.\d)? [a-z]{2}$/i];
 const BAD_WORDS =
-  /\b(map|karte|χάρτης|plan|diagram|logo|svg|panorama|collage|sign|poster|screenshot|flag|coat of arms|stamp|ticket|chart|satellite|aerial view of the island of crete|flower|flowers|blume|blumen|alpenveilchen|cyclamen|orchid|plant|pflanze|insect|butterfly|bird|lizard|goat|cat|dog|vinegar|balsamico|wine|bottle|food|navy|military|soldier|sailor|school|schule|apartments|apartment|hotel|room|interior|raised beach|geology|fossil|rock sample|car|bus|truck|selfie|portrait)\b/i;
+  /\b(map|karte|χάρτης|plan|diagram|logo|svg|panorama|collage|sign|poster|screenshot|flag|coat of arms|stamp|ticket|chart|satellite|aerial view of the island of crete|flower|flowers|blume|blumen|alpenveilchen|cyclamen|orchid|plant|pflanze|insect|butterfly|bird|lizard|goat|cat|dog|vinegar|balsamico|wine|bottle|food|navy|military|soldier|sailor|school|schule|apartments|apartment|hotel|room|interior|raised beach|geology|fossil|rock sample|car|bus|truck|selfie|portrait|döner|doner|kiosk|canteen|cantina|papyrus|cyperus|wanderweg|schild|tafel|signpost|signboard|information board|menu|toilet|parking|balcony|balkon|klostergarten)\b/i;
 
 export function licenseOk(license: string): boolean {
   const l = license.trim();

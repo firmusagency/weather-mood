@@ -10,7 +10,7 @@
  *        npm run photos -- --all        # re-pick every unlocked spot
  *        npm run photos -- falasarna    # one spot
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, unlinkSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SPOTS } from '../src/data/spots';
@@ -39,18 +39,14 @@ interface ApiPage {
   }[];
 }
 
+/** A term "Category:X" lists that Commons category's files instead of a full-text search. */
 async function search(term: string): Promise<Candidate[]> {
-  const params = new URLSearchParams({
-    action: 'query',
-    format: 'json',
-    generator: 'search',
-    gsrsearch: `${term} filetype:bitmap`,
-    gsrnamespace: '6',
-    gsrlimit: '12',
-    prop: 'imageinfo',
-    iiprop: 'url|extmetadata|mime|size',
-    iiurlwidth: '1200',
-  });
+  const common = { action: 'query', format: 'json', prop: 'imageinfo', iiprop: 'url|extmetadata|mime|size', iiurlwidth: '1200' };
+  const params = new URLSearchParams(
+    term.startsWith('Category:')
+      ? { ...common, generator: 'categorymembers', gcmtitle: term, gcmtype: 'file', gcmlimit: '40' }
+      : { ...common, generator: 'search', gsrsearch: `${term} filetype:bitmap`, gsrnamespace: '6', gsrlimit: '12' },
+  );
   const res = await fetch(`${API}?${params}`, { headers: { 'user-agent': UA } });
   if (!res.ok) throw new Error(`commons ${res.status}`);
   const json = (await res.json()) as { query?: { pages?: Record<string, ApiPage> } };
@@ -112,6 +108,11 @@ async function main() {
     }
     if (!chosen) {
       console.log(`${spot.id}: no usable photo found (${terms.join(' / ')})`);
+      if (current && (forced || all)) {
+        // a forced re-pick that finds nothing drops the old (rejected) photo rather than keeping it
+        delete photos[spot.id];
+        if (existsSync(join(root, 'public', current.file))) unlinkSync(join(root, 'public', current.file));
+      }
       continue;
     }
     const file = `photos/${spot.id}.jpg`;
