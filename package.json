@@ -13,13 +13,14 @@
     "typecheck": "tsc --noEmit",
     "snapshot:fetch": "tsx scripts/fetch-snapshot.ts",
     "report": "tsx scripts/report.ts",
-    "demo:page": "vite build --mode single && node scripts/export-demo.mjs index",
-    "demo:guest": "ENTRY=guest vite build --mode single && node scripts/export-demo.mjs guest",
+    "demo:page": "npm run photos:inline && vite build --mode single && node scripts/export-demo.mjs index",
+    "demo:guest": "npm run photos:inline && ENTRY=guest vite build --mode single && node scripts/export-demo.mjs guest",
     "verify": "tsx scripts/verify.ts",
     "feedback:export": "tsx scripts/export-feedback.ts",
     "evening": "tsx scripts/evening.ts",
     "morning-check": "tsx scripts/morning-check.ts",
-    "photos": "tsx scripts/photos.ts"
+    "photos": "tsx scripts/photos.ts",
+    "photos:inline": "node scripts/photos-inline.mjs"
   },
   "dependencies": {
     "nodemailer": "^7.0.13",
