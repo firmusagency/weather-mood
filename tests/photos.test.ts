@@ -11,6 +11,7 @@ const base = (over: Partial<Candidate>): Candidate => ({
   license: 'CC BY-SA 4.0',
   licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0',
   author: 'Jane Doe',
+  categories: 'Beaches of Crete',
   ...over,
 });
 
@@ -35,6 +36,11 @@ describe('picking a photo', () => {
 
   it('returns null when nothing is usable', () => {
     expect(pickBest([base({ license: 'CC BY-NC 2.0' }), base({ title: 'File:Crete map.jpg' })], 'Falasarna')).toBeNull();
+  });
+
+  it('rejects photos that are not identifiably from the region (a Dutch "Tersana" is not Tersanas)', () => {
+    const dutch = base({ title: 'File:Riettransport op de suikeronderneming Nieuw Tersana.jpg', categories: 'Sugar plantations in Suriname' });
+    expect(pickBest([dutch], 'Tersanas Τερσανάς')).toBeNull();
   });
 
   it('skips maps, logos and very wide panoramas in favour of a normal photo', () => {

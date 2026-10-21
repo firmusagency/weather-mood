@@ -12,7 +12,7 @@ export function SpotPhoto({ spotId, alt, variant = 'card', creditWord = 'Photo' 
   if (!p) return null;
   return (
     <figure className={`photo photo-${variant}`}>
-      <img src={photoSrc(p, EMBEDDED, BASE)} alt={alt} loading="lazy" decoding="async" width={p.width} height={p.height} />
+      <img src={photoSrc(p, EMBEDDED, BASE)} alt={alt} loading={variant === "thumb" ? "lazy" : "eager"} decoding="async" width={p.width} height={p.height} />
       {variant !== 'thumb' && (
         <figcaption className="photo-credit">
           <a href={p.source} target="_blank" rel="noreferrer license" title={`${p.title} · ${p.license}`}>

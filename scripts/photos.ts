@@ -96,7 +96,8 @@ async function main() {
     if (only.length && !only.includes(spot.id)) continue;
     const current = photos[spot.id];
     if (current?.locked) continue;
-    if (current && !all && existsSync(join(root, 'public', current.file))) continue;
+    const forced = only.includes(spot.id);
+    if (current && !all && !forced && existsSync(join(root, 'public', current.file))) continue;
     const terms = PHOTO_QUERIES[spot.id] ?? [spot.name.en];
     let chosen: Candidate | null = null;
     for (const term of terms) {

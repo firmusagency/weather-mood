@@ -27,8 +27,12 @@ export function licenseOk(license: string): boolean {
   return ALLOWED.some((re) => re.test(l));
 }
 
+const REGION = /crete|kreta|crète|creta|κρήτη|chania|χανιά|hania|canea|la canée|greece|griechenland|grèce|grecia|ελλάδα|ελλάς|sfakia|σφακιά|akrotiri|ακρωτήρι|kissamos|κίσσαμος|apokoronas|αποκόρωνας/i;
+
 export function scoreCandidate(c: Candidate, placeName: string): number {
   if (!licenseOk(c.license)) return -Infinity;
+  // must be identifiably from the region (title, description or categories)
+  if (!REGION.test(`${c.title} ${c.description ?? ''} ${c.categories ?? ''}`)) return -Infinity;
   if (c.mime !== 'image/jpeg') return -Infinity;
   if (c.width < 900 || c.height < 500) return -Infinity;
   const text = `${c.title} ${c.description ?? ''} ${c.categories ?? ''}`;
