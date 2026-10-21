@@ -89,14 +89,14 @@
  },
  "botanical-park": {
   "file": "photos/botanical-park.jpg",
-  "remote": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Cyperus_papyrus_kz05.jpg/1280px-Cyperus_papyrus_kz05.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  "title": "Cyperus papyrus kz05.jpg",
-  "author": "Krzysztof Ziarnek, Kenraiz",
-  "license": "CC BY-SA 4.0",
-  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Cyperus_papyrus_kz05.jpg",
-  "width": 4608,
-  "height": 3072
+  "remote": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/Holidays_Greece_-_panoramio_%28207%29.jpg/1280px-Holidays_Greece_-_panoramio_%28207%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "title": "Holidays Greece - panoramio (207).jpg",
+  "author": "Roton Piotr",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Holidays_Greece_-_panoramio_(207).jpg",
+  "width": 4000,
+  "height": 3000
  },
  "chrysoskalitissa": {
   "file": "photos/chrysoskalitissa.jpg",
@@ -274,17 +274,6 @@
   "width": 4632,
   "height": 3464
  },
- "nea-chora": {
-  "file": "photos/nea-chora.jpg",
-  "remote": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Schule_N%C3%A4he_Nea_Chora-Strand.jpg/1280px-Schule_N%C3%A4he_Nea_Chora-Strand.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  "title": "Schule Nähe Nea Chora-Strand.jpg",
-  "author": "Joehawkins",
-  "license": "CC BY-SA 4.0",
-  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Schule_N%C3%A4he_Nea_Chora-Strand.jpg",
-  "width": 4608,
-  "height": 2592
- },
  "old-town": {
   "file": "photos/old-town.jpg",
   "remote": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/Chania_-_Venetian_harbor_1.jpg/1280px-Chania_-_Venetian_harbor_1.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
@@ -298,25 +287,25 @@
  },
  "paleochora-pebble": {
   "file": "photos/paleochora-pebble.jpg",
-  "remote": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c5/Einstieg_Wanderweg_Sougia_%281%29.jpg/1280px-Einstieg_Wanderweg_Sougia_%281%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  "title": "Einstieg Wanderweg Sougia (1).jpg",
-  "author": "Joehawkins",
-  "license": "CC BY-SA 4.0",
-  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Einstieg_Wanderweg_Sougia_(1).jpg",
-  "width": 4608,
-  "height": 2592
+  "remote": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Lissos_%E2%80%93_distant_view_%E2%80%93_01.jpg/1280px-Lissos_%E2%80%93_distant_view_%E2%80%93_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "title": "Lissos – distant view – 01.jpg",
+  "author": "Maesi64",
+  "license": "CC0",
+  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
+  "source": "https://commons.wikimedia.org/wiki/File:Lissos_%E2%80%93_distant_view_%E2%80%93_01.jpg",
+  "width": 3456,
+  "height": 2304
  },
  "paleochora-sandy": {
   "file": "photos/paleochora-sandy.jpg",
-  "remote": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fd/Sandy_Beach_D%C3%B6ner%2C_Palaiochora.jpg/1280px-Sandy_Beach_D%C3%B6ner%2C_Palaiochora.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  "title": "Sandy Beach Döner, Palaiochora.jpg",
-  "author": "Joehawkins",
-  "license": "CC BY-SA 4.0",
-  "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Sandy_Beach_D%C3%B6ner,_Palaiochora.jpg",
-  "width": 4608,
-  "height": 2592
+  "remote": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3d/Holidays_Greece_-_panoramio_%28290%29.jpg/1280px-Holidays_Greece_-_panoramio_%28290%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "title": "Holidays Greece - panoramio (290).jpg",
+  "author": "Roton Piotr",
+  "license": "CC BY-SA 3.0",
+  "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0",
+  "source": "https://commons.wikimedia.org/wiki/File:Holidays_Greece_-_panoramio_(290).jpg",
+  "width": 4000,
+  "height": 3000
  },
  "platanias": {
   "file": "photos/platanias.jpg",
@@ -394,17 +383,6 @@
   "source": "https://commons.wikimedia.org/wiki/File:Holidays_Greece_-_panoramio_(608).jpg",
   "width": 4000,
   "height": 3000
- },
- "tersanas": {
-  "file": "photos/tersanas.jpg",
-  "remote": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/89/Riettransport_op_de_suikeronderneming_Nieuw_Tersana%2C_Cheribon%2C_voormalig_Nederlands-Indi%C3%AB%2C_RP-F-2001-17-160.jpg/1280px-Riettransport_op_de_suikeronderneming_Nieuw_Tersana%2C_Cheribon%2C_voormalig_Nederlands-Indi%C3%AB%2C_RP-F-2001-17-160.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  "title": "Riettransport op de suikeronderneming Nieuw Tersana, Cheribon, voormalig Nederlands-Indië, RP-F-2001-17-160.jpg",
-  "author": "Rijksmuseum",
-  "license": "CC0",
-  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
-  "source": "https://commons.wikimedia.org/wiki/File:Riettransport_op_de_suikeronderneming_Nieuw_Tersana,_Cheribon,_voormalig_Nederlands-Indi%C3%AB,_RP-F-2001-17-160.jpg",
-  "width": 5946,
-  "height": 4142
  },
  "theriso": {
   "file": "photos/theriso.jpg",
