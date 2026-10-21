@@ -253,15 +253,16 @@
   "height": 2848
  },
  "marathi": {
-  "file": "photos/marathi.jpg",
-  "remote": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/Kato_Marathi_-_panoramio_%287%29.jpg/1280px-Kato_Marathi_-_panoramio_%287%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  "title": "Kato Marathi - panoramio (7).jpg",
-  "author": "Tanya Dedyukhina",
-  "license": "CC BY 3.0",
-  "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Kato_Marathi_-_panoramio_(7).jpg",
-  "width": 3816,
-  "height": 2774
+  "file": "",
+  "remote": "",
+  "title": "",
+  "author": "",
+  "license": "",
+  "licenseUrl": "",
+  "source": "",
+  "width": 0,
+  "height": 0,
+  "locked": true
  },
  "maritime-museum": {
   "file": "photos/maritime-museum.jpg",
@@ -273,6 +274,18 @@
   "source": "https://commons.wikimedia.org/wiki/File:%CE%9D%CE%B1%CF%85%CF%84%CE%B9%CE%BA%CF%8C_%CE%9C%CE%BF%CF%85%CF%83%CE%B5%CE%AF%CE%BF_%CE%A7%CE%B1%CE%BD%CE%AF%CF%89%CE%BD_8171.jpg",
   "width": 4632,
   "height": 3464
+ },
+ "nea-chora": {
+  "file": "",
+  "remote": "",
+  "title": "",
+  "author": "",
+  "license": "",
+  "licenseUrl": "",
+  "source": "",
+  "width": 0,
+  "height": 0,
+  "locked": true
  },
  "old-town": {
   "file": "photos/old-town.jpg",
@@ -286,15 +299,16 @@
   "height": 2400
  },
  "paleochora-pebble": {
-  "file": "photos/paleochora-pebble.jpg",
-  "remote": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Lissos_%E2%80%93_distant_view_%E2%80%93_01.jpg/1280px-Lissos_%E2%80%93_distant_view_%E2%80%93_01.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  "title": "Lissos – distant view – 01.jpg",
-  "author": "Maesi64",
-  "license": "CC0",
-  "licenseUrl": "http://creativecommons.org/publicdomain/zero/1.0/deed.en",
-  "source": "https://commons.wikimedia.org/wiki/File:Lissos_%E2%80%93_distant_view_%E2%80%93_01.jpg",
-  "width": 3456,
-  "height": 2304
+  "file": "",
+  "remote": "",
+  "title": "",
+  "author": "",
+  "license": "",
+  "licenseUrl": "",
+  "source": "",
+  "width": 0,
+  "height": 0,
+  "locked": true
  },
  "paleochora-sandy": {
   "file": "photos/paleochora-sandy.jpg",
@@ -308,15 +322,16 @@
   "height": 3000
  },
  "platanias": {
-  "file": "photos/platanias.jpg",
-  "remote": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/Platanias%2C_Greece_-_panoramio.jpg/1280px-Platanias%2C_Greece_-_panoramio.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
-  "title": "Platanias, Greece - panoramio.jpg",
-  "author": "HenrikJ",
-  "license": "CC BY 3.0",
-  "licenseUrl": "https://creativecommons.org/licenses/by/3.0",
-  "source": "https://commons.wikimedia.org/wiki/File:Platanias,_Greece_-_panoramio.jpg",
-  "width": 3648,
-  "height": 2736
+  "file": "",
+  "remote": "",
+  "title": "",
+  "author": "",
+  "license": "",
+  "licenseUrl": "",
+  "source": "",
+  "width": 0,
+  "height": 0,
+  "locked": true
  },
  "polyrinia": {
   "file": "photos/polyrinia.jpg",
@@ -383,6 +398,18 @@
   "source": "https://commons.wikimedia.org/wiki/File:Holidays_Greece_-_panoramio_(608).jpg",
   "width": 4000,
   "height": 3000
+ },
+ "tersanas": {
+  "file": "",
+  "remote": "",
+  "title": "",
+  "author": "",
+  "license": "",
+  "licenseUrl": "",
+  "source": "",
+  "width": 0,
+  "height": 0,
+  "locked": true
  },
  "theriso": {
   "file": "photos/theriso.jpg",

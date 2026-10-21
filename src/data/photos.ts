@@ -24,7 +24,8 @@ export interface Photo {
 
 export const PHOTOS = photosJson as Record<string, Photo>;
 
-export const photoFor = (spotId: string): Photo | undefined => PHOTOS[spotId];
+/** A locked entry with an empty `file` means "no photo, and don't pick one automatically". */
+export const photoFor = (spotId: string): Photo | undefined => (PHOTOS[spotId]?.file ? PHOTOS[spotId] : undefined);
 
 /** Where to load the image from: own copy in normal builds, Commons thumbnail in embedded demos. */
 export function photoSrc(p: Photo, embedded: boolean, baseUrl = '/'): string {
