@@ -1051,3 +1051,58 @@ body[data-view='lobby'],
   text-align: center;
   text-decoration: none;
 }
+
+/* Spot photos on the guest pages */
+.photo {
+  margin: 0;
+  position: relative;
+  overflow: hidden;
+  background: color-mix(in oklab, var(--line) 40%, transparent);
+}
+.photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.photo-card {
+  aspect-ratio: 16 / 9;
+  margin: -16px -16px 2px;
+  border-radius: 16px 16px 0 0;
+}
+.photo-hero {
+  aspect-ratio: 2 / 1;
+  border-radius: 14px;
+  margin-bottom: 10px;
+}
+.photo-thumb {
+  width: 96px;
+  height: 64px;
+  border-radius: 10px;
+  flex: 0 0 auto;
+}
+.photo-credit {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 2px 8px;
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  border-top-left-radius: 8px;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.photo-credit a {
+  color: inherit;
+  text-decoration: none;
+}
+.lobby-picks .photo-card {
+  margin: 0 0 8px;
+  border-radius: 12px;
+  aspect-ratio: 16 / 7;
+}

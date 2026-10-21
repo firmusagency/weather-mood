@@ -9,6 +9,7 @@ import { guestReasons, mainProblem, seaLevel, windLevel } from './advice';
 import { compassG, dayName, g, pick } from './i18n';
 import { GUEST_LANGS, type GuestLang, type Property } from './property';
 import { Qr } from './Qr';
+import { SpotPhoto } from '../ui/Photo';
 
 const LOBBY_PROFILES: ProfileId[] = ['family', 'couple', 'active'];
 const ROTATE_MS = 12_000;
@@ -80,6 +81,7 @@ export function LobbyView({ data, property, spots = SPOTS }: { data: Dataset; pr
                 const why = guestReasons(sc, lang)[0];
                 return (
                   <li key={sc.spotId}>
+                    <SpotPhoto spotId={spot.id} alt={pick(spot.name, lang)} variant="card" creditWord={d.photo} />
                     <p className="lobby-type">{d.types[spot.type]}</p>
                     <p className="lobby-name">{pick(spot.name, lang)}</p>
                     <p className="lobby-time">

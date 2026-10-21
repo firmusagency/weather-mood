@@ -9,6 +9,7 @@ import { factorText, longDate, strings, takeawayText } from './i18n';
 import { eveningMessage, mailtoUrl, whatsappTo } from '../guest/evening';
 import { DEMO_PROPERTY, GUEST_LANGS, LANG_NAMES_SHORT, type GuestLang } from '../guest/property';
 import type { HourConditions, ProfileId } from '../engine/types';
+import { SpotPhoto } from './Photo';
 
 /** The 1–2 reasons a guest needs: best positives first, plus the main caveat if it matters. */
 function reasons(sc: SpotScore): Factor[] {
@@ -98,6 +99,7 @@ function PickCard({ sc, spot, lang, onOpen, primary }: { sc: SpotScore; spot: Sp
   const s = strings(lang);
   return (
     <li className={`pick ${primary ? 'pick-primary' : ''}`}>
+      <SpotPhoto spotId={spot.id} alt={spot.name[lang]} variant="card" creditWord={lang === 'el' ? 'Φωτο' : 'Photo'} />
       <div className="pick-head">
         <span className="pick-type">{s.types[spot.type]}</span>
         <ScoreBar score={sc.score} verdict={sc.verdict} />

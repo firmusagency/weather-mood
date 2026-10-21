@@ -76,6 +76,7 @@ type Dict = {
   profiles: Record<ProfileId, string>;
   types: Record<SpotType, string>;
   fb: FeedbackDict;
+  photo: string;
   compass: string[];
 };
 
@@ -122,6 +123,7 @@ const EL: Dict = {
   noPicks: 'Δεν βρήκαμε κατάλληλη πρόταση. Ρωτήστε τη reception.',
   seaWords: ['ήρεμη', 'λίγο κυματάκι', 'κυματάκι', 'κύμα'],
   windWords: ['σχεδόν άπνοια', 'ελαφρύς', 'μέτριος', 'δυνατός'],
+  photo: 'Φωτο',
   fb: {
     title: 'Πήγατε; Πώς ήταν;',
     intro: 'Μία απάντηση βοηθάει τον επόμενο επισκέπτη και κάνει τις προτάσεις πιο ακριβείς.',
@@ -216,6 +218,7 @@ const EN: Dict = {
   noPicks: 'No good match found. Please ask at reception.',
   seaWords: ['calm', 'slight ripple', 'small waves', 'rough'],
   windWords: ['almost still', 'light', 'moderate', 'strong'],
+  photo: 'Photo',
   fb: {
     title: 'Did you go? How was it?',
     intro: 'One answer helps the next guest and makes our picks more accurate.',
@@ -310,6 +313,7 @@ const DE: Dict = {
   noPicks: 'Kein passender Tipp gefunden. Fragen Sie an der Rezeption.',
   seaWords: ['ruhig', 'leicht bewegt', 'kleine Wellen', 'rau'],
   windWords: ['fast windstill', 'leicht', 'mäßig', 'stark'],
+  photo: 'Foto',
   fb: {
     title: 'Waren Sie dort? Wie war es?',
     intro: 'Eine Antwort hilft dem nächsten Gast und macht unsere Tipps genauer.',
@@ -404,6 +408,7 @@ const FR: Dict = {
   noPicks: "Aucune suggestion adaptée. Demandez à la réception.",
   seaWords: ['calme', 'peu agitée', 'petites vagues', 'agitée'],
   windWords: ['presque calme', 'léger', 'modéré', 'fort'],
+  photo: 'Photo',
   fb: {
     title: 'Vous y êtes allés ? Comment c\'était ?',
     intro: 'Une réponse aide le prochain visiteur et rend nos conseils plus précis.',

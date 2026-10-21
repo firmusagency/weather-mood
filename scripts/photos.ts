@@ -102,7 +102,7 @@ async function main() {
     for (const term of terms) {
       try {
         const cands = await search(term);
-        chosen = pickBest(cands, spot.name.en);
+        chosen = pickBest(cands, `${spot.name.en} ${spot.name.el}`);
       } catch (e) {
         console.warn(`${spot.id}: "${term}" failed: ${(e as Error).message}`);
       }

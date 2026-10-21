@@ -1,3 +1,4 @@
+import { SpotPhoto } from './Photo';
 import { useEffect, useRef } from 'react';
 import { WAVE_MODELS, WAVE_MODEL_LABELS, MODELS, MODEL_LABELS, type Base, type Dataset, type Factor, type HourConditions, type Lang, type Spot, type SpotScore } from '../engine/types';
 import { scoreSpot } from '../engine/scoring';
@@ -70,6 +71,7 @@ export function SpotDetail({
         ref={ref}
         onClick={(e) => e.stopPropagation()}
       >
+        <SpotPhoto spotId={spot.id} alt={spot.name[lang]} variant="hero" creditWord={lang === 'el' ? 'Φωτο' : 'Photo'} />
         <header className="drawer-head">
           <div>
             <p className="eyebrow">

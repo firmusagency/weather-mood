@@ -4,6 +4,7 @@ import { guestReasons, guestTips, mainProblem, mapsUrl, seaLevel, shareSpotText,
 import { ShareButton } from './Share';
 import { compassG, g, pick } from './i18n';
 import type { GuestLang, Property } from './property';
+import { SpotPhoto } from '../ui/Photo';
 
 const pad = (h: number) => `${String(h).padStart(2, '0')}:00`;
 
@@ -50,6 +51,7 @@ export function SpotSheet({
     <div className="g-sheet-backdrop" onClick={onClose}>
       <div className="g-sheet" role="dialog" aria-modal="true" aria-labelledby="g-sheet-title" tabIndex={-1} ref={ref} onClick={(e) => e.stopPropagation()}>
         <div className="g-sheet-grip" aria-hidden="true" />
+        <SpotPhoto spotId={spot.id} alt={pick(spot.name, lang)} variant="hero" creditWord={d.photo} />
         <header className="g-sheet-head">
           <div>
             <p className="g-eyebrow">{d.types[spot.type]}</p>

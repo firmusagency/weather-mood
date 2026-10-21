@@ -11,6 +11,7 @@ import { SpotSheet } from './SpotSheet';
 import { FeedbackPanel } from './Feedback';
 import { rememberPlan } from './feedback';
 import { askEveningText, whatsappTo } from './evening';
+import { SpotPhoto } from '../ui/Photo';
 import type { DayPlan } from './useGuestData';
 
 const COASTS: Record<string, Record<GuestLang, string>> = {
@@ -26,6 +27,7 @@ function PickCard({ sc, spot, lines, property, profile, lang, dayLabel, onOpen }
   const d = g(lang);
   return (
     <li className="g-card">
+      <SpotPhoto spotId={spot.id} alt={pick(spot.name, lang)} variant="card" creditWord={d.photo} />
       <p className="g-eyebrow">{d.types[spot.type]}</p>
       <h3 className="g-card-name">{pick(spot.name, lang)}</h3>
       <p className="g-card-meta">

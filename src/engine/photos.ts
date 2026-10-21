@@ -19,7 +19,8 @@ export interface Candidate {
 }
 
 const ALLOWED = [/^cc0$/i, /^public domain$/i, /^cc by(-sa)? \d(\.\d)?$/i, /^cc by(-sa)? \d(\.\d)? [a-z]{2}$/i];
-const BAD_WORDS = /\b(map|karte|χάρτης|plan|diagram|logo|svg|panorama|collage|sign|poster|screenshot|flag|coat of arms|stamp|ticket|chart|satellite|aerial view of the island of crete)\b/i;
+const BAD_WORDS =
+  /\b(map|karte|χάρτης|plan|diagram|logo|svg|panorama|collage|sign|poster|screenshot|flag|coat of arms|stamp|ticket|chart|satellite|aerial view of the island of crete|flower|flowers|blume|blumen|alpenveilchen|cyclamen|orchid|plant|pflanze|insect|butterfly|bird|lizard|goat|cat|dog|vinegar|balsamico|wine|bottle|food|navy|military|soldier|sailor|school|schule|apartments|apartment|hotel|room|interior|raised beach|geology|fossil|rock sample|car|bus|truck|selfie|portrait)\b/i;
 
 export function licenseOk(license: string): boolean {
   const l = license.trim();
@@ -39,8 +40,11 @@ export function scoreCandidate(c: Candidate, placeName: string): number {
   else s -= 10;
   s += Math.min(20, Math.log2(c.width / 900) * 10);
   if (/featured|quality|valued/i.test(c.assessments ?? '')) s += 25;
-  const name = placeName.toLowerCase().split(/[^a-z]+/).filter((w) => w.length > 3);
-  if (name.some((w) => text.toLowerCase().includes(w))) s += 15;
+  // the place name (Latin or Greek) should appear somewhere; otherwise it is probably a nearby thing
+  const name = placeName.toLowerCase().split(/[^\p{L}]+/u).filter((w) => w.length > 3);
+  const lower = text.toLowerCase();
+  if (name.some((w) => lower.includes(w))) s += 15;
+  else s -= 25;
   if (/beach|bay|lagoon|coast|sea|gorge|monastery|harbour|harbor|village|lake|view/i.test(text)) s += 5;
   return s;
 }
