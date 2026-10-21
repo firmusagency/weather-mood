@@ -39,6 +39,8 @@ export interface ModelRow {
 
 export interface Synopsis {
   date: string;
+  /** Which coast reference the headline wind comes from (the windiest one). */
+  windRef: string;
   wind: { speed: number; gust: number; dir: number; bf: number; speedSpread: number; dirSpread: number };
   hourlyWind: { hour: number; speed: number; gust: number; dir: number }[];
   coasts: CoastSummary[];
@@ -57,10 +59,19 @@ const maxOf = (xs: (number | null)[]) => {
 };
 
 export function buildSynopsis(data: Dataset, refs: RefPoint[]): Synopsis {
-  const north = data.land['ref-north'];
-  const dayIdx = north.atmos.map((a, k) => ({ k, h: hourOf(a.time) })).filter(({ h }) => h >= DAY_FROM && h <= DAY_TO);
+  // The headline wind is the strongest of the three coast references (a light northerly in town
+  // says nothing about a 5 Bf southerly on the west coast); the coast cards show each one.
+  const refIds = ['ref-north', 'ref-west', 'ref-south'].filter((id) => data.land[id]);
+  const dayIdx = data.land['ref-north'].atmos.map((a, k) => ({ k, h: hourOf(a.time) })).filter(({ h }) => h >= DAY_FROM && h <= DAY_TO);
+  const perRef = refIds.map((id) => {
+    const c = dayIdx.map(({ k }) => windConsensus(data, id, k));
+    return { id, cons: c, mean: mean(c.map((x) => x.speed)), peak: Math.max(...c.map((x) => x.speed)) };
+  });
+  const head = perRef.reduce((a, b) => (b.mean > a.mean ? b : a));
+  const headId = head.id;
+  const north = data.land[headId];
 
-  const cons = dayIdx.map(({ k }) => windConsensus(data, 'ref-north', k));
+  const cons = head.cons;
   const speeds = cons.map((c) => c.speed);
   const dir = circularMean(cons.map((c) => c.dir), speeds.map((s) => Math.max(s, 1)));
   const speed = mean(speeds);
@@ -73,7 +84,7 @@ export function buildSynopsis(data: Dataset, refs: RefPoint[]): Synopsis {
     .map((a, k) => ({ h: hourOf(a.time), k }))
     .filter(({ h }) => h >= 6 && h <= 21)
     .map(({ h, k }) => {
-      const c = windConsensus(data, 'ref-north', k);
+      const c = windConsensus(data, headId, k);
       return { hour: h, speed: round(c.speed), gust: round(c.gust), dir: Math.round(c.dir) };
     });
 
@@ -149,6 +160,12 @@ export function buildSynopsis(data: Dataset, refs: RefPoint[]): Synopsis {
   const takeaways: Synopsis['takeaways'] = [];
   const bf = beaufort(speed);
   takeaways.push({ key: 'wind', params: { dir: Math.round(dir), bf, kmh: Math.round(speed), gust: Math.round(gust) } });
+  // one coast clearly windier than another (by peak, so an afternoon blow is not averaged away)
+  const weakest = perRef.reduce((a, b) => (b.peak < a.peak ? b : a));
+  if (perRef.length > 1 && beaufort(head.peak) - beaufort(weakest.peak) >= 2) {
+    const firstStrong = hourlyWind.find((h) => h.speed >= 20)?.hour ?? '';
+    takeaways.push({ key: 'windCoast', params: { coast: headId, bf: beaufort(head.peak), dir: Math.round(dir), from: firstStrong } });
+  }
   for (const c of coasts) {
     if (c.waveMax != null && c.waveMax >= 1.0) takeaways.push({ key: 'roughCoast', params: { coast: c.id, wave: c.waveMax } });
   }
@@ -167,6 +184,7 @@ export function buildSynopsis(data: Dataset, refs: RefPoint[]): Synopsis {
   takeaways.push({ key: 'agreement', params: { level: agreement } });
 
   return {
+    windRef: headId,
     date: data.date,
     wind: { speed: round(speed), gust: round(gust), dir: Math.round(dir), bf, speedSpread: round(speedSpread), dirSpread: Math.round(dirSpread) },
     hourlyWind,

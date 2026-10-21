@@ -69,7 +69,20 @@ const TRAITS: Record<string, L> = {
   hiking: { el: 'Ωραία πεζοπορία', en: 'A great hike', de: 'Eine tolle Wanderung', fr: 'Une belle randonnée' },
 };
 
+const LATER_WIND: L = {
+  el: 'Από τις {from}:00 δυναμώνει {dir} {bf} Bf: φύγετε μέχρι τις {end}:00',
+  en: 'From {from}:00 the {dir} wind picks up to {bf} Bf: leave by {end}:00',
+  de: 'Ab {from}:00 frischt der Wind aus {dir} auf {bf} Bft auf: bis {end}:00 aufbrechen',
+  fr: 'À partir de {from}:00 le vent de {dir} forcit à {bf} Bf : partez avant {end}:00',
+};
+
 const WARN: Partial<Record<Factor['key'], L>> = {
+  windy: {
+    el: 'Αρκετός αέρας στην παραλία ({bf} Bf)',
+    en: 'Quite windy on the beach ({bf} Bf)',
+    de: 'Ziemlich windig am Strand ({bf} Bft)',
+    fr: 'Pas mal de vent sur la plage ({bf} Bf)',
+  },
   seaRough: {
     el: 'Έχει κύμα (~{wave} m), προσοχή στο μπάνιο',
     en: 'Some waves (~{wave} m), swim with care',
@@ -154,7 +167,14 @@ function candidates(sc: SpotScore, lang: GuestLang): { pos: GuestLine[]; warn?: 
 
   const warnFactor = sc.factors.find((f) => f.impact <= -5 && WARN[f.key]);
   const p = warnFactor?.params;
-  const warn = warnFactor ? { kind: 'warn' as const, text: t(WARN[warnFactor.key]!, lang, { wave: p!.wave ?? '', gust: p!.gust ?? '', pp: p!.pp ?? '', temp: p!.apparent ?? '', sst: p!.sst ?? '' }) } : undefined;
+  let warn = warnFactor
+    ? { kind: 'warn' as const, text: t(WARN[warnFactor.key]!, lang, { wave: p!.wave ?? '', gust: p!.gust ?? '', pp: p!.pp ?? '', temp: p!.apparent ?? '', sst: p!.sst ?? '', bf: p!.bf ?? '' }) }
+    : undefined;
+  // a calm window before the wind arrives: the time to leave matters more than a mild caveat
+  if (sc.laterWind && (!warnFactor || warnFactor.impact > -10)) {
+    const lw = sc.laterWind;
+    warn = { kind: 'warn', text: t(LATER_WIND, lang, { from: lw.fromHour, dir: compassG(lw.dir, lang), bf: lw.bf, end: Math.min(sc.window.end, lw.fromHour) }) };
+  }
   return { pos, warn };
 }
 
@@ -194,7 +214,7 @@ export function mainProblem(sc: SpotScore, lang: GuestLang): string | undefined 
   const f = sc.factors.find((x) => x.impact < 0 && WARN[x.key]);
   if (!f) return undefined;
   const p = f.params;
-  return t(WARN[f.key]!, lang, { wave: p.wave ?? '', gust: p.gust ?? '', pp: p.pp ?? '', temp: p.apparent ?? '', sst: p.sst ?? '' });
+  return t(WARN[f.key]!, lang, { wave: p.wave ?? '', gust: p.gust ?? '', pp: p.pp ?? '', temp: p.apparent ?? '', sst: p.sst ?? '', bf: p.bf ?? '' });
 }
 
 const TIPS: Record<string, L> = {
@@ -297,10 +317,13 @@ const WIND_WORD: L[] = [
 export function daySummary(syn: Synopsis, lang: GuestLang): string[] {
   const out: string[] = [];
   const rough = syn.coasts.filter((c) => (c.waveMax ?? 0) >= 1.0);
-  if (syn.wind.bf <= 2 && !rough.length) out.push(t(SUMMARY.calm, lang));
+  // a coast-confined blow (afternoon southerly on the west coast) counts at its peak, not the day's mean
+  const wc = syn.takeaways.find((x) => x.key === 'windCoast');
+  const bf = Math.max(syn.wind.bf, Number(wc?.params.bf) || 0);
+  if (bf <= 2 && !rough.length) out.push(t(SUMMARY.calm, lang));
   else if (rough.length) {
     const coast = rough.sort((a, b) => (b.waveMax ?? 0) - (a.waveMax ?? 0))[0].id.replace('ref-', '') as 'north' | 'west' | 'south';
-    out.push(t(SUMMARY.wind, lang, { word: t(WIND_WORD[windLevel(syn.wind.bf)], lang), dir: compassG(syn.wind.dir, lang), coast: t(COAST_WORD[coast] ?? COAST_WORD.north, lang) }));
+    out.push(t(SUMMARY.wind, lang, { word: t(WIND_WORD[windLevel(bf)], lang), dir: compassG(syn.wind.dir, lang), coast: t(COAST_WORD[coast] ?? COAST_WORD.north, lang) }));
   }
   if ((syn.town.rainProbMax ?? 0) >= 50) out.push(t(SUMMARY.rain, lang, { pp: syn.town.rainProbMax! }));
   if ((syn.town.apparentMax ?? 0) >= 32) out.push(t(SUMMARY.hot, lang, { temp: Math.round(syn.town.apparentMax!) }));

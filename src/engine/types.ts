@@ -239,6 +239,7 @@ export type FactorKey =
   | 'seaCalm'
   | 'longSwell'
   | 'onshoreWind'
+  | 'windy'
   | 'offshoreWind'
   | 'sheltered'
   | 'gusts'
@@ -295,4 +296,6 @@ export interface SpotScore {
   unsuitableReason?: Factor;
   confidence: 'high' | 'medium' | 'low';
   travelMinutes: number;
+  /** Wind reaching 4 Bf after the best window (e.g. a calm morning before an afternoon southerly): "leave by". */
+  laterWind?: { fromHour: number; kmh: number; bf: number; dir: number };
 }

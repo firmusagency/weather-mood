@@ -408,6 +408,8 @@ export function factorText(fct: Factor, lang: Lang): string {
       return el ? `Άνεμος ${p.bf} Bf (${p.kmh} km/h) από ${dir(p.dir)} προς την ακτή` : `${p.bf} Bf (${p.kmh} km/h) wind from ${dir(p.dir)} blowing onshore`;
     case 'offshoreWind':
       return el ? `Ο άνεμος (${dir(p.dir)}) φυσάει από τη στεριά: πιο ήρεμα νερά κοντά στην ακτή` : `Wind (${dir(p.dir)}) blows off the land: calmer water near the shore`;
+    case 'windy':
+      return el ? `Αρκετός αέρας στην παραλία: ${p.bf} Bf (${p.kmh} km/h) από ${dir(p.dir)}` : `Quite windy on the beach: ${p.bf} Bf (${p.kmh} km/h) from ${dir(p.dir)}`;
     case 'sheltered':
       return el ? `Προστατευμένο από τον ${dir(p.dir)} ${p.bf} Bf` : `Sheltered from the ${dir(p.dir)} ${p.bf} Bf wind`;
     case 'gusts':
@@ -509,6 +511,12 @@ export function takeawayText(t: { key: string; params: Record<string, string | n
         : el
           ? `Άνεμος ${windLabel(num(p.dir), lang)} ${p.bf} Bf (~${p.kmh} km/h), ριπές έως ${p.gust} km/h.`
           : `${windLabel(num(p.dir), lang)} wind ${p.bf} Bf (~${p.kmh} km/h), gusts up to ${p.gust} km/h.`;
+    case 'windCoast': {
+      const from = p.from === '' || p.from == null ? '' : el ? ` από τις ${p.from}:00` : ` from ${p.from}:00`;
+      return el
+        ? `Ο άνεμος αφορά κυρίως τη ${coastName(String(p.coast), lang).toLowerCase()} ακτή: ${windLabel(num(p.dir), lang)} ${p.bf} Bf${from}· αλλού πιο ήρεμα.`
+        : `The wind is mainly on the ${coastName(String(p.coast), lang).toLowerCase()} coast: ${windLabel(num(p.dir), lang)} ${p.bf} Bf${from}; calmer elsewhere.`;
+    }
     case 'roughCoast':
       return el ? `${coastName(String(p.coast), lang)}: κύμα έως ${p.wave} m.` : `${coastName(String(p.coast), lang)}: waves up to ${p.wave} m.`;
     case 'calmCoasts': {

@@ -21,6 +21,9 @@ const T = {
   tomorrow: { el: 'Αύριο, {day}:', en: 'Tomorrow, {day}:', de: 'Morgen, {day}:', fr: 'Demain, {day} :' },
   weather: { el: '{temp}°, {wind}{dir}, θάλασσα {sea}.', en: '{temp}°, {wind}{dir}, sea {sea}.', de: '{temp}°, {wind}{dir}, Meer {sea}.', fr: '{temp}°, {wind}{dir}, mer {sea}.' },
   seaByCoast: { el: '{coast} {level}', en: '{coast} {level}', de: '{coast} {level}', fr: '{coast} {level}' },
+  windCoast: { el: '{wind}{dir} στη {coast} ακτή{from}, αλλού πιο ήρεμα', en: '{wind}{dir} on the {coast} coast{from}, calmer elsewhere', de: '{wind}{dir} an der {coast}küste{from}, sonst ruhiger', fr: '{wind}{dir} sur la côte {coast}{from}, plus calme ailleurs' },
+  lowConf: { el: 'Τα μοντέλα καιρού διαφωνούν για εδώ· ρίξτε μια ματιά ξανά το πρωί', en: 'The weather models disagree here; check again in the morning', de: 'Die Wettermodelle sind sich hier uneinig; morgen früh noch einmal nachsehen', fr: 'Les modèles météo divergent ici ; revérifiez demain matin' },
+  fromHour: { el: ' από τις {h}:00', en: ' from {h}:00', de: ' ab {h}:00', fr: ' à partir de {h}:00' },
   forYou: { el: 'Οι προτάσεις μας για εσάς ({profile}):', en: 'Our picks for you ({profile}):', de: 'Unsere Tipps für Sie ({profile}):', fr: 'Nos conseils pour vous ({profile}) :' },
   avoid: { el: 'Καλύτερα όχι αύριο: {list}.', en: 'Better not tomorrow: {list}.', de: 'Morgen besser nicht: {list}.', fr: 'À éviter demain : {list}.' },
   bring: { el: 'Πάρτε μαζί: {list}.', en: 'Bring: {list}.', de: 'Mitnehmen: {list}.', fr: 'À emporter : {list}.' },
@@ -71,7 +74,12 @@ export function weatherLine(syn: Synopsis, lang: GuestLang): string {
   // one word when every coast is alike, otherwise coast by coast so "calm" and "rough" don't collide
   const sea = same ? d.seaWords[levels[0]?.lvl ?? 0] : levels.map((x) => t(T.seaByCoast, lang, { coast: t(COAST[x.id] ?? COAST['ref-north'], lang), level: d.seaWords[x.lvl] })).join(', ');
   const dir = syn.wind.bf >= 2 ? `${t(FROM, lang)}${compassG(syn.wind.dir, lang)}` : '';
-  return t(T.weather, lang, { temp: syn.town.tMax == null ? '–' : Math.round(syn.town.tMax), wind: t(WIND[windLevel(syn.wind.bf)], lang), dir, sea });
+  // wind confined to one coast (e.g. a southerly on the west coast from 14:00): say where and when
+  const wc = syn.takeaways.find((x) => x.key === 'windCoast');
+  const wind = wc
+    ? t(T.windCoast, lang, { wind: t(WIND[windLevel(Number(wc.params.bf) || syn.wind.bf)], lang), dir, coast: t(COAST[String(wc.params.coast)] ?? COAST['ref-north'], lang), from: wc.params.from === '' ? '' : t(T.fromHour, lang, { h: wc.params.from }) })
+    : `${t(WIND[windLevel(syn.wind.bf)], lang)}${dir}`;
+  return t(T.weather, lang, { temp: syn.town.tMax == null ? '–' : Math.round(syn.town.tMax), wind, dir: wc ? '' : '', sea });
 }
 
 export function eveningMessage(input: EveningInput, property: { name: string; guestUrl: string }, profile: ProfileId, lang: GuestLang): string {
@@ -91,6 +99,7 @@ export function eveningMessage(input: EveningInput, property: { name: string; gu
     const warn = lines[i].find((l) => l.kind === 'warn');
     if (why) out.push(`   ✓ ${why.text}`);
     if (warn) out.push(`   ! ${warn.text}`);
+    else if (sc.confidence === 'low') out.push(`   ! ${t(T.lowConf, lang)}`);
   });
   if (rec.avoid.length) {
     const list = rec.avoid.slice(0, 3).map((sc) => {

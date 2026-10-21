@@ -55,9 +55,12 @@ function evalBeach(c: HourConditions, spot: Spot, p: Profile): HourEval {
   const windParams = { kmh: Math.round(c.wind.speed), bf: c.bf, dir: Math.round(c.wind.dir) };
   push(out, 'onshoreWind', -ramp(onshore, 18, 45) * 15, windParams);
   if (c.shelteredNow && c.wind.speed >= 20) push(out, 'sheltered', 5, windParams);
-  else if ((c.exposureClass === 'offshore' || c.exposureClass === 'cross-offshore') && c.wind.speed >= 15) push(out, 'offshoreWind', 3, windParams);
+  else if ((c.exposureClass === 'offshore' || c.exposureClass === 'cross-offshore') && c.wind.speed >= 15 && c.wind.speed < 25) push(out, 'offshoreWind', 3, windParams);
 
-  push(out, c.gustyNow ? 'downslopeGusts' : 'gusts', -ramp(c.effectiveGust, 35, 70) * 25, { gust: Math.round(c.effectiveGust) });
+  // wind on the beach is unpleasant whatever its direction (sand, umbrellas, inflatables drifting);
+  // an offshore wind keeps the water flat but a 5 Bf offshore wind is still a windy beach
+  push(out, 'windy', -ramp(c.wind.speed, 18, 40) * (p.id === 'family' || p.id === 'senior' ? 28 : 20), windParams);
+  push(out, c.gustyNow ? 'downslopeGusts' : 'gusts', -ramp(c.effectiveGust, 30, 70) * 28, { gust: Math.round(c.effectiveGust) });
   weatherBasics(c, out, 35, 35);
   if (c.apparent != null) {
     push(out, 'cool', -ramp(22 - c.apparent, 0, 7) * 25, { apparent: Math.round(c.apparent) });
@@ -339,7 +342,17 @@ export function scoreSpot(spot: Spot, conditions: HourConditions[], profileId: P
   if (spot.appeal) fit.push(f('appeal', spot.appeal, { appeal: spot.appeal }));
   const pref = TYPE_PREF[profileId][spot.type] ?? 0;
   if (pref) fit.push(f('typePref', pref, { type: spot.type }));
-  if (spot.calmDayGem && score >= 85) fit.push(f('opportunity', 8));
+  // "rare opportunity" only when the whole day is calm there, not just the chosen window
+  const dayConds = conditions.filter((c) => c.hour >= 10 && c.hour <= 18);
+  const calmAllDay =
+    dayConds.length > 0 &&
+    dayConds.reduce((sum, c) => sum + c.wind.speed, 0) / dayConds.length < 15 &&
+    Math.max(...dayConds.map((c) => c.effectiveGust)) < 32 &&
+    Math.max(...dayConds.map((c) => c.sea?.effectiveWave ?? 0)) < 0.5;
+  if (spot.calmDayGem && score >= 85 && calmAllDay) fit.push(f('opportunity', 8));
+  // wind arriving after the window: the guest should know when to leave
+  const later = best.start >= 0 ? conditions.find((c) => c.hour >= best.start + len && c.hour <= 20 && c.wind.speed >= 20) : undefined;
+  const laterWind = later && (spot.type === 'beach' || spot.type === 'boat' || spot.type === 'lake') ? { fromHour: later.hour, kmh: Math.round(later.wind.speed), bf: later.bf, dir: Math.round(later.wind.dir) } : undefined;
   if (spot.access.dirtRoad && (profileId === 'family' || profileId === 'senior')) fit.push(f('dirtRoad', -5));
   if (spot.traits.crowded) fit.push(f('crowds', 0));
 
@@ -360,5 +373,6 @@ export function scoreSpot(spot: Spot, conditions: HourConditions[], profileId: P
     unsuitableReason,
     confidence: confidenceOf(windowConds, opts.daysAhead ?? 1),
     travelMinutes: travel,
+    laterWind,
   };
 }
