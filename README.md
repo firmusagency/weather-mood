@@ -35,8 +35,9 @@
 Η reception καταχωρεί ό,τι της λένε οι επισκέπτες στο `guest.html#reception`. Κάθε ψήφος δένεται με την πρόγνωση που είχαμε δώσει
 για εκείνο το μέρος και εκείνη τη μέρα.
 
-- Αποθήκευση: Supabase (δωρεάν tier), πίνακες `feedback` και `visits`. Το δημόσιο κλειδί στο `.env` μπορεί **μόνο να γράφει**
-  (row-level security)· κανείς δεν διαβάζει ψήφους από τον browser.
+- Αποθήκευση: Supabase (δωρεάν tier), πίνακες `feedback` και `visits`. Σχήμα: `supabase/migrations/0001_feedback_and_visits.sql`
+  (τρέχει μία φορά στον SQL Editor του project). Το δημόσιο κλειδί στο `.env` μπορεί **μόνο να γράφει** (row-level security)·
+  κανείς δεν διαβάζει ψήφους από τον browser. Χωρίς κλειδιά στο `.env` το feedback απλώς δεν εμφανίζεται.
 - Το Action `.github/workflows/feedback.yml` τρέχει κάθε πρωί με το service key (secrets `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`):
   ενώνει τις ψήφους με την αρχειοθετημένη πρόγνωση (`data/feedback/rows.jsonl`), γράφει τα σύνολα για το dashboard
   (`public/data/feedback.json`, καρτέλα «Μέθοδος & πηγές» → «Τι είπαν οι επισκέπτες») και την αυτόματη διόρθωση κύματος
