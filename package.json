@@ -15,7 +15,8 @@
     "report": "tsx scripts/report.ts",
     "demo:page": "vite build --mode single && node scripts/export-demo.mjs index",
     "demo:guest": "ENTRY=guest vite build --mode single && node scripts/export-demo.mjs guest",
-    "verify": "tsx scripts/verify.ts"
+    "verify": "tsx scripts/verify.ts",
+    "feedback:export": "tsx scripts/export-feedback.ts"
   },
   "dependencies": {
     "qrcode-generator": "^1.4.4",

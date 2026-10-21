@@ -1,5 +1,6 @@
 import type { Lang, Sector, Spot } from '../engine/types';
 import type { VerificationSummary } from '../engine/verify';
+import type { Calibration, FeedbackSummary, FeedbackTag } from '../engine/feedback';
 import { strings } from './i18n';
 import { MODEL_LABELS, MODELS, WAVE_MODEL_LABELS, WAVE_MODELS } from '../engine/types';
 
@@ -161,7 +162,119 @@ function Accuracy({ v, lang }: { v: VerificationSummary | null; lang: Lang }) {
   );
 }
 
-export function Method({ spots, lang, types, verification }: { spots: Spot[]; lang: Lang; types: Record<string, string>; verification: VerificationSummary | null }) {
+function GuestFeedback({ f, c, spots, lang }: { f: FeedbackSummary | null; c: Calibration | null; spots: Spot[]; lang: Lang }) {
+  const s = strings(lang);
+  const name = (id: string) => spots.find((x) => x.id === id)?.name[lang] ?? id;
+  const topTag = (tags: Partial<Record<FeedbackTag, number>>) => {
+    const best = (Object.entries(tags) as [FeedbackTag, number][]).sort((a, b) => b[1] - a[1])[0];
+    return best ? `${s.fbTags[best[0]]} (${best[1]})` : '–';
+  };
+  const adjustments = Object.entries(c?.spots ?? {});
+  const verdictWord = (v: string) => ({ go: s.verdict.go, caution: s.verdict.caution, avoid: s.verdict.avoid, unsuitable: s.verdict.unsuitable })[v] ?? v;
+  return (
+    <article className="panel feedback-panel">
+      <h3 className="panel-title">{s.fbTitle}</h3>
+      <p className="hint">{s.fbHint}</p>
+      {!f || f.total === 0 ? (
+        <p className="hint">{s.fbNone}</p>
+      ) : (
+        <>
+          <dl className="stat-row">
+            <div>
+              <dt>{s.fbTotal}</dt>
+              <dd>{f.total}</dd>
+            </div>
+            <div>
+              <dt>{s.fbAgree}</dt>
+              <dd>{f.agreeRate == null ? '–' : `${Math.round(f.agreeRate * 100)}%`}</dd>
+              <small>
+                {f.judged} {s.fbJudged}
+              </small>
+            </div>
+            <div>
+              <dt>{s.fbVisits}</dt>
+              <dd>{f.visits.total}</dd>
+              <small>
+                {s.fbPhone} {f.visits.byView.phone ?? 0} · {s.fbLobby} {f.visits.byView.lobby ?? 0}
+              </small>
+            </div>
+          </dl>
+          <h4 className="sub-title">{s.fbBySpot}</h4>
+          <div className="table-scroll">
+            <table className="data-table compact">
+              <thead>
+                <tr>
+                  {s.fbCols.map((col, i) => (
+                    <th key={col} scope="col" className={i > 0 && i < 5 ? 'num' : undefined}>
+                      {col}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {f.bySpot.map((r) => (
+                  <tr key={r.spotId}>
+                    <th scope="row">{name(r.spotId)}</th>
+                    <td className="num">{r.n}</td>
+                    <td className="num">{r.up}</td>
+                    <td className="num">{r.down}</td>
+                    <td className="num">{r.judged ? `${r.disagree}/${r.judged}` : '–'}</td>
+                    <td>{topTag(r.tags)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <h4 className="sub-title">{s.fbRecent}</h4>
+          <ul className="fb-recent">
+            {f.recent.slice(0, 12).map((r) => (
+              <li key={`${r.created_at}:${r.spot_id}`}>
+                <span className="fb-vote" aria-hidden="true">
+                  {r.verdict === 'up' ? '👍' : '👎'}
+                </span>
+                <span>
+                  <strong>{name(r.spot_id)}</strong> · {r.visit_date} · {s.fbSource[r.source]}
+                  {r.tag ? ` · ${s.fbTags[r.tag]}` : ''}
+                  {r.forecast ? ` · ${s.fbSaid}: ${verdictWord(r.forecast.verdict)}` : ''}
+                  {r.note ? <em className="fb-note"> «{r.note}»</em> : null}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      <h4 className="sub-title">{s.fbCalib}</h4>
+      <p className="hint">{s.fbCalibHint}</p>
+      {adjustments.length ? (
+        <ul className="limits">
+          {adjustments.map(([id, e]) => (
+            <li key={id}>
+              <strong>{name(id)}</strong>: ×{e.waveFactor} ({e.waveComplaints} 👎 {s.fbTags.wave}, {e.falseAlarms} 👍 {lang === 'el' ? 'σε μέρα «αποφυγής»' : 'on an "avoid" day'}, {e.samples} {lang === 'el' ? 'ψήφοι' : 'votes'})
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="hint">{s.fbCalibNone}</p>
+      )}
+    </article>
+  );
+}
+
+export function Method({
+  spots,
+  lang,
+  types,
+  verification,
+  feedback,
+  calibration,
+}: {
+  spots: Spot[];
+  lang: Lang;
+  types: Record<string, string>;
+  verification: VerificationSummary | null;
+  feedback: FeedbackSummary | null;
+  calibration: Calibration | null;
+}) {
   const t = TXT[lang];
   return (
     <section className="method" aria-labelledby="m-title">
@@ -169,6 +282,7 @@ export function Method({ spots, lang, types, verification }: { spots: Spot[]; la
         {t.title}
       </h2>
       <Accuracy v={verification} lang={lang} />
+      <GuestFeedback f={feedback} c={calibration} spots={spots} lang={lang} />
       <ol className="steps">
         {t.steps.map(([h, p]) => (
           <li key={h}>

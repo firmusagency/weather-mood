@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { spotById } from '../data/spots';
 import { athensDate } from '../engine/dates';
 import type { ProfileId, Spot, SpotScore } from '../engine/types';
@@ -8,6 +8,8 @@ import { ShareButton } from './Share';
 import { compassG, dayName, g, LANG_NAMES, pick } from './i18n';
 import { GUEST_LANGS, type GuestLang, type Property } from './property';
 import { SpotSheet } from './SpotSheet';
+import { FeedbackPanel } from './Feedback';
+import { rememberPlan } from './feedback';
 import type { DayPlan } from './useGuestData';
 
 const COASTS: Record<string, Record<GuestLang, string>> = {
@@ -78,6 +80,11 @@ export function PhoneView({
   const [open, setOpen] = useState<string | null>(null);
   const { syn, rec, scores, conditions } = plan;
   const today = athensDate(0);
+  const hourNow = Number(new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hourCycle: 'h23', timeZone: 'Europe/Athens' }).format(new Date()));
+  // Remember what we recommended, so we can ask "did you go?" afterwards.
+  useEffect(() => {
+    rememberPlan({ date, profile, spotIds: rec.top.map((sc) => sc.spotId) });
+  }, [date, profile, rec.top]);
   const rel = (x: string) => {
     const diff = Math.round((Date.parse(x) - Date.parse(today)) / 86_400_000);
     return diff === 0 ? d.today : diff === 1 ? d.tomorrow : diff === 2 ? d.dayAfter : dayName(x, lang);
@@ -175,6 +182,8 @@ export function PhoneView({
           })}
         </div>
       </section>
+
+      <FeedbackPanel property={property} lang={lang} profile={profile} today={today} hourNow={hourNow} />
 
       <section aria-labelledby="g-who">
         <h2 id="g-who" className="g-h2">

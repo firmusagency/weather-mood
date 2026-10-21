@@ -1,0 +1,11 @@
+{
+ "updatedAt": "2026-10-21T00:00:00.000Z",
+ "total": 0,
+ "from": null,
+ "to": null,
+ "agreeRate": null,
+ "judged": 0,
+ "bySpot": [],
+ "recent": [],
+ "visits": { "days": 30, "total": 0, "byView": {}, "byLang": {}, "byProfile": {}, "perDay": [] }
+}

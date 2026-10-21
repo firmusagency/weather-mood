@@ -5,24 +5,32 @@ import { EMBEDDED, readPref, writePref } from '../ui/data';
 import { detectLang, g } from './i18n';
 import { LobbyView } from './LobbyView';
 import { PhoneView } from './PhoneView';
+import { ReceptionView } from './ReceptionView';
+import { logVisit } from './feedback';
+import { SPOTS } from '../data/spots';
+import { applyCalibration } from '../engine/feedback';
+import { athensDate } from '../engine/dates';
 import { DEMO_PROPERTY, GUEST_LANGS, type GuestLang } from './property';
 import { defaultDate, useDatasets, useDayPlan } from './useGuestData';
 
-type View = 'phone' | 'lobby';
+type View = 'phone' | 'lobby' | 'reception';
 const PROFILE_IDS = PROFILES.map((p) => p.id);
 
-const initialView = (): View => (typeof location !== 'undefined' && location.hash === '#lobby' ? 'lobby' : 'phone');
+const initialView = (): View => {
+  const h = typeof location !== 'undefined' ? location.hash : '';
+  return h === '#lobby' ? 'lobby' : h === '#reception' ? 'reception' : 'phone';
+};
 
 export function GuestApp() {
   const property = DEMO_PROPERTY;
   const [lang, setLang] = useState<GuestLang>(() => readPref('g-lang', GUEST_LANGS, detectLang()));
   const [profile, setProfile] = useState<ProfileId>(() => readPref('g-profile', PROFILE_IDS, 'couple'));
   const [view, setView] = useState<View>(initialView);
-  const { datasets, generatedAt, status, dates } = useDatasets();
+  const { datasets, generatedAt, status, dates, calibration } = useDatasets();
   const [date, setDate] = useState('');
   const effectiveDate = date || defaultDate(dates);
   const data = datasets[effectiveDate];
-  const plan = useDayPlan(data, profile, property.base);
+  const plan = useDayPlan(data, profile, property.base, calibration);
   const d = g(lang);
 
   useEffect(() => writePref('g-lang', lang), [lang]);
@@ -33,11 +41,16 @@ export function GuestApp() {
   useEffect(() => {
     document.body.dataset.view = view;
   }, [view]);
+  useEffect(() => {
+    if (status === 'ready') void logVisit(property.id, view, lang, view === 'phone' ? profile : null, view === 'reception' ? null : effectiveDate || null);
+    // one ping per view and browser session; lang/profile are just what was on screen at that moment
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view, status]);
 
   const switchView = (v: View) => {
     setView(v);
     try {
-      history.replaceState(null, '', v === 'lobby' ? '#lobby' : '#guest');
+      history.replaceState(null, '', v === 'lobby' ? '#lobby' : v === 'reception' ? '#reception' : '#guest');
     } catch {
       /* ignore */
     }
@@ -58,6 +71,9 @@ export function GuestApp() {
             <button type="button" className={view === 'lobby' ? 'is-on' : ''} aria-pressed={view === 'lobby'} onClick={() => switchView('lobby')}>
               {d.lobbyView}
             </button>
+            <button type="button" className={view === 'reception' ? 'is-on' : ''} aria-pressed={view === 'reception'} onClick={() => switchView('reception')}>
+              {d.fb.rcView}
+            </button>
           </div>
         </nav>
       )}
@@ -77,7 +93,16 @@ export function GuestApp() {
           updatedAt={generatedAt}
         />
       )}
-      {view === 'lobby' && lobbyData && <LobbyView data={lobbyData} property={property} />}
+      {view === 'lobby' && lobbyData && <LobbyView data={lobbyData} property={property} spots={applyCalibration(SPOTS, calibration)} />}
+      {view === 'reception' && (
+        <ReceptionView
+          property={property}
+          lang={lang}
+          setLang={setLang}
+          today={athensDate(0)}
+          hourNow={Number(new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hourCycle: 'h23', timeZone: 'Europe/Athens' }).format(new Date()))}
+        />
+      )}
     </div>
   );
 }

@@ -1628,3 +1628,31 @@ a {
 .model-rank li:first-child .model-rank-name {
   font-weight: 600;
 }
+
+/* Guest feedback panel (Method tab) */
+.stat-row small {
+  display: block;
+  color: var(--muted);
+  font-size: 0.75rem;
+  margin-top: 2px;
+}
+.fb-recent {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+.fb-recent li {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.fb-vote {
+  flex: 0 0 auto;
+}
+.fb-note {
+  color: var(--muted);
+}

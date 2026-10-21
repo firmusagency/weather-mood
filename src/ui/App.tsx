@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { SPOTS, spotById } from '../data/spots';
+import { SPOTS } from '../data/spots';
 import { BASES, REF_POINTS } from '../data/region';
 import { PROFILES, profileById } from '../data/profiles';
 import { athensDate } from '../engine/dates';
@@ -12,7 +12,8 @@ import { Method } from './Method';
 import { Overview } from './Overview';
 import { Recommendations } from './Recommendations';
 import { SpotDetail } from './SpotDetail';
-import { EMBEDDED, datasetsFromSnapshot, fetchLive, loadSnapshot, loadVerification, readPref, writePref } from './data';
+import { EMBEDDED, datasetsFromSnapshot, fetchLive, loadCalibration, loadFeedback, loadSnapshot, loadVerification, readPref, writePref } from './data';
+import { applyCalibration, type Calibration, type FeedbackSummary } from '../engine/feedback';
 import type { VerificationSummary } from '../engine/verify';
 import { relativeDayLabel, strings } from './i18n';
 
@@ -39,9 +40,15 @@ export function App() {
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [live, setLive] = useState<'idle' | 'busy' | 'failed'>('idle');
   const [verification, setVerification] = useState<VerificationSummary | null>(null);
+  const [feedback, setFeedback] = useState<FeedbackSummary | null>(null);
+  const [calibration, setCalibration] = useState<Calibration | null>(null);
   useEffect(() => {
     loadVerification().then(setVerification);
+    loadFeedback().then(setFeedback);
+    loadCalibration().then(setCalibration);
   }, []);
+  // Spot geometry with the guest-feedback wave corrections folded in (no-op until there is data).
+  const spots = useMemo(() => applyCalibration(SPOTS, calibration), [calibration]);
   const s = strings(lang);
   const today = athensDate(0);
 
@@ -80,9 +87,9 @@ export function App() {
     if (!data) return null;
     const daysAhead = Math.max(0, Math.round((Date.parse(date) - Date.parse(today)) / 86_400_000));
     const nowHour = Number(new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hourCycle: 'h23', timeZone: 'Europe/Athens' }).format(new Date()));
-    const day = analyzeDay(SPOTS, data, profileId, base, { daysAhead, earliestStart: date === today ? nowHour + 1 : 0 });
-    return { ...day, syn: buildSynopsis(data, REF_POINTS), rec: recommend(SPOTS, day.scores), glance: dayGlance(SPOTS, day.scores), daysAhead };
-  }, [data, date, today, profileId, base]);
+    const day = analyzeDay(spots, data, profileId, base, { daysAhead, earliestStart: date === today ? nowHour + 1 : 0 });
+    return { ...day, syn: buildSynopsis(data, REF_POINTS), rec: recommend(spots, day.scores), glance: dayGlance(spots, day.scores), daysAhead };
+  }, [data, date, today, profileId, base, spots]);
 
   const refreshLive = useCallback(async () => {
     if (!date) return;
@@ -116,7 +123,7 @@ export function App() {
       )
     : '';
 
-  const spot = openSpot ? spotById(openSpot) : undefined;
+  const spot = openSpot ? spots.find((x) => x.id === openSpot) : undefined;
 
   return (
     <div className="app">
@@ -203,19 +210,19 @@ export function App() {
         {analysis && data && (
           <>
             {tab === 'overview' && <Overview syn={analysis.syn} glance={analysis.glance} lang={lang} onAnalysis={() => go('analysis')} onOpen={setOpenSpot} />}
-            {tab === 'analysis' && <AnalysisTable spots={SPOTS} scores={analysis.scores} conditions={analysis.conditions} lang={lang} onOpen={setOpenSpot} />}
+            {tab === 'analysis' && <AnalysisTable spots={spots} scores={analysis.scores} conditions={analysis.conditions} lang={lang} onOpen={setOpenSpot} />}
             {tab === 'recs' && (
               <Recommendations
                 rec={analysis.rec}
                 syn={analysis.syn}
-                spots={SPOTS}
+                spots={spots}
                 profile={profileById(profileId)}
                 lang={lang}
                 dayTitle={dayTitle}
                 onOpen={setOpenSpot}
               />
             )}
-            {tab === 'method' && <Method spots={SPOTS} lang={lang} types={s.types} verification={verification} />}
+            {tab === 'method' && <Method spots={spots} lang={lang} types={s.types} verification={verification} feedback={feedback} calibration={calibration} />}
           </>
         )}
       </main>

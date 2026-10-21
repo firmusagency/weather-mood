@@ -3,6 +3,7 @@ import { REF_POINTS } from '../data/region';
 import { datasetFromRaw, fetchRaw, planPoints, type RawBundle } from '../engine/openmeteo';
 import type { Dataset } from '../engine/types';
 import type { VerificationSummary } from '../engine/verify';
+import type { Calibration, FeedbackSummary } from '../engine/feedback';
 
 export interface Snapshot {
   generatedAt: string;
@@ -28,18 +29,23 @@ export async function fetchLive(date: string): Promise<Dataset> {
   return datasetFromRaw(raw, 'live');
 }
 
-export async function loadVerification(): Promise<VerificationSummary | null> {
+async function loadJson<T>(name: 'verification' | 'feedback' | 'calibration'): Promise<T | null> {
   try {
     if (EMBEDDED) {
-      const mod = await import('../../public/data/verification.json');
-      return (mod.default ?? mod) as unknown as VerificationSummary;
+      // static import paths so the bundler can inline them
+      const mod = name === 'verification' ? await import('../../public/data/verification.json') : name === 'feedback' ? await import('../../public/data/feedback.json') : await import('../../public/data/calibration.json');
+      return (mod.default ?? mod) as unknown as T;
     }
-    const res = await fetch(`${import.meta.env.BASE_URL}data/verification.json`, { cache: 'no-cache' });
-    return res.ok ? ((await res.json()) as VerificationSummary) : null;
+    const res = await fetch(`${import.meta.env.BASE_URL}data/${name}.json`, { cache: 'no-cache' });
+    return res.ok ? ((await res.json()) as T) : null;
   } catch {
     return null;
   }
 }
+
+export const loadVerification = () => loadJson<VerificationSummary>('verification');
+export const loadFeedback = () => loadJson<FeedbackSummary>('feedback');
+export const loadCalibration = () => loadJson<Calibration>('calibration');
 
 export function datasetsFromSnapshot(s: Snapshot): Record<string, Dataset> {
   const out: Record<string, Dataset> = {};

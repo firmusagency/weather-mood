@@ -20,7 +20,7 @@ const COASTS: Record<string, Record<GuestLang, string>> = {
 };
 
 /** Reception / lobby TV screen: tomorrow's picks for three guest types, languages rotating. */
-export function LobbyView({ data, property }: { data: Dataset; property: Property }) {
+export function LobbyView({ data, property, spots = SPOTS }: { data: Dataset; property: Property; spots?: typeof SPOTS }) {
   const [langIdx, setLangIdx] = useState(0);
   const [paused, setPaused] = useState(false);
   const lang: GuestLang = GUEST_LANGS[langIdx];
@@ -36,8 +36,8 @@ export function LobbyView({ data, property }: { data: Dataset; property: Propert
     const today = athensDate(0);
     const daysAhead = Math.max(0, Math.round((Date.parse(data.date) - Date.parse(today)) / 86_400_000));
     return LOBBY_PROFILES.map((p) => {
-      const day = analyzeDay(SPOTS, data, p, property.base, { daysAhead });
-      return { profile: p, ...day, rec: recommend(SPOTS, day.scores) };
+      const day = analyzeDay(spots, data, p, property.base, { daysAhead });
+      return { profile: p, ...day, rec: recommend(spots, day.scores) };
     });
   }, [data, property]);
   const syn = useMemo(() => buildSynopsis(data, REF_POINTS), [data]);

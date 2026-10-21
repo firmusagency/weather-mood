@@ -1,6 +1,33 @@
 import type { ProfileId, SpotType, Text } from '../engine/types';
 import type { GuestLang } from './property';
 
+export type FeedbackDict = {
+  title: string;
+  intro: string;
+  didYouGo: string;
+  wentElsewhere: string;
+  pickPlace: string;
+  whichDay: string;
+  yesterday: string;
+  daysAgo: string;
+  up: string;
+  down: string;
+  whatWrong: string;
+  tags: Record<'wave' | 'wind' | 'crowd' | 'rain' | 'heat' | 'cold' | 'other', string>;
+  note: string;
+  send: string;
+  thanks: string;
+  duplicate: string;
+  error: string;
+  notNow: string;
+  rcTitle: string;
+  rcIntro: string;
+  rcParty: string;
+  rcLogged: string;
+  rcView: string;
+  rcGuestsSaid: string;
+};
+
 type Dict = {
   greeting: string;
   whoTravels: string;
@@ -46,6 +73,7 @@ type Dict = {
   windWords: [string, string, string, string];
   profiles: Record<ProfileId, string>;
   types: Record<SpotType, string>;
+  fb: FeedbackDict;
   compass: string[];
 };
 
@@ -92,6 +120,32 @@ const EL: Dict = {
   noPicks: 'Δεν βρήκαμε κατάλληλη πρόταση. Ρωτήστε τη reception.',
   seaWords: ['ήρεμη', 'λίγο κυματάκι', 'κυματάκι', 'κύμα'],
   windWords: ['σχεδόν άπνοια', 'ελαφρύς', 'μέτριος', 'δυνατός'],
+  fb: {
+    title: 'Πήγατε; Πώς ήταν;',
+    intro: 'Μία απάντηση βοηθάει τον επόμενο επισκέπτη και κάνει τις προτάσεις πιο ακριβείς.',
+    didYouGo: 'Σας προτείναμε {spot} ({day}). Πήγατε;',
+    wentElsewhere: 'Πήγατε αλλού;',
+    pickPlace: 'Διαλέξτε μέρος',
+    whichDay: 'Ποια μέρα;',
+    yesterday: 'Χθες',
+    daysAgo: 'πριν {n} μέρες',
+    up: 'Ωραία ήταν',
+    down: 'Όχι όπως το είπατε',
+    whatWrong: 'Τι δεν πήγε καλά;',
+    tags: { wave: 'Κύμα', wind: 'Αέρας', crowd: 'Κόσμος', rain: 'Βροχή', heat: 'Ζέστη', cold: 'Κρύο', other: 'Άλλο' },
+    note: 'Σχόλιο (προαιρετικό)',
+    send: 'Αποστολή',
+    thanks: 'Ευχαριστούμε! Το σημειώσαμε.',
+    duplicate: 'Το έχουμε ήδη, ευχαριστούμε.',
+    error: 'Δεν στάλθηκε. Δοκιμάστε ξανά αργότερα.',
+    notNow: 'Όχι τώρα',
+    rcTitle: 'Reception: τι είπαν οι επισκέπτες',
+    rcIntro: 'Όταν ένας επισκέπτης γυρίζει και σας λέει πώς ήταν, γράψτε το εδώ. 20 δευτερόλεπτα. Κάθε καταχώρηση βελτιώνει τις προτάσεις για το κατάλυμά σας.',
+    rcParty: 'Άτομα',
+    rcLogged: 'Καταχωρήθηκαν σήμερα',
+    rcView: 'Φόρμα reception',
+    rcGuestsSaid: 'Οι επισκέπτες είπαν',
+  },
   profiles: {
     family: 'Οικογένεια με παιδιά',
     couple: 'Ζευγάρι',
@@ -158,6 +212,32 @@ const EN: Dict = {
   noPicks: 'No good match found. Please ask at reception.',
   seaWords: ['calm', 'slight ripple', 'small waves', 'rough'],
   windWords: ['almost still', 'light', 'moderate', 'strong'],
+  fb: {
+    title: 'Did you go? How was it?',
+    intro: 'One answer helps the next guest and makes our picks more accurate.',
+    didYouGo: 'We suggested {spot} ({day}). Did you go?',
+    wentElsewhere: 'Went somewhere else?',
+    pickPlace: 'Choose a place',
+    whichDay: 'Which day?',
+    yesterday: 'Yesterday',
+    daysAgo: '{n} days ago',
+    up: 'It was great',
+    down: 'Not as described',
+    whatWrong: 'What was off?',
+    tags: { wave: 'Waves', wind: 'Wind', crowd: 'Crowds', rain: 'Rain', heat: 'Heat', cold: 'Cold', other: 'Other' },
+    note: 'Comment (optional)',
+    send: 'Send',
+    thanks: 'Thank you! Noted.',
+    duplicate: 'Already recorded, thank you.',
+    error: 'Could not send. Please try again later.',
+    notNow: 'Not now',
+    rcTitle: 'Reception: what guests said',
+    rcIntro: 'When a guest comes back and tells you how it was, note it here. Twenty seconds. Every entry improves the picks for your property.',
+    rcParty: 'Guests',
+    rcLogged: 'Logged today',
+    rcView: 'Reception form',
+    rcGuestsSaid: 'Guests said',
+  },
   profiles: {
     family: 'Family with kids',
     couple: 'Couple',
@@ -224,6 +304,32 @@ const DE: Dict = {
   noPicks: 'Kein passender Tipp gefunden. Fragen Sie an der Rezeption.',
   seaWords: ['ruhig', 'leicht bewegt', 'kleine Wellen', 'rau'],
   windWords: ['fast windstill', 'leicht', 'mäßig', 'stark'],
+  fb: {
+    title: 'Waren Sie dort? Wie war es?',
+    intro: 'Eine Antwort hilft dem nächsten Gast und macht unsere Tipps genauer.',
+    didYouGo: 'Wir hatten {spot} vorgeschlagen ({day}). Waren Sie dort?',
+    wentElsewhere: 'Woanders gewesen?',
+    pickPlace: 'Ort wählen',
+    whichDay: 'Welcher Tag?',
+    yesterday: 'Gestern',
+    daysAgo: 'vor {n} Tagen',
+    up: 'Es war toll',
+    down: 'Nicht wie beschrieben',
+    whatWrong: 'Was stimmte nicht?',
+    tags: { wave: 'Wellen', wind: 'Wind', crowd: 'Andrang', rain: 'Regen', heat: 'Hitze', cold: 'Kälte', other: 'Anderes' },
+    note: 'Kommentar (optional)',
+    send: 'Senden',
+    thanks: 'Danke! Notiert.',
+    duplicate: 'Schon gespeichert, danke.',
+    error: 'Senden fehlgeschlagen. Bitte später erneut versuchen.',
+    notNow: 'Jetzt nicht',
+    rcTitle: 'Rezeption: was Gäste gesagt haben',
+    rcIntro: 'Wenn ein Gast zurückkommt und erzählt, wie es war, tragen Sie es hier ein. Zwanzig Sekunden. Jeder Eintrag verbessert die Tipps für Ihr Haus.',
+    rcParty: 'Personen',
+    rcLogged: 'Heute eingetragen',
+    rcView: 'Rezeptionsformular',
+    rcGuestsSaid: 'Gäste sagten',
+  },
   profiles: {
     family: 'Familie mit Kindern',
     couple: 'Paar',
@@ -290,6 +396,32 @@ const FR: Dict = {
   noPicks: "Aucune suggestion adaptée. Demandez à la réception.",
   seaWords: ['calme', 'peu agitée', 'petites vagues', 'agitée'],
   windWords: ['presque calme', 'léger', 'modéré', 'fort'],
+  fb: {
+    title: 'Vous y êtes allés ? Comment c\'était ?',
+    intro: 'Une réponse aide le prochain visiteur et rend nos conseils plus précis.',
+    didYouGo: 'Nous avions suggéré {spot} ({day}). Vous y êtes allés ?',
+    wentElsewhere: 'Allés ailleurs ?',
+    pickPlace: 'Choisir un lieu',
+    whichDay: 'Quel jour ?',
+    yesterday: 'Hier',
+    daysAgo: 'il y a {n} jours',
+    up: "C'était super",
+    down: 'Pas comme annoncé',
+    whatWrong: "Qu'est-ce qui n'allait pas ?",
+    tags: { wave: 'Vagues', wind: 'Vent', crowd: 'Monde', rain: 'Pluie', heat: 'Chaleur', cold: 'Froid', other: 'Autre' },
+    note: 'Commentaire (facultatif)',
+    send: 'Envoyer',
+    thanks: 'Merci ! C\'est noté.',
+    duplicate: 'Déjà enregistré, merci.',
+    error: "Envoi impossible. Réessayez plus tard.",
+    notNow: 'Pas maintenant',
+    rcTitle: 'Réception : ce que les clients ont dit',
+    rcIntro: "Quand un client revient et vous raconte comment c'était, notez-le ici. Vingt secondes. Chaque entrée améliore les conseils pour votre établissement.",
+    rcParty: 'Personnes',
+    rcLogged: "Enregistrés aujourd'hui",
+    rcView: 'Formulaire réception',
+    rcGuestsSaid: 'Les clients ont dit',
+  },
   profiles: {
     family: 'Famille avec enfants',
     couple: 'Couple',
