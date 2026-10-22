@@ -1,6 +1,8 @@
 import { windConsensus } from './analysis';
 import { hourOf } from './dates';
 import { angleDiff, beaufort, haversineKm, round } from './geo';
+import { summarizeStations, type StationSummary } from './noa';
+import { summarizeRechecks, type RecheckResult, type RecheckSummary } from './recheck';
 import { MODELS, type Dataset, type ModelId } from './types';
 import type { PointPlan } from './openmeteo';
 import type { HourObs } from './metar';
@@ -33,6 +35,8 @@ export interface VerificationRow {
   /** Per wind model: mean absolute error of speed (km/h) over the compared hours. */
   perModel: Record<ModelId, number | null>;
   hourly: { hour: number; fc: number; obs: number; fcDir: number | null; obsDir: number | null; fcTemp: number | null; obsTemp: number | null }[];
+  /** Recommendation re-run with the measured wind (north-coast spots only). */
+  recs?: RecheckResult;
 }
 
 /** The forecast land point closest to the station. */
@@ -143,10 +147,14 @@ export interface VerificationSummary {
   gustMaeMax: number;
   perModel: { model: ModelId; mae: number | null; days: number }[];
   recent: Pick<VerificationRow, 'date' | 'wind' | 'bf' | 'temp' | 'rain' | 'gust'>[];
+  /** Did the picks survive the measured day (north coast, hourly station)? */
+  recs: RecheckSummary;
+  /** West/south coast stations (daily files). */
+  stations: StationSummary[];
 }
 
 /** Rolling summary over the last `windowDays` rows (most recent last). */
-export function summarize(rows: VerificationRow[], windowDays = 30, now = new Date()): VerificationSummary {
+export function summarize(rows: VerificationRow[], windowDays = 30, now = new Date(), stationRows: Parameters<typeof summarizeStations>[0] = []): VerificationSummary {
   const recentRows = [...rows].sort((a, b) => a.date.localeCompare(b.date)).slice(-windowDays);
   const nn = (xs: (number | null)[]) => xs.filter((x): x is number => x != null);
   const perModel = MODELS.map((m) => {
@@ -171,5 +179,7 @@ export function summarize(rows: VerificationRow[], windowDays = 30, now = new Da
     gustMaeMax: round(mean(recentRows.map((r) => Math.abs(r.gust.forecastMax - r.gust.observedMax)))),
     perModel,
     recent: recentRows.slice(-7).map(({ date, wind, bf, temp, rain, gust }) => ({ date, wind, bf, temp, rain, gust })),
+    recs: summarizeRechecks(recentRows.map((r) => r.recs)),
+    stations: summarizeStations(stationRows, windowDays),
   };
 }

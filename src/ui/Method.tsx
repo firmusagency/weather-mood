@@ -156,9 +156,66 @@ function Accuracy({ v, lang }: { v: VerificationSummary | null; lang: Lang }) {
           <p className="hint">
             {lang === 'el' ? 'πρόγνωση/πραγματικό' : 'forecast/observed'} · {v.from} → {v.to}
           </p>
+          <h4 className="sub-title">{s.accuracyRecs}</h4>
+          <p className="hint">{s.accuracyRecsHint}</p>
+          <dl className="stat-row">
+            <div>
+              <dt>{s.accuracyPicksHeld}</dt>
+              <dd>{v.recs?.picks ? `${v.recs.picksHeld}/${v.recs.picks} (${pct(v.recs.pickHeldRate ?? 0)})` : '–'}</dd>
+            </div>
+            <div>
+              <dt>{s.accuracyAvoidsRight}</dt>
+              <dd>{v.recs?.avoids ? `${v.recs.avoidsRight}/${v.recs.avoids}` : '–'}</dd>
+            </div>
+          </dl>
+          <StationsTable stations={v.stations ?? []} lang={lang} />
         </>
       )}
     </article>
+  );
+}
+
+export function StationsTable({ stations, lang }: { stations: VerificationSummary['stations']; lang: Lang }) {
+  const s = strings(lang);
+  const pct = (x: number | null) => (x == null ? '–' : `${Math.round(x * 100)}%`);
+  const rows = stations.filter((st) => st.days > 0);
+  return (
+    <>
+      <h4 className="sub-title">{s.accuracyStations}</h4>
+      <p className="hint">{s.accuracyStationsHint}</p>
+      {rows.length ? (
+        <div className="table-scroll">
+          <table className="data-table compact">
+            <thead>
+              <tr>
+                {s.accuracyStationCols.map((c, i) => (
+                  <th key={c} scope="col" className={i > 0 ? 'num' : undefined}>
+                    {c}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((st) => (
+                <tr key={st.id}>
+                  <th scope="row">{st.name}</th>
+                  <td className="num">{st.days}</td>
+                  <td className="num">{st.gustMae} km/h</td>
+                  <td className="num">{pct(st.gustWithin10Rate)}</td>
+                  <td className="num">{pct(st.dirWithin45Rate)}</td>
+                  <td className="num">{pct(st.rainAgreeRate)}</td>
+                  <td className="num">
+                    {st.picksHeld}/{st.picks}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p className="hint">{s.accuracyNone}</p>
+      )}
+    </>
   );
 }
 

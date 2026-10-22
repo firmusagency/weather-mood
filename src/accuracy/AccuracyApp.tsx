@@ -3,6 +3,7 @@ import type { FeedbackSummary } from '../engine/feedback';
 import { MODEL_LABELS, type Lang } from '../engine/types';
 import type { VerificationSummary } from '../engine/verify';
 import { loadFeedback, loadVerification, readPref, writePref } from '../ui/data';
+import { StationsTable } from '../ui/Method';
 
 /*
  * Public accuracy page ("Πόσο πέφτουμε μέσα"): the sales argument is a track record, not a promise.
@@ -35,13 +36,15 @@ const T = {
     tempSub: 'μέσο, °C',
     guests: 'συμφωνία επισκεπτών',
     guestsSub: 'ψήφοι 👍/👎 vs πρόταση',
+    held: 'η πρόταση άντεξε',
+    heldSub: 'ξανατρέχοντας με τον μετρημένο άνεμο',
     early: 'Ο έλεγχος ξεκίνησε στις {from}. Με λίγες ημέρες τα ποσοστά αλλάζουν εύκολα· η σειρά μεγαλώνει κάθε πρωί.',
     period: 'Περίοδος {from} έως {to} · ενημέρωση {updated}',
     howTitle: 'Πώς γίνεται ο έλεγχος',
     how: [
       ['05:17', 'Αποθηκεύουμε την πρόγνωση για την επόμενη μέρα: άνεμος από 5 μοντέλα, κύμα από 4, θερμοκρασία, βροχή. Αυτή είναι η πρόγνωση με την οποία φτιάχνονται οι προτάσεις και το βραδινό μήνυμα.'],
       ['Την επόμενη μέρα', 'Οι επισκέπτες πηγαίνουν στις παραλίες που προτείναμε. Στο κινητό τους, μετά, ρωτάμε «Πήγατε; Ήταν όπως το είπαμε;».'],
-      ['05:35 μεθαύριο', 'Συγκρίνουμε ώρα προς ώρα την πρόγνωση με τις πραγματικές μετρήσεις του σταθμού LGSA (METAR): ταχύτητα και διεύθυνση ανέμου, ριπές, θερμοκρασία, βροχή. Ο πίνακας εδώ ενημερώνεται μόνος του.'],
+      ['05:35 μεθαύριο', 'Συγκρίνουμε ώρα προς ώρα την πρόγνωση με τις μετρήσεις του σταθμού του αεροδρομίου (METAR) και, για τη δυτική και νότια ακτή, με τους σταθμούς του Εθνικού Αστεροσκοπείου σε Φαλάσαρνα, Ελαφονήσι, Παλαιόχωρα και Κίσσαμο. Μετά ξανατρέχουμε την πρόταση με τον άνεμο που μετρήθηκε: άντεξε ή όχι;'],
     ],
     chartTitle: 'Μέγιστο Beaufort ανά ημέρα: τι είπαμε και τι έγινε',
     chartHint: 'Η ένταση του ανέμου είναι αυτό που αποφασίζει αν μια παραλία είναι για μπάνιο ή όχι. Ανοιχτό = πρόγνωση, σκούρο = μέτρηση.',
@@ -60,7 +63,7 @@ const T = {
     agree: 'συμφωνία με την πρόταση',
     honestTitle: 'Τι δεν μετράμε ακόμη (και το λέμε)',
     honest: [
-      'Ο σταθμός βρίσκεται στο Ακρωτήρι, στη βόρεια ακτή. Για τη δυτική και τη νότια ακτή βασιζόμαστε στα μοντέλα και στις ψήφους των επισκεπτών, μέχρι να προσθέσουμε δεύτερο σταθμό.',
+      'Ο ωριαίος σταθμός είναι στο Ακρωτήρι, στη βόρεια ακτή. Στη δυτική και νότια ακτή οι σταθμοί δίνουν ημερήσια στοιχεία (μέγιστη ριπή και ώρα της), όχι ωριαία. Ο σταθμός του Ελαφονησίου μετράει συστηματικά πολύ χαμηλό άνεμο· τον δείχνουμε, αλλά τον ζυγίζουμε λιγότερο.',
       'Το κύμα στην ακτή είναι εκτίμηση από το κύμα των ανοιχτών και τη γεωμετρία κάθε παραλίας. Διορθώνεται αυτόματα όταν οι επισκέπτες βρίσκουν συστηματικά περισσότερο ή λιγότερο κύμα.',
       'Λίγες ημέρες ελέγχου σημαίνουν ποσοστά που αλλάζουν εύκολα. Δημοσιεύουμε και τις αστοχίες· δεν κρύβεται τίποτα.',
     ],
@@ -90,13 +93,15 @@ const T = {
     tempSub: 'mean, °C',
     guests: 'guest agreement',
     guestsSub: '👍/👎 votes vs our pick',
+    held: 'recommendation held',
+    heldSub: 'rerun with the measured wind',
     early: 'Verification started on {from}. With few days the percentages swing easily; the record grows every morning.',
     period: 'Period {from} to {to} · updated {updated}',
     howTitle: 'How the check works',
     how: [
       ['05:17', 'We store the forecast for the next day: wind from 5 models, waves from 4, temperature, rain. This is the forecast behind the picks and the evening message.'],
       ['The next day', 'Guests go to the beaches we suggested. Afterwards, on their phone, we ask “Did you go? Was it as described?”.'],
-      ['05:35 the day after', 'We compare the forecast hour by hour with the real measurements of station LGSA (METAR): wind speed and direction, gusts, temperature, rain. The table here updates itself.'],
+      ['05:35 the day after', 'We compare the forecast hour by hour with the airport station (METAR) and, for the west and south coasts, with the National Observatory stations at Falasarna, Elafonisi, Paleochora and Kissamos. Then we rerun the recommendation with the measured wind: did it hold?'],
     ],
     chartTitle: 'Daily max Beaufort: what we said and what happened',
     chartHint: 'Wind strength is what decides whether a beach is swimmable. Light = forecast, dark = measured.',
@@ -115,7 +120,7 @@ const T = {
     agree: 'agreement with our pick',
     honestTitle: 'What we do not measure yet (and say so)',
     honest: [
-      'The station is on Akrotiri, on the north coast. For the west and south coasts we rely on the models and on guest votes until a second station is added.',
+      'The hourly station is on Akrotiri, on the north coast. On the west and south coasts the stations publish daily figures (max gust and its time), not hourly ones. The Elafonisi station reads systematically very low wind; we show it but weigh it less.',
       'The wave at the shore is an estimate from the offshore wave and each beach’s geometry. It self-corrects when guests consistently find more or less wave than we said.',
       'Few verified days mean percentages that swing easily. We publish the misses too; nothing is hidden.',
     ],
@@ -257,6 +262,11 @@ export function AccuracyApp() {
                 <p className="acc-stat-label">{t.guests}</p>
                 <p className="acc-stat-sub">{f && f.judged > 0 ? `${f.judged} ${t.votes}` : t.guestsSub}</p>
               </div>
+              <div className="acc-stat">
+                <p className="acc-stat-value">{v.recs?.picks ? pct(v.recs.pickHeldRate) : '–'}</p>
+                <p className="acc-stat-label">{t.held}</p>
+                <p className="acc-stat-sub">{v.recs?.picks ? `${v.recs.picksHeld}/${v.recs.picks} · ${v.recs.days} ${t.days}` : t.heldSub}</p>
+              </div>
             </section>
             {v.days < 14 && <p className="callout callout-muted">{t.early.replace('{from}', fmt(v.from))}</p>}
             <p className="hint">{t.period.replace('{from}', v.from).replace('{to}', v.to).replace('{updated}', updated)}</p>
@@ -332,6 +342,10 @@ export function AccuracyApp() {
                 </ul>
               </section>
             </div>
+
+            <section className="panel acc-panel">
+              <StationsTable stations={v.stations ?? []} lang={lang} />
+            </section>
 
             <section className="panel acc-panel">
               <h2 className="panel-title">{t.guestsTitle}</h2>
