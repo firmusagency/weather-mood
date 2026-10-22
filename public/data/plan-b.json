@@ -1,7 +1,621 @@
 {
- "date": "2026-10-21",
- "checkedAt": "2026-10-21T00:00:00.000Z",
- "eveningGeneratedAt": null,
+ "date": "2026-10-22",
+ "checkedAt": "2026-10-22T07:59:24.715Z",
+ "eveningGeneratedAt": "2026-10-21T20:50:46.729Z",
  "changed": false,
- "byProfile": {}
+ "byProfile": {
+  "family": {
+   "diff": {
+    "date": "2026-10-22",
+    "profile": "family",
+    "significant": false,
+    "changes": [],
+    "before": {
+     "date": "2026-10-22",
+     "profile": "family",
+     "generatedAt": "2026-10-21T20:50:46.729Z",
+     "picks": [
+      {
+       "spotId": "agioi-apostoloi",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 10,
+        "end": 13
+       }
+      },
+      {
+       "spotId": "stavros",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 11,
+        "end": 15
+       }
+      },
+      {
+       "spotId": "marathi",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 11,
+        "end": 15
+       }
+      }
+     ],
+     "avoid": [],
+     "wind": {
+      "bf": 3,
+      "dir": 184,
+      "gust": 44
+     },
+     "rainProbMax": 0,
+     "coasts": {
+      "ref-north": 0.3,
+      "ref-west": 1,
+      "ref-south": 0.3
+     }
+    },
+    "after": {
+     "date": "2026-10-22",
+     "profile": "family",
+     "generatedAt": "2026-10-22T07:59:24.715Z",
+     "picks": [
+      {
+       "spotId": "agioi-apostoloi",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 10,
+        "end": 13
+       }
+      },
+      {
+       "spotId": "stavros",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 10,
+        "end": 14
+       }
+      },
+      {
+       "spotId": "marathi",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 10,
+        "end": 14
+       }
+      }
+     ],
+     "avoid": [],
+     "wind": {
+      "bf": 3,
+      "dir": 186,
+      "gust": 38
+     },
+     "rainProbMax": 0,
+     "coasts": {
+      "ref-north": 0.5,
+      "ref-west": 1,
+      "ref-south": 0.3
+     }
+    }
+   },
+   "messages": null
+  },
+  "couple": {
+   "diff": {
+    "date": "2026-10-22",
+    "profile": "couple",
+    "significant": false,
+    "changes": [],
+    "before": {
+     "date": "2026-10-22",
+     "profile": "couple",
+     "generatedAt": "2026-10-21T20:50:46.729Z",
+     "picks": [
+      {
+       "spotId": "falasarna",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 13
+       }
+      },
+      {
+       "spotId": "gramvousa-boat",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 10,
+        "end": 17
+       }
+      },
+      {
+       "spotId": "seitan-limania",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 11,
+        "end": 13
+       }
+      }
+     ],
+     "avoid": [],
+     "wind": {
+      "bf": 3,
+      "dir": 184,
+      "gust": 44
+     },
+     "rainProbMax": 0,
+     "coasts": {
+      "ref-north": 0.3,
+      "ref-west": 1,
+      "ref-south": 0.3
+     }
+    },
+    "after": {
+     "date": "2026-10-22",
+     "profile": "couple",
+     "generatedAt": "2026-10-22T07:59:24.715Z",
+     "picks": [
+      {
+       "spotId": "gramvousa-boat",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 10,
+        "end": 17
+       }
+      },
+      {
+       "spotId": "falasarna",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 13
+       }
+      },
+      {
+       "spotId": "seitan-limania",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 11
+       }
+      }
+     ],
+     "avoid": [],
+     "wind": {
+      "bf": 3,
+      "dir": 186,
+      "gust": 38
+     },
+     "rainProbMax": 0,
+     "coasts": {
+      "ref-north": 0.5,
+      "ref-west": 1,
+      "ref-south": 0.3
+     }
+    }
+   },
+   "messages": null
+  },
+  "solo": {
+   "diff": {
+    "date": "2026-10-22",
+    "profile": "solo",
+    "significant": false,
+    "changes": [],
+    "before": {
+     "date": "2026-10-22",
+     "profile": "solo",
+     "generatedAt": "2026-10-21T20:50:46.729Z",
+     "picks": [
+      {
+       "spotId": "old-town",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "samaria",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 7,
+        "end": 14
+       }
+      },
+      {
+       "spotId": "gramvousa-boat",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 10,
+        "end": 17
+       }
+      }
+     ],
+     "avoid": [],
+     "wind": {
+      "bf": 3,
+      "dir": 184,
+      "gust": 44
+     },
+     "rainProbMax": 0,
+     "coasts": {
+      "ref-north": 0.3,
+      "ref-west": 1,
+      "ref-south": 0.3
+     }
+    },
+    "after": {
+     "date": "2026-10-22",
+     "profile": "solo",
+     "generatedAt": "2026-10-22T07:59:24.715Z",
+     "picks": [
+      {
+       "spotId": "gramvousa-boat",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 10,
+        "end": 17
+       }
+      },
+      {
+       "spotId": "old-town",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "samaria",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 7,
+        "end": 14
+       }
+      }
+     ],
+     "avoid": [],
+     "wind": {
+      "bf": 3,
+      "dir": 186,
+      "gust": 38
+     },
+     "rainProbMax": 0,
+     "coasts": {
+      "ref-north": 0.5,
+      "ref-west": 1,
+      "ref-south": 0.3
+     }
+    }
+   },
+   "messages": null
+  },
+  "active": {
+   "diff": {
+    "date": "2026-10-22",
+    "profile": "active",
+    "significant": false,
+    "changes": [
+     {
+      "kind": "newTop",
+      "params": {
+       "spot": "gramvousa-boat"
+      }
+     }
+    ],
+    "before": {
+     "date": "2026-10-22",
+     "profile": "active",
+     "generatedAt": "2026-10-21T20:50:46.729Z",
+     "picks": [
+      {
+       "spotId": "samaria",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 7,
+        "end": 14
+       }
+      },
+      {
+       "spotId": "agia-irini",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 7,
+        "end": 11
+       }
+      },
+      {
+       "spotId": "imbros",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 7,
+        "end": 10
+       }
+      }
+     ],
+     "avoid": [],
+     "wind": {
+      "bf": 3,
+      "dir": 184,
+      "gust": 44
+     },
+     "rainProbMax": 0,
+     "coasts": {
+      "ref-north": 0.3,
+      "ref-west": 1,
+      "ref-south": 0.3
+     }
+    },
+    "after": {
+     "date": "2026-10-22",
+     "profile": "active",
+     "generatedAt": "2026-10-22T07:59:24.715Z",
+     "picks": [
+      {
+       "spotId": "gramvousa-boat",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 10,
+        "end": 17
+       }
+      },
+      {
+       "spotId": "samaria",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 7,
+        "end": 14
+       }
+      },
+      {
+       "spotId": "agia-irini",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 7,
+        "end": 11
+       }
+      }
+     ],
+     "avoid": [],
+     "wind": {
+      "bf": 3,
+      "dir": 186,
+      "gust": 38
+     },
+     "rainProbMax": 0,
+     "coasts": {
+      "ref-north": 0.5,
+      "ref-west": 1,
+      "ref-south": 0.3
+     }
+    }
+   },
+   "messages": null
+  },
+  "senior": {
+   "diff": {
+    "date": "2026-10-22",
+    "profile": "senior",
+    "significant": false,
+    "changes": [],
+    "before": {
+     "date": "2026-10-22",
+     "profile": "senior",
+     "generatedAt": "2026-10-21T20:50:46.729Z",
+     "picks": [
+      {
+       "spotId": "old-town",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "theriso",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 8,
+        "end": 11
+       }
+      },
+      {
+       "spotId": "vamos",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 8,
+        "end": 11
+       }
+      }
+     ],
+     "avoid": [],
+     "wind": {
+      "bf": 3,
+      "dir": 184,
+      "gust": 44
+     },
+     "rainProbMax": 0,
+     "coasts": {
+      "ref-north": 0.3,
+      "ref-west": 1,
+      "ref-south": 0.3
+     }
+    },
+    "after": {
+     "date": "2026-10-22",
+     "profile": "senior",
+     "generatedAt": "2026-10-22T07:59:24.715Z",
+     "picks": [
+      {
+       "spotId": "old-town",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "theriso",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 8,
+        "end": 11
+       }
+      },
+      {
+       "spotId": "vamos",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 8,
+        "end": 11
+       }
+      }
+     ],
+     "avoid": [],
+     "wind": {
+      "bf": 3,
+      "dir": 186,
+      "gust": 38
+     },
+     "rainProbMax": 0,
+     "coasts": {
+      "ref-north": 0.5,
+      "ref-west": 1,
+      "ref-south": 0.3
+     }
+    }
+   },
+   "messages": null
+  },
+  "nocar": {
+   "diff": {
+    "date": "2026-10-22",
+    "profile": "nocar",
+    "significant": false,
+    "changes": [],
+    "before": {
+     "date": "2026-10-22",
+     "profile": "nocar",
+     "generatedAt": "2026-10-21T20:50:46.729Z",
+     "picks": [
+      {
+       "spotId": "old-town",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "platanias",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 10,
+        "end": 14
+       }
+      },
+      {
+       "spotId": "kolymbari",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 13
+       }
+      }
+     ],
+     "avoid": [],
+     "wind": {
+      "bf": 3,
+      "dir": 184,
+      "gust": 44
+     },
+     "rainProbMax": 0,
+     "coasts": {
+      "ref-north": 0.3,
+      "ref-west": 1,
+      "ref-south": 0.3
+     }
+    },
+    "after": {
+     "date": "2026-10-22",
+     "profile": "nocar",
+     "generatedAt": "2026-10-22T07:59:24.715Z",
+     "picks": [
+      {
+       "spotId": "old-town",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "platanias",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 10,
+        "end": 14
+       }
+      },
+      {
+       "spotId": "kolymbari",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 13
+       }
+      }
+     ],
+     "avoid": [],
+     "wind": {
+      "bf": 3,
+      "dir": 186,
+      "gust": 38
+     },
+     "rainProbMax": 0,
+     "coasts": {
+      "ref-north": 0.5,
+      "ref-west": 1,
+      "ref-south": 0.3
+     }
+    }
+   },
+   "messages": null
+  }
+ }
 }
