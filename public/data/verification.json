@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-10-22T17:35:54.808Z",
+ "updatedAt": "2026-10-22T17:36:55.251Z",
  "station": {
   "id": "LGSA",
   "name": "Chania airport (Akrotiri)",
@@ -172,12 +172,12 @@
   }
  ],
  "recs": {
-  "days": 0,
-  "picks": 0,
-  "picksHeld": 0,
+  "days": 1,
+  "picks": 9,
+  "picksHeld": 9,
   "avoids": 0,
   "avoidsRight": 0,
-  "pickHeldRate": null,
+  "pickHeldRate": 1,
   "avoidRightRate": null
  },
  "stations": [
