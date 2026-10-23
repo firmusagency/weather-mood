@@ -1,52 +1,52 @@
 {
- "updatedAt": "2026-10-22T17:47:10.464Z",
+ "updatedAt": "2026-10-23T07:52:47.996Z",
  "station": {
   "id": "LGSA",
   "name": "Chania airport (Akrotiri)",
   "lat": 35.5317,
   "lon": 24.1497
  },
- "days": 4,
+ "days": 5,
  "from": "2026-10-18",
- "to": "2026-10-21",
+ "to": "2026-10-22",
  "wind": {
-  "mae": 2.7,
-  "bias": -0.3,
-  "afternoonBias": -2.2,
-  "dirMae": 8.4
+  "mae": 3,
+  "bias": -1.1,
+  "afternoonBias": -2.1,
+  "dirMae": 16.1
  },
  "temp": {
-  "mae": 0.7,
-  "bias": -0.5
+  "mae": 0.8,
+  "bias": -0.7
  },
  "bfWithin1Rate": 1,
  "rainAgreeRate": 1,
- "gustMaeMax": 3.3,
+ "gustMaeMax": 3,
  "perModel": [
   {
    "model": "icon_seamless",
-   "mae": 2.7,
-   "days": 4
+   "mae": 3.1,
+   "days": 5
   },
   {
    "model": "meteofrance_seamless",
-   "mae": 2.7,
-   "days": 4
+   "mae": 3.1,
+   "days": 5
   },
   {
    "model": "gfs_seamless",
-   "mae": 2.9,
-   "days": 4
-  },
-  {
-   "model": "ecmwf_ifs025",
-   "mae": 3.9,
-   "days": 4
+   "mae": 3.3,
+   "days": 5
   },
   {
    "model": "ukmo_seamless",
-   "mae": 3.9,
-   "days": 4
+   "mae": 3.8,
+   "days": 5
+  },
+  {
+   "model": "ecmwf_ifs025",
+   "mae": 4.1,
+   "days": 5
   }
  ],
  "recent": [
@@ -169,12 +169,42 @@
     "forecastMax": 14.4,
     "observedMax": 11.1
    }
+  },
+  {
+   "date": "2026-10-22",
+   "wind": {
+    "mae": 4.3,
+    "bias": -4.2,
+    "afternoonBias": -1.9,
+    "dirMae": 23.7
+   },
+   "bf": {
+    "forecastMax": 2,
+    "observedMax": 3,
+    "within1": true
+   },
+   "temp": {
+    "mae": 1.2,
+    "bias": -1.2,
+    "forecastMax": 26.1,
+    "observedMax": 28
+   },
+   "rain": {
+    "forecastProbMax": 0,
+    "forecastSumMm": 0,
+    "observed": false,
+    "agree": true
+   },
+   "gust": {
+    "forecastMax": 16.6,
+    "observedMax": 18.5
+   }
   }
  ],
  "recs": {
-  "days": 2,
-  "picks": 18,
-  "picksHeld": 18,
+  "days": 3,
+  "picks": 27,
+  "picksHeld": 27,
   "avoids": 0,
   "avoidsRight": 0,
   "pickHeldRate": 1,
