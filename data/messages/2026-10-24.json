@@ -1,0 +1,327 @@
+{
+ "date": "2026-10-24",
+ "generatedAt": "2026-10-23T19:31:02.940Z",
+ "basedOn": "2026-10-23T19:31:02.584Z",
+ "property": {
+  "id": "demo-alkyoni",
+  "name": "Alkyoni Suites"
+ },
+ "plans": {
+  "family": {
+   "date": "2026-10-24",
+   "profile": "family",
+   "generatedAt": "2026-10-23T19:31:02.940Z",
+   "picks": [
+    {
+     "spotId": "agioi-apostoloi",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 10,
+      "end": 13
+     }
+    },
+    {
+     "spotId": "marathi",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 13,
+      "end": 17
+     }
+    },
+    {
+     "spotId": "botanical-park",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 9,
+      "end": 12
+     }
+    }
+   ],
+   "avoid": [
+    "falasarna"
+   ],
+   "wind": {
+    "bf": 3,
+    "dir": 42,
+    "gust": 25
+   },
+   "rainProbMax": 3,
+   "coasts": {
+    "ref-north": 0.5,
+    "ref-west": 0.8,
+    "ref-south": 0.7
+   }
+  },
+  "couple": {
+   "date": "2026-10-24",
+   "profile": "couple",
+   "generatedAt": "2026-10-23T19:31:02.940Z",
+   "picks": [
+    {
+     "spotId": "elafonisi",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 9,
+      "end": 13
+     }
+    },
+    {
+     "spotId": "balos",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 13,
+      "end": 17
+     }
+    },
+    {
+     "spotId": "seitan-limania",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 9,
+      "end": 11
+     }
+    }
+   ],
+   "avoid": [],
+   "wind": {
+    "bf": 3,
+    "dir": 42,
+    "gust": 25
+   },
+   "rainProbMax": 3,
+   "coasts": {
+    "ref-north": 0.5,
+    "ref-west": 0.8,
+    "ref-south": 0.7
+   }
+  },
+  "solo": {
+   "date": "2026-10-24",
+   "profile": "solo",
+   "generatedAt": "2026-10-23T19:31:02.940Z",
+   "picks": [
+    {
+     "spotId": "old-town",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 9,
+      "end": 12
+     }
+    },
+    {
+     "spotId": "elafonisi",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 9,
+      "end": 13
+     }
+    },
+    {
+     "spotId": "balos",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 13,
+      "end": 17
+     }
+    }
+   ],
+   "avoid": [],
+   "wind": {
+    "bf": 3,
+    "dir": 42,
+    "gust": 25
+   },
+   "rainProbMax": 3,
+   "coasts": {
+    "ref-north": 0.5,
+    "ref-west": 0.8,
+    "ref-south": 0.7
+   }
+  },
+  "active": {
+   "date": "2026-10-24",
+   "profile": "active",
+   "generatedAt": "2026-10-23T19:31:02.940Z",
+   "picks": [
+    {
+     "spotId": "elafonisi",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 9,
+      "end": 13
+     }
+    },
+    {
+     "spotId": "samaria",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 7,
+      "end": 14
+     }
+    },
+    {
+     "spotId": "balos",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 13,
+      "end": 17
+     }
+    }
+   ],
+   "avoid": [],
+   "wind": {
+    "bf": 3,
+    "dir": 42,
+    "gust": 25
+   },
+   "rainProbMax": 3,
+   "coasts": {
+    "ref-north": 0.5,
+    "ref-west": 0.8,
+    "ref-south": 0.7
+   }
+  },
+  "senior": {
+   "date": "2026-10-24",
+   "profile": "senior",
+   "generatedAt": "2026-10-23T19:31:02.940Z",
+   "picks": [
+    {
+     "spotId": "old-town",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 9,
+      "end": 12
+     }
+    },
+    {
+     "spotId": "theriso",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 10,
+      "end": 13
+     }
+    },
+    {
+     "spotId": "vamos",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 9,
+      "end": 12
+     }
+    }
+   ],
+   "avoid": [],
+   "wind": {
+    "bf": 3,
+    "dir": 42,
+    "gust": 25
+   },
+   "rainProbMax": 3,
+   "coasts": {
+    "ref-north": 0.5,
+    "ref-west": 0.8,
+    "ref-south": 0.7
+   }
+  },
+  "nocar": {
+   "date": "2026-10-24",
+   "profile": "nocar",
+   "generatedAt": "2026-10-23T19:31:02.940Z",
+   "picks": [
+    {
+     "spotId": "old-town",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 9,
+      "end": 12
+     }
+    },
+    {
+     "spotId": "platanias",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 13,
+      "end": 17
+     }
+    },
+    {
+     "spotId": "kolymbari",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 13,
+      "end": 17
+     }
+    }
+   ],
+   "avoid": [],
+   "wind": {
+    "bf": 3,
+    "dir": 42,
+    "gust": 25
+   },
+   "rainProbMax": 3,
+   "coasts": {
+    "ref-north": 0.5,
+    "ref-west": 0.8,
+    "ref-south": 0.7
+   }
+  }
+ },
+ "messages": {
+  "family": {
+   "el": "Καλησπέρα από το Alkyoni Suites!\nΑύριο, Σάββατο 24 Οκτωβρίου:\n22°, ελαφρύς αέρας ΒΑ, θάλασσα βόρεια λίγο κυματάκι, δυτική κυματάκι, νότια κυματάκι.\n\nΟι προτάσεις μας για εσάς (Οικογένεια με παιδιά):\n1. Άγιοι Απόστολοι · 10:00–13:00\n   ✓ Ήρεμη θάλασσα, ιδανική για μπάνιο\n2. Μαράθι · 13:00–17:00\n   ✓ Ξαπλώστρες, φαγητό, τουαλέτες\n3. Βοτανικό Πάρκο Κρήτης · 09:00–12:00\n   ✓ Ευχάριστη θερμοκρασία (20°C)\n\nΚαλύτερα όχι αύριο: Φαλάσαρνα (έχει κύμα (~0.65 m), προσοχή στο μπάνιο).\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nΚαλό βράδυ! Αν αλλάξει ο καιρός, θα σας ενημερώσουμε το πρωί.",
+   "en": "Good evening from Alkyoni Suites!\nTomorrow, Saturday 24 October:\n22°, light wind from the NE, sea north slight ripple, west small waves, south small waves.\n\nOur picks for you (Family with kids):\n1. Agioi Apostoloi · 10:00–13:00\n   ✓ Calm sea, ideal for swimming\n2. Marathi · 13:00–17:00\n   ✓ Sunbeds, food and toilets\n3. Botanical Park of Crete · 09:00–12:00\n   ✓ Pleasant temperature (20°C)\n\nBetter not tomorrow: Falasarna (some waves (~0.65 m), swim with care).\n\nAll picks, maps and directions: https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nHave a good evening! If the weather changes, we will let you know in the morning.",
+   "de": "Guten Abend von Alkyoni Suites!\nMorgen, Samstag, 24. Oktober:\n22°, leichter Wind aus NO, Meer Nord leicht bewegt, West kleine Wellen, Süd kleine Wellen.\n\nUnsere Tipps für Sie (Familie mit Kindern):\n1. Agioi Apostoloi · 10:00–13:00\n   ✓ Ruhiges Meer, ideal zum Baden\n2. Marathi · 13:00–17:00\n   ✓ Liegen, Essen und Toiletten\n3. Botanical Park of Crete · 09:00–12:00\n   ✓ Angenehme Temperatur (20°C)\n\nMorgen besser nicht: Falasarna (etwas wellengang (~0.65 m), vorsichtig baden).\n\nAlle Tipps, Karten und Wegbeschreibungen: https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nSchönen Abend! Falls sich das Wetter ändert, melden wir uns morgen früh.",
+   "fr": "Bonsoir de la part de Alkyoni Suites !\nDemain, samedi 24 octobre :\n22°, vent léger de NE, mer nord peu agitée, ouest petites vagues, sud petites vagues.\n\nNos conseils pour vous (Famille avec enfants) :\n1. Agioi Apostoloi · 10:00–13:00\n   ✓ Mer calme, idéale pour la baignade\n2. Marathi · 13:00–17:00\n   ✓ Transats, restauration, toilettes\n3. Botanical Park of Crete · 09:00–12:00\n   ✓ Température agréable (20°C)\n\nÀ éviter demain : Falasarna (quelques vagues (~0.65 m), baignade prudente).\n\nTous les conseils, cartes et itinéraires : https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nBonne soirée ! Si la météo change, nous vous préviendrons demain matin."
+  },
+  "couple": {
+   "el": "Καλησπέρα από το Alkyoni Suites!\nΑύριο, Σάββατο 24 Οκτωβρίου:\n22°, ελαφρύς αέρας ΒΑ, θάλασσα βόρεια λίγο κυματάκι, δυτική κυματάκι, νότια κυματάκι.\n\nΟι προτάσεις μας για εσάς (Ζευγάρι):\n1. Ελαφονήσι · 09:00–13:00\n   ✓ Εδώ συνήθως έχει αέρα· αυτή τη μέρα είναι ήρεμα, σπάνια ευκαιρία\n2. Μπάλος (λιμνοθάλασσα) · 13:00–17:00\n   ✓ Εντυπωσιακό τοπίο\n3. Σεϊτάν Λιμάνια · 09:00–11:00\n   ✓ Ήρεμη θάλασσα, ιδανική για μπάνιο\nΠάρτε μαζί: πηγαίνετε νωρίς, έχει πολύ κόσμο το μεσημέρι.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nΚαλό βράδυ! Αν αλλάξει ο καιρός, θα σας ενημερώσουμε το πρωί.",
+   "en": "Good evening from Alkyoni Suites!\nTomorrow, Saturday 24 October:\n22°, light wind from the NE, sea north slight ripple, west small waves, south small waves.\n\nOur picks for you (Couple):\n1. Elafonisi · 09:00–13:00\n   ✓ Usually windy here; calm on this day, a rare chance\n2. Balos Lagoon · 13:00–17:00\n   ✓ Stunning scenery\n3. Seitan Limania · 09:00–11:00\n   ✓ Calm sea, ideal for swimming\nBring: go early, it gets crowded at midday.\n\nAll picks, maps and directions: https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nHave a good evening! If the weather changes, we will let you know in the morning.",
+   "de": "Guten Abend von Alkyoni Suites!\nMorgen, Samstag, 24. Oktober:\n22°, leichter Wind aus NO, Meer Nord leicht bewegt, West kleine Wellen, Süd kleine Wellen.\n\nUnsere Tipps für Sie (Paar):\n1. Elafonisi · 09:00–13:00\n   ✓ Hier ist es meist windig; an diesem Tag ruhig, eine seltene Gelegenheit\n2. Balos Lagoon · 13:00–17:00\n   ✓ Atemberaubende Landschaft\n3. Seitan Limania · 09:00–11:00\n   ✓ Ruhiges Meer, ideal zum Baden\nMitnehmen: früh hinfahren, mittags ist es voll.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nSchönen Abend! Falls sich das Wetter ändert, melden wir uns morgen früh.",
+   "fr": "Bonsoir de la part de Alkyoni Suites !\nDemain, samedi 24 octobre :\n22°, vent léger de NE, mer nord peu agitée, ouest petites vagues, sud petites vagues.\n\nNos conseils pour vous (Couple) :\n1. Elafonisi · 09:00–13:00\n   ✓ D'habitude venté ici ; calme ce jour-là, une occasion rare\n2. Balos Lagoon · 13:00–17:00\n   ✓ Paysage spectaculaire\n3. Seitan Limania · 09:00–11:00\n   ✓ Mer calme, idéale pour la baignade\nÀ emporter : allez-y tôt, il y a foule à midi.\n\nTous les conseils, cartes et itinéraires : https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nBonne soirée ! Si la météo change, nous vous préviendrons demain matin."
+  },
+  "solo": {
+   "el": "Καλησπέρα από το Alkyoni Suites!\nΑύριο, Σάββατο 24 Οκτωβρίου:\n22°, ελαφρύς αέρας ΒΑ, θάλασσα βόρεια λίγο κυματάκι, δυτική κυματάκι, νότια κυματάκι.\n\nΟι προτάσεις μας για εσάς (Μόνος/η):\n1. Παλιά Πόλη & Ενετικό Λιμάνι · 09:00–12:00\n   ✓ Ευχάριστη θερμοκρασία (19°C)\n2. Ελαφονήσι · 09:00–13:00\n   ✓ Εδώ συνήθως έχει αέρα· αυτή τη μέρα είναι ήρεμα, σπάνια ευκαιρία\n3. Μπάλος (λιμνοθάλασσα) · 13:00–17:00\n   ✓ Εντυπωσιακό τοπίο\nΠάρτε μαζί: ελαφρύ μπουφάν.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nΚαλό βράδυ! Αν αλλάξει ο καιρός, θα σας ενημερώσουμε το πρωί.",
+   "en": "Good evening from Alkyoni Suites!\nTomorrow, Saturday 24 October:\n22°, light wind from the NE, sea north slight ripple, west small waves, south small waves.\n\nOur picks for you (Solo):\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Pleasant temperature (19°C)\n2. Elafonisi · 09:00–13:00\n   ✓ Usually windy here; calm on this day, a rare chance\n3. Balos Lagoon · 13:00–17:00\n   ✓ Stunning scenery\nBring: a light jacket.\n\nAll picks, maps and directions: https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nHave a good evening! If the weather changes, we will let you know in the morning.",
+   "de": "Guten Abend von Alkyoni Suites!\nMorgen, Samstag, 24. Oktober:\n22°, leichter Wind aus NO, Meer Nord leicht bewegt, West kleine Wellen, Süd kleine Wellen.\n\nUnsere Tipps für Sie (Allein):\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Angenehme Temperatur (19°C)\n2. Elafonisi · 09:00–13:00\n   ✓ Hier ist es meist windig; an diesem Tag ruhig, eine seltene Gelegenheit\n3. Balos Lagoon · 13:00–17:00\n   ✓ Atemberaubende Landschaft\nMitnehmen: eine leichte jacke.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nSchönen Abend! Falls sich das Wetter ändert, melden wir uns morgen früh.",
+   "fr": "Bonsoir de la part de Alkyoni Suites !\nDemain, samedi 24 octobre :\n22°, vent léger de NE, mer nord peu agitée, ouest petites vagues, sud petites vagues.\n\nNos conseils pour vous (En solo) :\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Température agréable (19°C)\n2. Elafonisi · 09:00–13:00\n   ✓ D'habitude venté ici ; calme ce jour-là, une occasion rare\n3. Balos Lagoon · 13:00–17:00\n   ✓ Paysage spectaculaire\nÀ emporter : une veste légère.\n\nTous les conseils, cartes et itinéraires : https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nBonne soirée ! Si la météo change, nous vous préviendrons demain matin."
+  },
+  "active": {
+   "el": "Καλησπέρα από το Alkyoni Suites!\nΑύριο, Σάββατο 24 Οκτωβρίου:\n22°, ελαφρύς αέρας ΒΑ, θάλασσα βόρεια λίγο κυματάκι, δυτική κυματάκι, νότια κυματάκι.\n\nΟι προτάσεις μας για εσάς (Περιπέτεια & πεζοπορία):\n1. Ελαφονήσι · 09:00–13:00\n   ✓ Εδώ συνήθως έχει αέρα· αυτή τη μέρα είναι ήρεμα, σπάνια ευκαιρία\n2. Φαράγγι της Σαμαριάς · 07:00–14:00\n   ✓ Ωραία πεζοπορία\n3. Μπάλος (λιμνοθάλασσα) · 13:00–17:00\n   ✓ Ήρεμη θάλασσα, ιδανική για μπάνιο\nΠάρτε μαζί: πηγαίνετε νωρίς, έχει πολύ κόσμο το μεσημέρι.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nΚαλό βράδυ! Αν αλλάξει ο καιρός, θα σας ενημερώσουμε το πρωί.",
+   "en": "Good evening from Alkyoni Suites!\nTomorrow, Saturday 24 October:\n22°, light wind from the NE, sea north slight ripple, west small waves, south small waves.\n\nOur picks for you (Adventure & hiking):\n1. Elafonisi · 09:00–13:00\n   ✓ Usually windy here; calm on this day, a rare chance\n2. Samaria Gorge · 07:00–14:00\n   ✓ A great hike\n3. Balos Lagoon · 13:00–17:00\n   ✓ Calm sea, ideal for swimming\nBring: go early, it gets crowded at midday.\n\nAll picks, maps and directions: https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nHave a good evening! If the weather changes, we will let you know in the morning.",
+   "de": "Guten Abend von Alkyoni Suites!\nMorgen, Samstag, 24. Oktober:\n22°, leichter Wind aus NO, Meer Nord leicht bewegt, West kleine Wellen, Süd kleine Wellen.\n\nUnsere Tipps für Sie (Abenteuer & Wandern):\n1. Elafonisi · 09:00–13:00\n   ✓ Hier ist es meist windig; an diesem Tag ruhig, eine seltene Gelegenheit\n2. Samaria Gorge · 07:00–14:00\n   ✓ Eine tolle Wanderung\n3. Balos Lagoon · 13:00–17:00\n   ✓ Ruhiges Meer, ideal zum Baden\nMitnehmen: früh hinfahren, mittags ist es voll.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nSchönen Abend! Falls sich das Wetter ändert, melden wir uns morgen früh.",
+   "fr": "Bonsoir de la part de Alkyoni Suites !\nDemain, samedi 24 octobre :\n22°, vent léger de NE, mer nord peu agitée, ouest petites vagues, sud petites vagues.\n\nNos conseils pour vous (Aventure & randonnée) :\n1. Elafonisi · 09:00–13:00\n   ✓ D'habitude venté ici ; calme ce jour-là, une occasion rare\n2. Samaria Gorge · 07:00–14:00\n   ✓ Une belle randonnée\n3. Balos Lagoon · 13:00–17:00\n   ✓ Mer calme, idéale pour la baignade\nÀ emporter : allez-y tôt, il y a foule à midi.\n\nTous les conseils, cartes et itinéraires : https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nBonne soirée ! Si la météo change, nous vous préviendrons demain matin."
+  },
+  "senior": {
+   "el": "Καλησπέρα από το Alkyoni Suites!\nΑύριο, Σάββατο 24 Οκτωβρίου:\n22°, ελαφρύς αέρας ΒΑ, θάλασσα βόρεια λίγο κυματάκι, δυτική κυματάκι, νότια κυματάκι.\n\nΟι προτάσεις μας για εσάς (Χαλαρό πρόγραμμα):\n1. Παλιά Πόλη & Ενετικό Λιμάνι · 09:00–12:00\n   ✓ Ευχάριστη θερμοκρασία (19°C)\n2. Θέρισο & φαράγγι (με αυτοκίνητο) · 10:00–13:00\n   ✓ Ευχάριστη θερμοκρασία (17°C)\n3. Βάμος & χωριά Αποκορώνου · 09:00–12:00\n   ✓ Ευχάριστη θερμοκρασία (20°C)\nΠάρτε μαζί: ελαφρύ μπουφάν.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nΚαλό βράδυ! Αν αλλάξει ο καιρός, θα σας ενημερώσουμε το πρωί.",
+   "en": "Good evening from Alkyoni Suites!\nTomorrow, Saturday 24 October:\n22°, light wind from the NE, sea north slight ripple, west small waves, south small waves.\n\nOur picks for you (Easy-going pace):\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Pleasant temperature (19°C)\n2. Theriso village & gorge drive · 10:00–13:00\n   ✓ Pleasant temperature (17°C)\n3. Vamos & Apokoronas villages · 09:00–12:00\n   ✓ Pleasant temperature (20°C)\nBring: a light jacket.\n\nAll picks, maps and directions: https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nHave a good evening! If the weather changes, we will let you know in the morning.",
+   "de": "Guten Abend von Alkyoni Suites!\nMorgen, Samstag, 24. Oktober:\n22°, leichter Wind aus NO, Meer Nord leicht bewegt, West kleine Wellen, Süd kleine Wellen.\n\nUnsere Tipps für Sie (Gemütliches Tempo):\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Angenehme Temperatur (19°C)\n2. Theriso village & gorge drive · 10:00–13:00\n   ✓ Angenehme Temperatur (17°C)\n3. Vamos & Apokoronas villages · 09:00–12:00\n   ✓ Angenehme Temperatur (20°C)\nMitnehmen: eine leichte jacke.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nSchönen Abend! Falls sich das Wetter ändert, melden wir uns morgen früh.",
+   "fr": "Bonsoir de la part de Alkyoni Suites !\nDemain, samedi 24 octobre :\n22°, vent léger de NE, mer nord peu agitée, ouest petites vagues, sud petites vagues.\n\nNos conseils pour vous (Rythme tranquille) :\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Température agréable (19°C)\n2. Theriso village & gorge drive · 10:00–13:00\n   ✓ Température agréable (17°C)\n3. Vamos & Apokoronas villages · 09:00–12:00\n   ✓ Température agréable (20°C)\nÀ emporter : une veste légère.\n\nTous les conseils, cartes et itinéraires : https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nBonne soirée ! Si la météo change, nous vous préviendrons demain matin."
+  },
+  "nocar": {
+   "el": "Καλησπέρα από το Alkyoni Suites!\nΑύριο, Σάββατο 24 Οκτωβρίου:\n22°, ελαφρύς αέρας ΒΑ, θάλασσα βόρεια λίγο κυματάκι, δυτική κυματάκι, νότια κυματάκι.\n\nΟι προτάσεις μας για εσάς (Χωρίς αυτοκίνητο):\n1. Παλιά Πόλη & Ενετικό Λιμάνι · 09:00–12:00\n   ✓ Ευχάριστη θερμοκρασία (19°C)\n2. Πλατανιάς · 13:00–17:00\n   ✓ Ήρεμη θάλασσα, ιδανική για μπάνιο\n3. Κολυμπάρι · 13:00–17:00\n   ✓ Φτάνει λεωφορείο\nΠάρτε μαζί: ελαφρύ μπουφάν.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nΚαλό βράδυ! Αν αλλάξει ο καιρός, θα σας ενημερώσουμε το πρωί.",
+   "en": "Good evening from Alkyoni Suites!\nTomorrow, Saturday 24 October:\n22°, light wind from the NE, sea north slight ripple, west small waves, south small waves.\n\nOur picks for you (No car):\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Pleasant temperature (19°C)\n2. Platanias · 13:00–17:00\n   ✓ Calm sea, ideal for swimming\n3. Kolymbari · 13:00–17:00\n   ✓ Reachable by bus\nBring: a light jacket.\n\nAll picks, maps and directions: https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nHave a good evening! If the weather changes, we will let you know in the morning.",
+   "de": "Guten Abend von Alkyoni Suites!\nMorgen, Samstag, 24. Oktober:\n22°, leichter Wind aus NO, Meer Nord leicht bewegt, West kleine Wellen, Süd kleine Wellen.\n\nUnsere Tipps für Sie (Ohne Auto):\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Angenehme Temperatur (19°C)\n2. Platanias · 13:00–17:00\n   ✓ Ruhiges Meer, ideal zum Baden\n3. Kolymbari · 13:00–17:00\n   ✓ Mit dem Bus erreichbar\nMitnehmen: eine leichte jacke.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nSchönen Abend! Falls sich das Wetter ändert, melden wir uns morgen früh.",
+   "fr": "Bonsoir de la part de Alkyoni Suites !\nDemain, samedi 24 octobre :\n22°, vent léger de NE, mer nord peu agitée, ouest petites vagues, sud petites vagues.\n\nNos conseils pour vous (Sans voiture) :\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Température agréable (19°C)\n2. Platanias · 13:00–17:00\n   ✓ Mer calme, idéale pour la baignade\n3. Kolymbari · 13:00–17:00\n   ✓ Accessible en bus\nÀ emporter : une veste légère.\n\nTous les conseils, cartes et itinéraires : https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP\nBonne soirée ! Si la météo change, nous vous préviendrons demain matin."
+  }
+ }
+}
