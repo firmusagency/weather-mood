@@ -18,7 +18,8 @@ import { loadPlanB, type PlanBReport } from './data';
 import type { VerificationSummary } from '../engine/verify';
 import { relativeDayLabel, strings } from './i18n';
 
-const TABS = ['overview', 'analysis', 'recs', 'method'] as const;
+const GUEST_URL = ((import.meta as unknown as { env?: Record<string, string | undefined> }).env?.VITE_GUEST_URL as string | undefined) || 'guest.html';
+const TABS = ['recs', 'overview', 'analysis', 'method'] as const;
 type Tab = (typeof TABS)[number];
 const LANGS = ['el', 'en'] as const;
 const PROFILE_IDS = PROFILES.map((p) => p.id);
@@ -26,7 +27,7 @@ const BASE_IDS = BASES.map((b) => b.id);
 
 function initialTab(): Tab {
   const h = typeof location !== 'undefined' ? location.hash.slice(1) : '';
-  return (TABS as readonly string[]).includes(h) ? (h as Tab) : readPref('tab', TABS, 'overview');
+  return (TABS as readonly string[]).includes(h) ? (h as Tab) : readPref('tab', TABS, 'recs');
 }
 
 function PlanBBanner({ report, profileId, lang }: { report: PlanBReport; profileId: ProfileId; lang: Lang }) {
@@ -179,6 +180,9 @@ export function App() {
                 {live === 'busy' ? s.refreshing : s.refresh}
               </button>
             )}
+            <a className="btn btn-ghost btn-sm" href={EMBEDDED ? GUEST_URL : 'guest.html'} target="_blank" rel="noreferrer">
+              {s.guestPage}
+            </a>
             <div className="lang-toggle" role="group" aria-label="language">
               {LANGS.map((l) => (
                 <button key={l} type="button" className={lang === l ? 'is-on' : ''} aria-pressed={lang === l} onClick={() => setLang(l)}>

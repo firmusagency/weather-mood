@@ -1106,3 +1106,122 @@ body[data-view='lobby'],
   border-radius: 12px;
   aspect-ratio: 16 / 7;
 }
+
+/* ---- UX round 3: one-line profile chips, slimmer cards, QR room card ---- */
+.g-who {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 10px 0 2px;
+}
+.g-profiles {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin: 0 -16px;
+  padding: 2px 16px 6px;
+}
+.g-profiles::-webkit-scrollbar {
+  display: none;
+}
+.g-profiles button {
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+.g-actions .g-btn {
+  flex: 1 1 0;
+  text-align: center;
+}
+.g-qrcard-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 16px 40px;
+}
+.g-qrcard {
+  width: min(100%, 360px);
+  background: #ffffff;
+  color: #10242e;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 22px 22px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  box-shadow: 0 6px 22px rgb(16 36 46 / 0.08);
+}
+.g-qrcard-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  align-self: flex-start;
+  text-align: left;
+}
+.g-qrcard-head .g-prop-name {
+  color: #10242e;
+}
+.g-qrcard-head .g-prop-tag {
+  color: #5d6d71;
+}
+.g-qrcard-title {
+  margin: 4px 0 0;
+  font-family: 'Literata', Georgia, serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.15;
+}
+.g-qrcard .qr {
+  border: 1px solid #d5e0e3;
+  border-radius: 10px;
+  padding: 6px;
+  background: #fff;
+}
+.g-qrcard-langs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: #334a53;
+}
+.g-qrcard-url {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #5d6d71;
+  word-break: break-all;
+}
+.g-qrcard-foot {
+  margin: 4px 0 0;
+  font-size: 0.6875rem;
+  color: #8a9a9f;
+}
+.g-qrcard-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  max-width: 360px;
+  text-align: center;
+}
+@media print {
+  .demo-bar,
+  .g-qrcard-actions {
+    display: none !important;
+  }
+  body,
+  .guest-root {
+    background: #fff !important;
+  }
+  .g-qrcard-wrap {
+    padding: 0;
+  }
+  .g-qrcard {
+    border: 1px solid #ccc;
+    box-shadow: none;
+    width: 100mm;
+    page-break-inside: avoid;
+  }
+}

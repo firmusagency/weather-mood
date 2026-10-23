@@ -6,6 +6,7 @@ import { detectLang, g } from './i18n';
 import { LobbyView } from './LobbyView';
 import { PhoneView } from './PhoneView';
 import { ReceptionView } from './ReceptionView';
+import { QrCard } from './QrCard';
 import { logVisit } from './feedback';
 import { SPOTS } from '../data/spots';
 import { applyCalibration } from '../engine/feedback';
@@ -13,12 +14,12 @@ import { athensDate } from '../engine/dates';
 import { DEMO_PROPERTY, GUEST_LANGS, type GuestLang } from './property';
 import { defaultDate, useDatasets, useDayPlan } from './useGuestData';
 
-type View = 'phone' | 'lobby' | 'reception';
+type View = 'phone' | 'lobby' | 'reception' | 'qr';
 const PROFILE_IDS = PROFILES.map((p) => p.id);
 
 const initialView = (): View => {
   const h = typeof location !== 'undefined' ? location.hash : '';
-  return h === '#lobby' ? 'lobby' : h === '#reception' ? 'reception' : 'phone';
+  return h === '#lobby' ? 'lobby' : h === '#reception' ? 'reception' : h === '#qr' ? 'qr' : 'phone';
 };
 
 export function GuestApp() {
@@ -42,7 +43,7 @@ export function GuestApp() {
     document.body.dataset.view = view;
   }, [view]);
   useEffect(() => {
-    if (status === 'ready') void logVisit(property.id, view, lang, view === 'phone' ? profile : null, view === 'reception' ? null : effectiveDate || null);
+    if (status === 'ready' && view !== 'qr') void logVisit(property.id, view, lang, view === 'phone' ? profile : null, view === 'reception' ? null : effectiveDate || null);
     // one ping per view and browser session; lang/profile are just what was on screen at that moment
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [view, status]);
@@ -50,7 +51,7 @@ export function GuestApp() {
   const switchView = (v: View) => {
     setView(v);
     try {
-      history.replaceState(null, '', v === 'lobby' ? '#lobby' : v === 'reception' ? '#reception' : '#guest');
+      history.replaceState(null, '', v === 'phone' ? '#guest' : `#${v}`);
     } catch {
       /* ignore */
     }
@@ -74,6 +75,9 @@ export function GuestApp() {
             <button type="button" className={view === 'reception' ? 'is-on' : ''} aria-pressed={view === 'reception'} onClick={() => switchView('reception')}>
               {d.fb.rcView}
             </button>
+            <button type="button" className={view === 'qr' ? 'is-on' : ''} aria-pressed={view === 'qr'} onClick={() => switchView('qr')}>
+              {d.qrView}
+            </button>
           </div>
         </nav>
       )}
@@ -94,6 +98,7 @@ export function GuestApp() {
         />
       )}
       {view === 'lobby' && lobbyData && <LobbyView data={lobbyData} property={property} spots={applyCalibration(SPOTS, calibration)} />}
+      {view === 'qr' && <QrCard property={property} lang={lang} />}
       {view === 'reception' && (
         <ReceptionView
           property={property}

@@ -77,6 +77,11 @@ type Dict = {
   types: Record<SpotType, string>;
   fb: FeedbackDict;
   photo: string;
+  qrView: string;
+  qrTitle: string;
+  qrLine: string;
+  qrPrint: string;
+  qrHint: string;
   compass: string[];
 };
 
@@ -124,6 +129,11 @@ const EL: Dict = {
   seaWords: ['ήρεμη', 'λίγο κυματάκι', 'κυματάκι', 'κύμα'],
   windWords: ['σχεδόν άπνοια', 'ελαφρύς', 'μέτριος', 'δυνατός'],
   photo: 'Φωτο',
+  qrView: 'Κάρτα QR δωματίου',
+  qrTitle: 'Πού να πάτε αύριο;',
+  qrLine: 'Σκανάρετε για τις προτάσεις της ημέρας στα Ελληνικά',
+  qrPrint: 'Εκτύπωση κάρτας',
+  qrHint: 'Εκτυπώστε σε A6 ή A5 και βάλτε μία σε κάθε δωμάτιο και στη reception.',
   fb: {
     title: 'Πήγατε; Πώς ήταν;',
     intro: 'Μία απάντηση βοηθάει τον επόμενο επισκέπτη και κάνει τις προτάσεις πιο ακριβείς.',
@@ -219,6 +229,11 @@ const EN: Dict = {
   seaWords: ['calm', 'slight ripple', 'small waves', 'rough'],
   windWords: ['almost still', 'light', 'moderate', 'strong'],
   photo: 'Photo',
+  qrView: 'Room QR card',
+  qrTitle: 'Where to go tomorrow?',
+  qrLine: 'Scan for today’s picks in English',
+  qrPrint: 'Print card',
+  qrHint: 'Print on A6 or A5 and put one in every room and at the reception.',
   fb: {
     title: 'Did you go? How was it?',
     intro: 'One answer helps the next guest and makes our picks more accurate.',
@@ -314,6 +329,11 @@ const DE: Dict = {
   seaWords: ['ruhig', 'leicht bewegt', 'kleine Wellen', 'rau'],
   windWords: ['fast windstill', 'leicht', 'mäßig', 'stark'],
   photo: 'Foto',
+  qrView: 'QR-Karte fürs Zimmer',
+  qrTitle: 'Wohin morgen?',
+  qrLine: 'Scannen für die Tipps des Tages auf Deutsch',
+  qrPrint: 'Karte drucken',
+  qrHint: 'Auf A6 oder A5 drucken und in jedes Zimmer und an die Rezeption legen.',
   fb: {
     title: 'Waren Sie dort? Wie war es?',
     intro: 'Eine Antwort hilft dem nächsten Gast und macht unsere Tipps genauer.',
@@ -409,6 +429,11 @@ const FR: Dict = {
   seaWords: ['calme', 'peu agitée', 'petites vagues', 'agitée'],
   windWords: ['presque calme', 'léger', 'modéré', 'fort'],
   photo: 'Photo',
+  qrView: 'Carte QR de chambre',
+  qrTitle: 'Où aller demain ?',
+  qrLine: 'Scannez pour les conseils du jour en français',
+  qrPrint: 'Imprimer la carte',
+  qrHint: 'Imprimez en A6 ou A5 et placez-en une dans chaque chambre et à la réception.',
   fb: {
     title: 'Vous y êtes allés ? Comment c\'était ?',
     intro: 'Une réponse aide le prochain visiteur et rend nos conseils plus précis.',

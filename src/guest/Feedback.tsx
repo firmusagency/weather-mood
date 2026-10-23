@@ -141,6 +141,19 @@ export function PickerVote({ property, lang, profile, today, hourNow, onDone }: 
   );
 }
 
+/** Is there a recommended place from a past day we have not asked about yet? */
+export function pendingPrompt(today: string, hourNow: number): { date: string; spotId: string } | null {
+  if (!feedbackEnabled()) return null;
+  const askable = new Set(askableDates(today, hourNow));
+  const done = new Set(readDone());
+  for (const p of readPlans()) {
+    if (!askable.has(p.date)) continue;
+    const spotId = p.spotIds.find((id) => !done.has(doneKey(p.date, id)) && spotById(id));
+    if (spotId) return { date: p.date, spotId };
+  }
+  return null;
+}
+
 export function FeedbackPanel({ property, lang, profile, today, hourNow }: { property: Property; lang: GuestLang; profile: ProfileId; today: string; hourNow: number }) {
   const d = g(lang).fb;
   const [hidden, setHidden] = useState(false);

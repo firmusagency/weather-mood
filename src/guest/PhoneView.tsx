@@ -3,12 +3,12 @@ import { spotById } from '../data/spots';
 import { athensDate } from '../engine/dates';
 import type { ProfileId, Spot, SpotScore } from '../engine/types';
 import { PROFILES } from '../data/profiles';
-import { daySummary, dedupeReasons, mainProblem, mapsUrl, seaLevel, sharePlanText, shareSpotText, travelLabel, windLevel, type GuestLine } from './advice';
+import { daySummary, dedupeReasons, mainProblem, mapsUrl, seaLevel, sharePlanText, travelLabel, windLevel, type GuestLine } from './advice';
 import { ShareButton } from './Share';
 import { compassG, dayName, g, LANG_NAMES, pick } from './i18n';
 import { GUEST_LANGS, type GuestLang, type Property } from './property';
 import { SpotSheet } from './SpotSheet';
-import { FeedbackPanel } from './Feedback';
+import { FeedbackPanel, pendingPrompt } from './Feedback';
 import { rememberPlan } from './feedback';
 import { askEveningText, whatsappTo } from './evening';
 import { SpotPhoto } from '../ui/Photo';
@@ -23,7 +23,7 @@ const COAST_LABEL: Record<GuestLang, string> = { el: 'Θάλασσα ανά ακ
 
 const pad = (h: number) => `${String(h).padStart(2, '0')}:00`;
 
-function PickCard({ sc, spot, lines, property, profile, lang, dayLabel, onOpen }: { sc: SpotScore; spot: Spot; lines: GuestLine[]; property: Property; profile: ProfileId; lang: GuestLang; dayLabel: string; onOpen: () => void }) {
+function PickCard({ sc, spot, lines, property, profile, lang, onOpen }: { sc: SpotScore; spot: Spot; lines: GuestLine[]; property: Property; profile: ProfileId; lang: GuestLang; onOpen: () => void }) {
   const d = g(lang);
   return (
     <li className="g-card">
@@ -37,7 +37,7 @@ function PickCard({ sc, spot, lines, property, profile, lang, dayLabel, onOpen }
         <span>{travelLabel(spot, sc, property.base, profile, d, lang)}</span>
       </p>
       <ul className="g-lines">
-        {lines.map((l) => (
+        {[...lines.filter((l) => l.kind === 'pos').slice(0, 1), ...lines.filter((l) => l.kind === 'warn').slice(0, 1)].map((l) => (
           <li key={l.text} className={`g-line g-${l.kind}`}>
             {l.text}
           </li>
@@ -48,9 +48,8 @@ function PickCard({ sc, spot, lines, property, profile, lang, dayLabel, onOpen }
           {d.directions}
         </a>
         <button type="button" className="g-btn" onClick={onOpen}>
-          {d.details}
+          {d.details} ›
         </button>
-        <ShareButton text={shareSpotText(spot, sc, lines, property.name, dayLabel, profile, lang)} title={pick(spot.name, lang)} lang={lang} />
       </div>
     </li>
   );
@@ -84,6 +83,7 @@ export function PhoneView({
   const { syn, rec, scores, conditions } = plan;
   const today = athensDate(0);
   const hourNow = Number(new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hourCycle: 'h23', timeZone: 'Europe/Athens' }).format(new Date()));
+  const hasPrompt = pendingPrompt(today, hourNow) != null;
   // Remember what we recommended, so we can ask "did you go?" afterwards.
   useEffect(() => {
     rememberPlan({ date, profile, spotIds: rec.top.map((sc) => sc.spotId) });
@@ -149,6 +149,19 @@ export function PhoneView({
         ))}
       </div>
 
+      <section className="g-who" aria-labelledby="g-who">
+        <span id="g-who" className="g-field-label">
+          {d.whoTravels}
+        </span>
+        <div className="g-profiles" role="group" aria-labelledby="g-who">
+          {PROFILES.map((p) => (
+            <button key={p.id} type="button" className={profile === p.id ? 'is-on' : ''} aria-pressed={profile === p.id} onClick={() => setProfile(p.id)}>
+              {d.profiles[p.id]}
+            </button>
+          ))}
+        </div>
+      </section>
+
       <section className="g-weather" aria-label={d.forecastFor}>
         <div className="g-weather-top">
           <div>
@@ -186,20 +199,7 @@ export function PhoneView({
         </div>
       </section>
 
-      <FeedbackPanel property={property} lang={lang} profile={profile} today={today} hourNow={hourNow} />
-
-      <section aria-labelledby="g-who">
-        <h2 id="g-who" className="g-h2">
-          {d.whoTravels}
-        </h2>
-        <div className="g-profiles" role="group" aria-labelledby="g-who">
-          {PROFILES.map((p) => (
-            <button key={p.id} type="button" className={profile === p.id ? 'is-on' : ''} aria-pressed={profile === p.id} onClick={() => setProfile(p.id)}>
-              {d.profiles[p.id]}
-            </button>
-          ))}
-        </div>
-      </section>
+      {hasPrompt && <FeedbackPanel property={property} lang={lang} profile={profile} today={today} hourNow={hourNow} />}
 
       <section aria-labelledby="g-picks">
         <h2 id="g-picks" className="g-h2">
@@ -209,7 +209,7 @@ export function PhoneView({
         {rec.top.length ? (
           <ul className="g-cards">
             {rec.top.map((sc, i) => (
-              <PickCard key={sc.spotId} sc={sc} spot={spotById(sc.spotId)!} lines={pickLines[i]} property={property} profile={profile} lang={lang} dayLabel={dayLabel} onOpen={() => setOpen(sc.spotId)} />
+              <PickCard key={sc.spotId} sc={sc} spot={spotById(sc.spotId)!} lines={pickLines[i]} property={property} profile={profile} lang={lang} onOpen={() => setOpen(sc.spotId)} />
             ))}
           </ul>
         ) : (
@@ -274,6 +274,8 @@ export function PhoneView({
           </ul>
         </section>
       )}
+
+      {!hasPrompt && <FeedbackPanel property={property} lang={lang} profile={profile} today={today} hourNow={hourNow} />}
 
       <footer className="g-foot">
         <p>{d.disclaimer}</p>
