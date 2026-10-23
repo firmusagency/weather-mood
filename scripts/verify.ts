@@ -55,9 +55,23 @@ async function fetchNoa(stationId: string, date: string, noaDir?: string): Promi
   if (noaDir) return readFileSync(join(noaDir, `${stationId}.txt`), 'utf8');
   const today = athensDate(0);
   const prev = date.slice(0, 7) !== today.slice(0, 7);
-  const res = await fetch(noaUrl(stationId, prev), { headers: { 'user-agent': 'weather-mood-verify/1.0' } });
-  if (!res.ok) throw new Error(`NOA ${stationId} ${res.status}`);
-  return res.text();
+  const url = noaUrl(stationId, prev);
+  // the station server is a plain shared host: try https, then http, and say why when both fail
+  const errors: string[] = [];
+  for (const u of [url, url.replace('https://', 'http://')]) {
+    try {
+      const res = await fetch(u, { headers: { 'user-agent': 'Mozilla/5.0 (compatible; weather-mood-verify/1.0; +https://github.com/firmusagency/weather-mood)' }, signal: AbortSignal.timeout(20_000) });
+      if (!res.ok) {
+        errors.push(`${u}: HTTP ${res.status}`);
+        continue;
+      }
+      return await res.text();
+    } catch (e) {
+      const cause = (e as Error & { cause?: Error }).cause;
+      errors.push(`${u}: ${(e as Error).message}${cause ? ` (${cause.message})` : ''}`);
+    }
+  }
+  throw new Error(errors.join(' | '));
 }
 
 function writeSummary(rows: VerificationRow[], stationRows: DailyVerificationRow[] = readStationLog()) {
