@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-10-23T07:52:47.996Z",
+ "updatedAt": "2026-10-23T11:22:58.706Z",
  "station": {
   "id": "LGSA",
   "name": "Chania airport (Akrotiri)",
@@ -214,18 +214,18 @@
   {
    "id": "falasarna",
    "name": "Falasarna (NOA)",
-   "days": 4,
+   "days": 5,
    "from": "2026-10-18",
-   "to": "2026-10-21",
-   "gustMae": 8.8,
-   "gustWithin10Rate": 0.75,
-   "gustBfWithin1Rate": 0.5,
-   "avgWindMae": 1.1,
-   "dirWithin45Rate": 0.75,
-   "tempMaxMae": 0.8,
+   "to": "2026-10-22",
+   "gustMae": 8.4,
+   "gustWithin10Rate": 0.8,
+   "gustBfWithin1Rate": 0.6,
+   "avgWindMae": 1.5,
+   "dirWithin45Rate": 0.6,
+   "tempMaxMae": 1.1,
    "rainAgreeRate": 1,
-   "picks": 4,
-   "picksHeld": 4,
+   "picks": 5,
+   "picksHeld": 5,
    "recent": [
     {
      "date": "2026-10-18",
@@ -382,24 +382,63 @@
       "gustInWindow": false,
       "held": true
      }
+    },
+    {
+     "date": "2026-10-22",
+     "wind": {
+      "forecastAvg": 10.5,
+      "observedAvg": 7.3,
+      "forecastDir": 190,
+      "observedDir": 45,
+      "dirDiff": 145
+     },
+     "gust": {
+      "forecastMax": 34.9,
+      "forecastHour": 15,
+      "observedMax": 41.8,
+      "observedHour": 16,
+      "withinHours": 1
+     },
+     "temp": {
+      "forecastMax": 27.4,
+      "observedMax": 29.6,
+      "forecastMin": 19.5,
+      "observedMin": 18.8
+     },
+     "rain": {
+      "forecastSumMm": 0,
+      "forecastProbMax": 0,
+      "observed": false,
+      "agree": true
+     },
+     "pick": {
+      "spotId": "falasarna",
+      "verdict": "go",
+      "window": {
+       "start": 9,
+       "end": 13
+      },
+      "gustInWindow": false,
+      "held": true
+     }
     }
    ]
   },
   {
    "id": "elafonisi",
    "name": "Elafonisi (NOA)",
-   "days": 4,
+   "days": 5,
    "from": "2026-10-18",
-   "to": "2026-10-21",
-   "gustMae": 7.9,
-   "gustWithin10Rate": 0.75,
-   "gustBfWithin1Rate": 1,
-   "avgWindMae": 7.7,
-   "dirWithin45Rate": 0.5,
-   "tempMaxMae": 1.1,
+   "to": "2026-10-22",
+   "gustMae": 10.9,
+   "gustWithin10Rate": 0.6,
+   "gustBfWithin1Rate": 0.8,
+   "avgWindMae": 8.8,
+   "dirWithin45Rate": 0.6,
+   "tempMaxMae": 1.5,
    "rainAgreeRate": 1,
-   "picks": 4,
-   "picksHeld": 4,
+   "picks": 5,
+   "picksHeld": 5,
    "recent": [
     {
      "date": "2026-10-18",
@@ -556,24 +595,63 @@
       "gustInWindow": false,
       "held": true
      }
+    },
+    {
+     "date": "2026-10-22",
+     "wind": {
+      "forecastAvg": 14.5,
+      "observedAvg": 1.3,
+      "forecastDir": 121,
+      "observedDir": 112.5,
+      "dirDiff": 9
+     },
+     "gust": {
+      "forecastMax": 46.8,
+      "forecastHour": 14,
+      "observedMax": 24.1,
+      "observedHour": 17,
+      "withinHours": 3
+     },
+     "temp": {
+      "forecastMax": 23.6,
+      "observedMax": 26.5,
+      "forecastMin": 21.2,
+      "observedMin": 19.5
+     },
+     "rain": {
+      "forecastSumMm": 0,
+      "forecastProbMax": 2,
+      "observed": false,
+      "agree": true
+     },
+     "pick": {
+      "spotId": "elafonisi",
+      "verdict": "go",
+      "window": {
+       "start": 8,
+       "end": 12
+      },
+      "gustInWindow": false,
+      "held": true
+     }
     }
    ]
   },
   {
    "id": "paleochora",
    "name": "Paleochora (NOA)",
-   "days": 4,
+   "days": 5,
    "from": "2026-10-18",
-   "to": "2026-10-21",
-   "gustMae": 9.3,
-   "gustWithin10Rate": 0.5,
+   "to": "2026-10-22",
+   "gustMae": 7.9,
+   "gustWithin10Rate": 0.6,
    "gustBfWithin1Rate": 1,
-   "avgWindMae": 0.4,
-   "dirWithin45Rate": 0.75,
-   "tempMaxMae": 0.6,
+   "avgWindMae": 0.6,
+   "dirWithin45Rate": 0.6,
+   "tempMaxMae": 0.5,
    "rainAgreeRate": 1,
-   "picks": 4,
-   "picksHeld": 4,
+   "picks": 5,
+   "picksHeld": 5,
    "recent": [
     {
      "date": "2026-10-18",
@@ -730,24 +808,63 @@
       "gustInWindow": false,
       "held": true
      }
+    },
+    {
+     "date": "2026-10-22",
+     "wind": {
+      "forecastAvg": 8.3,
+      "observedAvg": 10,
+      "forecastDir": 116,
+      "observedDir": 67.5,
+      "dirDiff": 49
+     },
+     "gust": {
+      "forecastMax": 34.6,
+      "forecastHour": 16,
+      "observedMax": 32.2,
+      "observedHour": 14,
+      "withinHours": 2
+     },
+     "temp": {
+      "forecastMax": 24.4,
+      "observedMax": 24.3,
+      "forecastMin": 18.8,
+      "observedMin": 16.8
+     },
+     "rain": {
+      "forecastSumMm": 0,
+      "forecastProbMax": 2,
+      "observed": false,
+      "agree": true
+     },
+     "pick": {
+      "spotId": "paleochora-sandy",
+      "verdict": "go",
+      "window": {
+       "start": 8,
+       "end": 12
+      },
+      "gustInWindow": false,
+      "held": true
+     }
     }
    ]
   },
   {
    "id": "kissamos",
    "name": "Kissamos (NOA)",
-   "days": 4,
+   "days": 5,
    "from": "2026-10-18",
-   "to": "2026-10-21",
-   "gustMae": 1.8,
+   "to": "2026-10-22",
+   "gustMae": 1.9,
    "gustWithin10Rate": 1,
    "gustBfWithin1Rate": 1,
-   "avgWindMae": 3.5,
-   "dirWithin45Rate": 0.75,
-   "tempMaxMae": 1,
+   "avgWindMae": 3.2,
+   "dirWithin45Rate": 0.8,
+   "tempMaxMae": 0.8,
    "rainAgreeRate": 1,
-   "picks": 4,
-   "picksHeld": 4,
+   "picks": 5,
+   "picksHeld": 5,
    "recent": [
     {
      "date": "2026-10-18",
@@ -900,6 +1017,45 @@
       "window": {
        "start": 11,
        "end": 15
+      },
+      "gustInWindow": false,
+      "held": true
+     }
+    },
+    {
+     "date": "2026-10-22",
+     "wind": {
+      "forecastAvg": 9,
+      "observedAvg": 6.9,
+      "forecastDir": 193,
+      "observedDir": 202.5,
+      "dirDiff": 9
+     },
+     "gust": {
+      "forecastMax": 30.2,
+      "forecastHour": 16,
+      "observedMax": 32.2,
+      "observedHour": 8,
+      "withinHours": 8
+     },
+     "temp": {
+      "forecastMax": 28.4,
+      "observedMax": 28.4,
+      "forecastMin": 18.1,
+      "observedMin": 13.6
+     },
+     "rain": {
+      "forecastSumMm": 0,
+      "forecastProbMax": 0,
+      "observed": false,
+      "agree": true
+     },
+     "pick": {
+      "spotId": "balos",
+      "verdict": "go",
+      "window": {
+       "start": 9,
+       "end": 13
       },
       "gustInWindow": false,
       "held": true
