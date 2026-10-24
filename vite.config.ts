@@ -27,6 +27,8 @@ export default defineConfig(({ mode }) => {
   const entry = process.env.ENTRY === 'guest' ? 'guest' : process.env.ENTRY === 'accuracy' ? 'accuracy' : 'index';
   const libs = entry === 'guest' ? [CDN.react, CDN.reactDom, CDN.qrcode] : [CDN.react, CDN.reactDom];
   return {
+    // GitHub Pages serves the site under /weather-mood/ (set VITE_BASE in the deploy workflow)
+    base: single ? '/' : process.env.VITE_BASE || '/',
     plugins: single ? [react({ jsxRuntime: 'classic' }), scriptsFromCdn(libs), viteSingleFile()] : [react()],
     esbuild: single ? { jsxInject: `import React from 'react'` } : undefined,
     publicDir: single ? false : 'public',

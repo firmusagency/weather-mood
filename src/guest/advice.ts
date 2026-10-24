@@ -209,12 +209,28 @@ export function dedupeReasons(scores: SpotScore[], lang: GuestLang): GuestLine[]
   return scores.map((sc) => guestReasons(sc, lang, ctx));
 }
 
+const UNSUITABLE: Record<string, L> = {
+  closed: { el: 'Κλειστό αυτή την εποχή', en: 'Closed at this time of year', de: 'Zu dieser Jahreszeit geschlossen', fr: 'Fermé à cette période de l’année' },
+  tooLate: { el: 'Πολύ αργά για σήμερα', en: 'Too late for today', de: 'Zu spät für heute', fr: 'Trop tard pour aujourd’hui' },
+  kids: { el: 'Δύσκολο για παιδιά', en: 'Hard going for children', de: 'Schwierig für Kinder', fr: 'Difficile pour les enfants' },
+  mobility: { el: 'Απαιτητική διαδρομή', en: 'A demanding route', de: 'Anspruchsvolle Strecke', fr: 'Parcours exigeant' },
+  nobus: { el: 'Δεν πάει λεωφορείο', en: 'No bus goes there', de: 'Kein Bus fährt dorthin', fr: 'Aucun bus n’y va' },
+};
+
+/** A single factor as a guest sentence (warnings and "unsuitable" reasons). */
+export function factorText(f: Factor | undefined, lang: GuestLang): string | undefined {
+  if (!f) return undefined;
+  if (f.key === 'closed') return t(f.params.kind === 'tooLate' ? UNSUITABLE.tooLate : UNSUITABLE.closed, lang);
+  if (f.key === 'notForProfile') return t(UNSUITABLE[String(f.params.why)] ?? UNSUITABLE.mobility, lang);
+  const tpl = WARN[f.key];
+  if (!tpl) return undefined;
+  const p = f.params;
+  return t(tpl, lang, { wave: p.wave ?? '', gust: p.gust ?? '', pp: p.pp ?? '', temp: p.apparent ?? '', sst: p.sst ?? '', bf: p.bf ?? '' });
+}
+
 /** The main problem with a place on this day — for the "better not" list. */
 export function mainProblem(sc: SpotScore, lang: GuestLang): string | undefined {
-  const f = sc.factors.find((x) => x.impact < 0 && WARN[x.key]);
-  if (!f) return undefined;
-  const p = f.params;
-  return t(WARN[f.key]!, lang, { wave: p.wave ?? '', gust: p.gust ?? '', pp: p.pp ?? '', temp: p.apparent ?? '', sst: p.sst ?? '', bf: p.bf ?? '' });
+  return factorText(sc.factors.find((x) => x.impact < 0 && WARN[x.key]), lang);
 }
 
 const TIPS: Record<string, L> = {
@@ -254,6 +270,14 @@ export function guestTips(spot: Spot, sc: SpotScore, conds: HourConditions[], la
 
 export function seaLevel(wave: number): 0 | 1 | 2 | 3 {
   return wave < 0.3 ? 0 : wave < 0.6 ? 1 : wave < 1.0 ? 2 : 3;
+}
+/** UV index bands: low (≤2), moderate (3–5), high (6–7), very high (8+). */
+export function uvLevel(uv: number): 0 | 1 | 2 | 3 {
+  return uv <= 2 ? 0 : uv <= 5 ? 1 : uv <= 7 ? 2 : 3;
+}
+/** Sea temperature as felt by a swimmer: cold (<20), fresh (<23), pleasant (<26), warm. */
+export function waterLevel(sst: number): 0 | 1 | 2 | 3 {
+  return sst < 20 ? 0 : sst < 23 ? 1 : sst < 26 ? 2 : 3;
 }
 export function windLevel(bf: number): 0 | 1 | 2 | 3 {
   return bf <= 1 ? 0 : bf <= 3 ? 1 : bf <= 5 ? 2 : 3;

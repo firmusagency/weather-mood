@@ -1,17 +1,20 @@
 import { useEffect, useState } from 'react';
 import { spotById } from '../data/spots';
 import { athensDate } from '../engine/dates';
-import type { ProfileId, Spot, SpotScore } from '../engine/types';
+import type { Dataset, ProfileId, Spot, SpotScore } from '../engine/types';
+import type { Calibration } from '../engine/feedback';
 import { PROFILES } from '../data/profiles';
-import { daySummary, dedupeReasons, mainProblem, mapsUrl, seaLevel, sharePlanText, travelLabel, windLevel, type GuestLine } from './advice';
+import { daySummary, dedupeReasons, mainProblem, mapsUrl, seaLevel, sharePlanText, travelLabel, uvLevel, windLevel, type GuestLine } from './advice';
 import { ShareButton } from './Share';
 import { compassG, dayName, g, LANG_NAMES, pick } from './i18n';
-import { GUEST_LANGS, type GuestLang, type Property } from './property';
+import { GUEST_LANGS, lt, type GuestLang, type Property } from './property';
 import { SpotSheet } from './SpotSheet';
 import { FeedbackPanel, pendingPrompt } from './Feedback';
 import { rememberPlan } from './feedback';
-import { askEveningText, whatsappTo } from './evening';
 import { SpotPhoto } from '../ui/Photo';
+import { StayPlanner } from './StayPlanner';
+import { PushBox } from './PushBox';
+import { Brand } from './Brand';
 import type { DayPlan } from './useGuestData';
 
 const COASTS: Record<string, Record<GuestLang, string>> = {
@@ -22,13 +25,18 @@ const COASTS: Record<string, Record<GuestLang, string>> = {
 const COAST_LABEL: Record<GuestLang, string> = { el: 'Θάλασσα ανά ακτή', en: 'Sea by coast', de: 'Meer nach Küste', fr: 'Mer par côte' };
 
 const pad = (h: number) => `${String(h).padStart(2, '0')}:00`;
+/** "2026-10-24T18:35" → "18:35" */
+export const hhmm = (iso: string | undefined) => (iso ? iso.slice(11, 16) : '');
 
 function PickCard({ sc, spot, lines, property, profile, lang, onOpen }: { sc: SpotScore; spot: Spot; lines: GuestLine[]; property: Property; profile: ProfileId; lang: GuestLang; onOpen: () => void }) {
   const d = g(lang);
   return (
     <li className="g-card">
       <SpotPhoto spotId={spot.id} alt={pick(spot.name, lang)} variant="card" creditWord={d.photo} />
-      <p className="g-eyebrow">{d.types[spot.type]}</p>
+      <p className="g-eyebrow">
+        {d.types[spot.type]}
+        {property.favourites?.includes(spot.id) && <span className="g-fav">★ {d.hotelPick.replace('{name}', property.name)}</span>}
+      </p>
       <h3 className="g-card-name">{pick(spot.name, lang)}</h3>
       <p className="g-card-meta">
         <span>
@@ -66,6 +74,9 @@ export function PhoneView({
   date,
   setDate,
   updatedAt,
+  datasets,
+  outlook,
+  calibration,
 }: {
   plan: DayPlan;
   property: Property;
@@ -77,6 +88,9 @@ export function PhoneView({
   date: string;
   setDate: (d: string) => void;
   updatedAt: string;
+  datasets: Record<string, Dataset>;
+  outlook: Record<string, Dataset>;
+  calibration: Calibration | null;
 }) {
   const d = g(lang);
   const [open, setOpen] = useState<string | null>(null);
@@ -118,15 +132,7 @@ export function PhoneView({
   return (
     <div className="g-phone">
       <header className="g-head">
-        <div className="g-brand">
-          <span className="g-monogram" aria-hidden="true">
-            {property.name[0]}
-          </span>
-          <div>
-            <p className="g-prop-name">{property.name}</p>
-            <p className="g-prop-tag">{property.tagline[lang] ?? property.tagline.en}</p>
-          </div>
-        </div>
+        <Brand property={property} lang={lang} />
         <label className="g-lang" htmlFor="g-lang">
           <span className="sr-only">Language</span>
           <select id="g-lang" value={lang} onChange={(e) => setLang(e.target.value as GuestLang)}>
@@ -182,7 +188,16 @@ export function PhoneView({
                 {d.sea}: {seaTemp}°
               </li>
             )}
-            {syn.town.uvMax != null && <li>UV {Math.round(syn.town.uvMax)}</li>}
+            {syn.town.uvMax != null && (
+              <li>
+                UV {Math.round(syn.town.uvMax)} · {d.uvWords[uvLevel(syn.town.uvMax)]}
+              </li>
+            )}
+            {syn.town.sunset && (
+              <li>
+                {d.sunset} {hhmm(syn.town.sunset)}
+              </li>
+            )}
           </ul>
         </div>
         {summary.length > 0 && <p className="g-summary">{summary.join(' ')}</p>}
@@ -221,13 +236,60 @@ export function PhoneView({
             <span className="g-plan-share-label">{d.sharePlan}</span>
           </div>
         )}
-        <div className="g-evening">
-          <p>{d.fb.evening}</p>
-          <a className="g-btn g-btn-wa" href={whatsappTo(property.whatsapp, askEveningText(lang))} target="_blank" rel="noreferrer">
-            {d.fb.eveningBtn}
-          </a>
-        </div>
+        <PushBox property={property} lang={lang} profile={profile} />
       </section>
+
+      <StayPlanner
+        datasets={datasets}
+        outlook={outlook}
+        profile={profile}
+        property={property}
+        calibration={calibration}
+        lang={lang}
+        today={today}
+        hourNow={hourNow}
+        onSeeDay={(x) => {
+          setDate(x);
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }}
+      />
+
+      {property.tips && property.tips.length > 0 && (
+        <section aria-labelledby="g-tips">
+          <h2 id="g-tips" className="g-h2">
+            {d.fromProperty.replace('{name}', property.name)}
+          </h2>
+          <ul className="g-tipcards">
+            {property.tips.map((tip, i) => (
+              <li key={i} className="g-tipcard">
+                {tip.icon && (
+                  <span className="g-tipcard-icon" aria-hidden="true">
+                    {tip.icon}
+                  </span>
+                )}
+                <div>
+                  <p className="g-tipcard-title">{lt(tip.title, lang)}</p>
+                  {tip.text && <p className="g-tipcard-text">{lt(tip.text, lang)}</p>}
+                  {(tip.url || tip.phone) && (
+                    <p className="g-tipcard-links">
+                      {tip.url && (
+                        <a className="g-link" href={tip.url} target="_blank" rel="noreferrer">
+                          {d.openLink} ›
+                        </a>
+                      )}
+                      {tip.phone && (
+                        <a className="g-link" href={`tel:${tip.phone}`}>
+                          {d.call} {tip.phone}
+                        </a>
+                      )}
+                    </p>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {rec.alternatives.length > 0 && (
         <section aria-labelledby="g-more">
@@ -293,6 +355,7 @@ export function PhoneView({
           profile={profile}
           lang={lang}
           dayLabel={dayLabel}
+          sunset={syn.town.sunset}
           onClose={() => setOpen(null)}
         />
       )}

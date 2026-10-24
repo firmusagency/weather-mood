@@ -1,0 +1,38 @@
+{
+ "generatedAt": "2026-10-24T09:49:26.045Z",
+ "property": {
+  "id": "demo-alkyoni",
+  "name": "Alkyoni Suites"
+ },
+ "weekStart": "2026-10-12",
+ "weekEnd": "2026-10-18",
+ "visits": {
+  "total": 0,
+  "prev": 0,
+  "byView": {},
+  "byLang": {},
+  "byProfile": {},
+  "perDay": [],
+  "devices": 0
+ },
+ "votes": {
+  "total": 0,
+  "prev": 0,
+  "up": 0,
+  "down": 0,
+  "reception": 0,
+  "topTags": [],
+  "bySpot": []
+ },
+ "picks": [],
+ "planBDays": 0,
+ "pushSubscribers": null,
+ "accuracy": {
+  "days": 5,
+  "bfWithin1Rate": 1,
+  "windMae": 3,
+  "picksHeld": 27,
+  "picks": 27,
+  "stationDays": 20
+ }
+}

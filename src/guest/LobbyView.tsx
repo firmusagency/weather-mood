@@ -8,6 +8,7 @@ import type { Dataset, ProfileId } from '../engine/types';
 import { guestReasons, mainProblem, seaLevel, windLevel } from './advice';
 import { compassG, dayName, g, pick } from './i18n';
 import { GUEST_LANGS, type GuestLang, type Property } from './property';
+import { Brand } from './Brand';
 import { Qr } from './Qr';
 import { SpotPhoto } from '../ui/Photo';
 
@@ -49,10 +50,7 @@ export function LobbyView({ data, property, spots = SPOTS }: { data: Dataset; pr
     <div className="lobby" lang={lang}>
       <header className="lobby-head">
         <div className="lobby-brand">
-          <span className="g-monogram" aria-hidden="true">
-            {property.name[0]}
-          </span>
-          <span>{property.name}</span>
+          <Brand property={property} lang={lang} compact />
         </div>
         <div className="lobby-title-wrap">
           <h1 className="lobby-title">{isTomorrow ? d.lobbyTitle : d.ourPicks}</h1>

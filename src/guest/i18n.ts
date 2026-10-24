@@ -82,7 +82,47 @@ type Dict = {
   qrLine: string;
   qrPrint: string;
   qrHint: string;
+  water: string;
+  waterWords: [string, string, string, string];
+  sunrise: string;
+  sunset: string;
+  sunsetHere: string;
+  uvWords: [string, string, string, string];
+  uvTip: string;
+  fromProperty: string;
+  hotelPick: string;
+  call: string;
+  openLink: string;
+  stay: StayDict;
+  push: PushDict;
   compass: string[];
+};
+
+export type StayDict = {
+  title: string;
+  intro: string;
+  checkoutQ: string;
+  change: string;
+  planned: string;
+  possible: string;
+  notThisStay: string;
+  alsoFine: string;
+  free: string;
+  seeDay: string;
+  conf: Record<'high' | 'medium' | 'low', string>;
+  horizon: string;
+  trips: Record<'balos' | 'elafonisi' | 'falasarna' | 'gorge' | 'sfakia' | 'akrotiri', string>;
+  share: string;
+  shareTitle: string;
+  noDays: string;
+};
+
+export type PushDict = {
+  title: string;
+  btn: string;
+  on: string;
+  denied: string;
+  install: string;
 };
 
 const EL: Dict = {
@@ -181,6 +221,42 @@ const EL: Dict = {
     nature: 'Φύση',
     town: 'Πόλη',
     museum: 'Μουσείο',
+  },
+  water: 'Νερό',
+  waterWords: ['κρύο', 'δροσερό', 'ευχάριστο', 'ζεστό'],
+  sunrise: 'Ανατολή',
+  sunset: 'Ηλιοβασίλεμα',
+  sunsetHere: 'Ηλιοβασίλεμα εδώ στις {t}',
+  uvWords: ['χαμηλή', 'μέτρια', 'υψηλή', 'πολύ υψηλή'],
+  uvTip: 'Σκιά 12:00–16:00 και αντηλιακό 50',
+  fromProperty: 'Από το {name}',
+  hotelPick: 'Αγαπημένο του {name}',
+  call: 'Κλήση',
+  openLink: 'Άνοιγμα',
+  stay: {
+    title: 'Το πλάνο της διαμονής σας',
+    intro: 'Πείτε μας μέχρι πότε μένετε και θα σας πούμε ποια μέρα ταιριάζει για κάθε μεγάλη εκδρομή.',
+    checkoutQ: 'Μέχρι πότε μένετε;',
+    change: 'Αλλαγή',
+    planned: 'Προτείνουμε',
+    possible: 'Γίνεται, με επιφύλαξη',
+    notThisStay: 'Όχι αυτή τη διαμονή',
+    alsoFine: 'Επίσης καλά, αν αλλάξετε γνώμη',
+    free: 'Ελεύθερη μέρα: κάτι κοντινό, πόλη ή χαλάρωση',
+    seeDay: 'Δείτε τη μέρα',
+    conf: { high: 'σίγουρο', medium: 'πιθανό', low: 'εκτίμηση' },
+    horizon: 'Από την 4η μέρα και μετά είναι εκτίμηση από τα μοντέλα καιρού. Το πλάνο ανανεώνεται κάθε βράδυ· ξαναδείτε το την προηγούμενη μέρα.',
+    trips: { balos: 'Μπάλος & Γραμβούσα', elafonisi: 'Ελαφονήσι', falasarna: 'Φαλάσαρνα', gorge: 'Φαράγγι (Σαμαριά)', sfakia: 'Σφακιά & Λουτρό', akrotiri: 'Ακρωτήρι' },
+    share: 'Μοιραστείτε το πλάνο',
+    shareTitle: 'Πλάνο διαμονής',
+    noDays: 'Η πρόγνωση φτάνει 7 μέρες μπροστά· θα συμπληρώνεται όσο πλησιάζουν οι μέρες.',
+  },
+  push: {
+    title: 'Θέλετε κάθε απόγευμα ειδοποίηση με τις προτάσεις της επόμενης μέρας;',
+    btn: 'Ναι, ειδοποιήστε με',
+    on: 'Ενεργό: θα σας ειδοποιούμε κάθε απόγευμα, και το πρωί αν αλλάξει ο καιρός.',
+    denied: 'Οι ειδοποιήσεις είναι κλειστές στον browser σας. Μπορείτε να τις ανοίξετε από τις ρυθμίσεις.',
+    install: 'Προσθέστε τη σελίδα στην αρχική οθόνη για να την έχετε πάντα πρόχειρη.',
   },
   compass: ['Β', 'ΒΑ', 'Α', 'ΝΑ', 'Ν', 'ΝΔ', 'Δ', 'ΒΔ'],
 };
@@ -282,6 +358,42 @@ const EN: Dict = {
     town: 'Town',
     museum: 'Museum',
   },
+  water: 'Water',
+  waterWords: ['cold', 'fresh', 'pleasant', 'warm'],
+  sunrise: 'Sunrise',
+  sunset: 'Sunset',
+  sunsetHere: 'Sunset here at {t}',
+  uvWords: ['low', 'moderate', 'high', 'very high'],
+  uvTip: 'Shade 12:00–16:00 and SPF 50',
+  fromProperty: 'From {name}',
+  hotelPick: '{name} favourite',
+  call: 'Call',
+  openLink: 'Open',
+  stay: {
+    title: 'Your stay, planned',
+    intro: 'Tell us when you leave and we will say which day suits each big trip.',
+    checkoutQ: 'Until when are you staying?',
+    change: 'Change',
+    planned: 'We suggest',
+    possible: 'Possible, with reservations',
+    notThisStay: 'Not this stay',
+    alsoFine: 'Also fine, if you change your mind',
+    free: 'Free day: somewhere close, the town or a rest',
+    seeDay: 'See this day',
+    conf: { high: 'confident', medium: 'likely', low: 'estimate' },
+    horizon: 'From day 4 on this is an estimate from the weather models. The plan refreshes every evening; check again the day before.',
+    trips: { balos: 'Balos & Gramvousa', elafonisi: 'Elafonisi', falasarna: 'Falasarna', gorge: 'Gorge (Samaria)', sfakia: 'Sfakia & Loutro', akrotiri: 'Akrotiri' },
+    share: 'Share the plan',
+    shareTitle: 'Stay plan',
+    noDays: 'The forecast reaches 7 days ahead; the plan fills in as the days get closer.',
+  },
+  push: {
+    title: 'Want a notification every afternoon with the next day’s picks?',
+    btn: 'Yes, notify me',
+    on: 'On: we will notify you every afternoon, and in the morning if the weather changes.',
+    denied: 'Notifications are blocked in your browser. You can allow them in its settings.',
+    install: 'Add this page to your home screen to keep it handy.',
+  },
   compass: ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'],
 };
 
@@ -382,6 +494,42 @@ const DE: Dict = {
     town: 'Stadt',
     museum: 'Museum',
   },
+  water: 'Wasser',
+  waterWords: ['kalt', 'frisch', 'angenehm', 'warm'],
+  sunrise: 'Sonnenaufgang',
+  sunset: 'Sonnenuntergang',
+  sunsetHere: 'Sonnenuntergang hier um {t}',
+  uvWords: ['niedrig', 'mäßig', 'hoch', 'sehr hoch'],
+  uvTip: 'Schatten 12:00–16:00 und LSF 50',
+  fromProperty: 'Von {name}',
+  hotelPick: 'Favorit von {name}',
+  call: 'Anrufen',
+  openLink: 'Öffnen',
+  stay: {
+    title: 'Ihr Aufenthalt, geplant',
+    intro: 'Sagen Sie uns, bis wann Sie bleiben, und wir sagen, welcher Tag zu welchem großen Ausflug passt.',
+    checkoutQ: 'Bis wann bleiben Sie?',
+    change: 'Ändern',
+    planned: 'Wir empfehlen',
+    possible: 'Möglich, mit Vorbehalt',
+    notThisStay: 'Nicht bei diesem Aufenthalt',
+    alsoFine: 'Ebenfalls gut, falls Sie umplanen',
+    free: 'Freier Tag: etwas in der Nähe, die Stadt oder Ausruhen',
+    seeDay: 'Diesen Tag ansehen',
+    conf: { high: 'sicher', medium: 'wahrscheinlich', low: 'Schätzung' },
+    horizon: 'Ab Tag 4 ist dies eine Schätzung der Wettermodelle. Der Plan wird jeden Abend aktualisiert; schauen Sie am Vortag noch einmal nach.',
+    trips: { balos: 'Balos & Gramvousa', elafonisi: 'Elafonisi', falasarna: 'Falasarna', gorge: 'Schlucht (Samaria)', sfakia: 'Sfakia & Loutro', akrotiri: 'Akrotiri' },
+    share: 'Plan teilen',
+    shareTitle: 'Aufenthaltsplan',
+    noDays: 'Die Vorhersage reicht 7 Tage voraus; der Plan füllt sich, je näher die Tage rücken.',
+  },
+  push: {
+    title: 'Möchten Sie jeden Nachmittag eine Benachrichtigung mit den Tipps für den nächsten Tag?',
+    btn: 'Ja, benachrichtigen',
+    on: 'Aktiv: Wir melden uns jeden Nachmittag, und morgens, falls sich das Wetter ändert.',
+    denied: 'Benachrichtigungen sind in Ihrem Browser blockiert. Sie können sie in den Einstellungen erlauben.',
+    install: 'Fügen Sie die Seite zum Startbildschirm hinzu, um sie griffbereit zu haben.',
+  },
   compass: ['N', 'NO', 'O', 'SO', 'S', 'SW', 'W', 'NW'],
 };
 
@@ -481,6 +629,42 @@ const FR: Dict = {
     nature: 'Nature',
     town: 'Ville',
     museum: 'Musée',
+  },
+  water: 'Eau',
+  waterWords: ['froide', 'fraîche', 'agréable', 'chaude'],
+  sunrise: 'Lever du soleil',
+  sunset: 'Coucher du soleil',
+  sunsetHere: 'Coucher du soleil ici à {t}',
+  uvWords: ['faible', 'modéré', 'élevé', 'très élevé'],
+  uvTip: 'Ombre 12h–16h et indice 50',
+  fromProperty: 'De la part de {name}',
+  hotelPick: 'Coup de cœur de {name}',
+  call: 'Appeler',
+  openLink: 'Ouvrir',
+  stay: {
+    title: 'Votre séjour, planifié',
+    intro: 'Dites-nous jusqu’à quand vous restez et nous vous dirons quel jour convient à chaque grande excursion.',
+    checkoutQ: 'Jusqu’à quand restez-vous ?',
+    change: 'Modifier',
+    planned: 'Nous conseillons',
+    possible: 'Possible, sous réserve',
+    notThisStay: 'Pas pendant ce séjour',
+    alsoFine: 'Également possible, si vous changez d’avis',
+    free: 'Journée libre : un lieu proche, la ville ou du repos',
+    seeDay: 'Voir ce jour',
+    conf: { high: 'sûr', medium: 'probable', low: 'estimation' },
+    horizon: 'À partir du 4e jour, il s’agit d’une estimation des modèles météo. Le plan est mis à jour chaque soir ; revérifiez la veille.',
+    trips: { balos: 'Balos & Gramvousa', elafonisi: 'Elafonisi', falasarna: 'Falasarna', gorge: 'Gorges (Samaria)', sfakia: 'Sfakia & Loutro', akrotiri: 'Akrotiri' },
+    share: 'Partager le plan',
+    shareTitle: 'Plan du séjour',
+    noDays: 'La prévision porte sur 7 jours ; le plan se complète à mesure que les jours approchent.',
+  },
+  push: {
+    title: 'Voulez-vous une notification chaque après-midi avec les conseils du lendemain ?',
+    btn: 'Oui, prévenez-moi',
+    on: 'Activé : nous vous préviendrons chaque après-midi, et le matin si la météo change.',
+    denied: 'Les notifications sont bloquées dans votre navigateur. Vous pouvez les autoriser dans ses réglages.',
+    install: 'Ajoutez cette page à votre écran d’accueil pour l’avoir toujours sous la main.',
   },
   compass: ['N', 'NE', 'E', 'SE', 'S', 'SO', 'O', 'NO'],
 };

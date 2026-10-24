@@ -1,0 +1,49 @@
+name: Weekly report
+
+# Monday morning: the owner's weekly report (usage, guest votes, what we recommended, accuracy).
+on:
+  schedule:
+    - cron: '40 4 * * 1' # 07:40 Athens (summer) / 06:40 (winter), Mondays
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: snapshot-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  weekly:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run weekly
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+          RECEPTION_EMAIL: ${{ secrets.RECEPTION_EMAIL }}
+          OWNER_EMAIL: ${{ secrets.OWNER_EMAIL }}
+          VITE_DASHBOARD_URL: ${{ vars.VITE_DASHBOARD_URL || 'https://firmusagency.github.io/weather-mood/' }}
+      - name: Commit report
+        run: |
+          git config user.name "weather-mood-bot"
+          git config user.email "weather-mood-bot@users.noreply.github.com"
+          git add public/data/weekly.json data/reports
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "data: weekly report $(date -u +%Y-%m-%d)"
+            git pull --rebase origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

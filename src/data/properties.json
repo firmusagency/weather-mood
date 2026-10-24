@@ -1,0 +1,29 @@
+[
+  {
+    "id": "demo-alkyoni",
+    "name": "Alkyoni Suites",
+    "tagline": { "el": "Πλατανιάς, Χανιά", "en": "Platanias, Chania", "de": "Platanias, Chania", "fr": "Platanias, La Canée" },
+    "base": { "id": "alkyoni", "name": { "el": "Alkyoni Suites", "en": "Alkyoni Suites" }, "lat": 35.5172, "lon": 23.9105 },
+    "brand": "#2a6f97",
+    "favourites": ["balos", "seitan-limania", "theriso"],
+    "tips": [
+      {
+        "icon": "🍽️",
+        "title": { "el": "Ταβέρνα «Το Λιμανάκι», Κολυμπάρι", "en": "Taverna “To Limanaki”, Kolymbari", "de": "Taverne „To Limanaki“, Kolymbari", "fr": "Taverne « To Limanaki », Kolymbari" },
+        "text": { "el": "Ψάρι της ημέρας δίπλα στο κύμα, 15 λεπτά από εδώ. Πείτε ότι σας στείλαμε εμείς.", "en": "Fish of the day by the water, 15 minutes from here. Say we sent you.", "de": "Fisch des Tages direkt am Wasser, 15 Minuten von hier. Sagen Sie, dass wir Sie schicken.", "fr": "Poisson du jour au bord de l’eau, à 15 minutes d’ici. Dites que vous venez de notre part." },
+        "url": "https://maps.google.com/?q=Kolymbari+harbour"
+      },
+      {
+        "icon": "🚗",
+        "title": { "el": "Ενοικίαση αυτοκινήτου", "en": "Car rental", "de": "Mietwagen", "fr": "Location de voiture" },
+        "text": { "el": "Παράδοση στο κατάλυμα την ίδια μέρα. Ρωτήστε στη reception για την τιμή συνεργάτη.", "en": "Same-day delivery to the property. Ask reception for the partner rate.", "de": "Lieferung noch am selben Tag zum Haus. Fragen Sie an der Rezeption nach dem Partnertarif.", "fr": "Livraison le jour même à l’hôtel. Demandez le tarif partenaire à la réception." },
+        "phone": "+302821000000"
+      },
+      {
+        "icon": "⛵",
+        "title": { "el": "Καραβάκι για Μπάλο & Γραμβούσα", "en": "Boat to Balos & Gramvousa", "de": "Boot nach Balos & Gramvousa", "fr": "Bateau pour Balos & Gramvousa" },
+        "text": { "el": "Εισιτήρια από τη reception, χωρίς ουρά στο λιμάνι της Κισσάμου. Σε αέρα ακυρώνεται: κοιτάξτε πρώτα την πρόταση της μέρας.", "en": "Tickets at reception, no queue at Kissamos harbour. Cancelled in strong wind: check the day’s pick first.", "de": "Tickets an der Rezeption, ohne Schlange im Hafen von Kissamos. Bei Wind fällt es aus: erst den Tagestipp prüfen.", "fr": "Billets à la réception, sans file d’attente au port de Kissamos. Annulé par grand vent : regardez d’abord le conseil du jour." }
+      }
+    ]
+  }
+]

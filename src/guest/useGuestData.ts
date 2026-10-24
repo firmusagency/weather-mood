@@ -5,11 +5,12 @@ import { athensDate } from '../engine/dates';
 import { analyzeDay, recommend } from '../engine/recommend';
 import { buildSynopsis } from '../engine/synopsis';
 import type { Base, Dataset, ProfileId } from '../engine/types';
-import { datasetsFromSnapshot, loadCalibration, loadSnapshot } from '../ui/data';
+import { datasetsFromSnapshot, loadCalibration, loadSnapshot, outlookFromSnapshot } from '../ui/data';
 import { applyCalibration, type Calibration } from '../engine/feedback';
 
 export function useDatasets() {
   const [datasets, setDatasets] = useState<Record<string, Dataset>>({});
+  const [outlook, setOutlook] = useState<Record<string, Dataset>>({});
   const [generatedAt, setGeneratedAt] = useState('');
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
   const [calibration, setCalibration] = useState<Calibration | null>(null);
@@ -17,7 +18,9 @@ export function useDatasets() {
     loadCalibration().then(setCalibration);
     loadSnapshot()
       .then((snap) => {
-        setDatasets(datasetsFromSnapshot(snap));
+        const full = datasetsFromSnapshot(snap);
+        setDatasets(full);
+        setOutlook(outlookFromSnapshot(snap, full));
         setGeneratedAt(snap.generatedAt);
         setStatus('ready');
       })
@@ -26,7 +29,7 @@ export function useDatasets() {
         setStatus('error');
       });
   }, []);
-  return { datasets, generatedAt, status, dates: Object.keys(datasets).sort(), calibration };
+  return { datasets, outlook, generatedAt, status, dates: Object.keys(datasets).sort(), calibration };
 }
 
 /** Pick tomorrow when available, otherwise the nearest future day in the data. */

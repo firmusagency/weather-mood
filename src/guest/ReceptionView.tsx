@@ -35,9 +35,13 @@ export function ReceptionView({ property, lang, setLang, today, hourNow }: { pro
     <div className="g-phone g-reception">
       <header className="g-head">
         <div className="g-brand">
-          <span className="g-monogram" aria-hidden="true">
-            {property.name[0]}
-          </span>
+          {property.logo ? (
+            <img className="g-logo" src={property.logo} alt="" />
+          ) : (
+            <span className="g-monogram" aria-hidden="true">
+              {property.name[0]}
+            </span>
+          )}
           <div>
             <p className="g-prop-name">{property.name}</p>
             <p className="g-prop-tag">{d.fb.rcView}</p>

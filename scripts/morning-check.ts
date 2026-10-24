@@ -7,7 +7,7 @@
  *
  * Usage: npm run morning-check     (after npm run snapshot:fetch)
  */
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { appendFileSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SPOTS } from '../src/data/spots';
@@ -23,6 +23,7 @@ import { planBMessage } from '../src/guest/evening';
 import { DEMO_PROPERTY, GUEST_LANGS, type GuestLang } from '../src/guest/property';
 import type { EveningPack } from './evening';
 import { mailEnv, sendMail } from './mail';
+import { notificationFromMessage, pushEnv, sendPush } from './push';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -70,10 +71,22 @@ async function main() {
   if (!raw) throw new Error(`snapshot has no forecast for ${date}`);
   const report = buildPlanB(pack, raw);
   writeFileSync(out, JSON.stringify(report, null, 1));
+  appendFileSync(join(root, 'data/plan-b-log.jsonl'), JSON.stringify({ date: report.date, checkedAt: report.checkedAt, changed: report.changed }) + '\n');
 
   for (const [profile, r] of Object.entries(report.byProfile)) {
     console.log(`${profile}: ${r.diff.significant ? 'CHANGED' : 'same'} ${r.diff.changes.map((c) => c.kind).join(',') || '-'}`);
   }
+  const push = pushEnv();
+  if (report.changed && push) {
+    const r = await sendPush(push, pack.property.id, (sub) => {
+      const lang = (GUEST_LANGS as readonly string[]).includes(sub.lang ?? '') ? (sub.lang as GuestLang) : 'en';
+      const profile = (sub.profile && report.byProfile[sub.profile as ProfileId] ? sub.profile : 'couple') as ProfileId;
+      const msg = report.byProfile[profile]?.messages?.[lang];
+      return msg ? { title: `${pack.property.name} · Plan B`, body: notificationFromMessage(msg), url: DEMO_PROPERTY.guestUrl, tag: `planb-${date}` } : null;
+    });
+    console.log(`push: ${r.sent} sent, ${r.failed} failed, ${r.removed} removed`);
+  }
+
   const mail = mailEnv();
   if (report.changed && mail) {
     const body = Object.entries(report.byProfile)

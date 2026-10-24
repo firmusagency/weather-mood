@@ -23,6 +23,7 @@ import type { ProfileId } from '../src/engine/types';
 import { eveningMessage } from '../src/guest/evening';
 import { DEMO_PROPERTY, GUEST_LANGS, type GuestLang } from '../src/guest/property';
 import { mailEnv, sendMail } from './mail';
+import { notificationFromMessage, pushEnv, sendPush } from './push';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -65,6 +66,19 @@ async function main() {
   console.log(`evening pack for ${date} from snapshot ${pack.basedOn}: ${Object.keys(pack.messages).length} profiles × ${GUEST_LANGS.length} languages`);
   console.log('---');
   console.log(pack.messages.couple?.el);
+
+  const push = pushEnv();
+  if (push) {
+    const r = await sendPush(push, pack.property.id, (sub) => {
+      const lang = (GUEST_LANGS as readonly string[]).includes(sub.lang ?? '') ? (sub.lang as GuestLang) : 'en';
+      const profile = (sub.profile && pack.messages[sub.profile as ProfileId] ? sub.profile : 'couple') as ProfileId;
+      const msg = pack.messages[profile]?.[lang];
+      return msg ? { title: `${pack.property.name} · ${lang === 'el' ? 'Αύριο' : lang === 'de' ? 'Morgen' : lang === 'fr' ? 'Demain' : 'Tomorrow'}`, body: notificationFromMessage(msg), url: DEMO_PROPERTY.guestUrl, tag: `evening-${date}` } : null;
+    });
+    console.log(`push: ${r.sent} sent, ${r.failed} failed, ${r.removed} removed`);
+  } else {
+    console.log('push not configured (VAPID_PRIVATE_KEY / SUPABASE_*): skipped');
+  }
 
   const mail = mailEnv();
   if (mail) {

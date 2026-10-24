@@ -35,8 +35,13 @@ jobs:
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           SMTP_FROM: ${{ secrets.SMTP_FROM }}
           RECEPTION_EMAIL: ${{ secrets.RECEPTION_EMAIL }}
-          VITE_GUEST_URL: ${{ vars.VITE_GUEST_URL || 'https://claude.ai/artifact/M78yRVPLfDAa9sTmgMMHFP' }}
+          VITE_GUEST_URL: ${{ vars.VITE_GUEST_URL || 'https://firmusagency.github.io/weather-mood/guest.html' }}
           VITE_RECEPTION_WHATSAPP: ${{ vars.VITE_RECEPTION_WHATSAPP }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          VAPID_PUBLIC_KEY: ${{ vars.VAPID_PUBLIC_KEY }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+          VAPID_SUBJECT: ${{ vars.VAPID_SUBJECT }}
       - name: Commit
         run: |
           git config user.name "weather-mood-bot"

@@ -1,0 +1,60 @@
+name: Deploy site
+
+# Publishes the dashboard, guest page and accuracy page to GitHub Pages
+# (https://firmusagency.github.io/weather-mood/). Runs on code changes and after every data
+# workflow, so the live pages always carry the latest forecast, messages and verification.
+on:
+  push:
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - '*.html'
+      - 'vite.config.ts'
+      - 'package.json'
+      - 'package-lock.json'
+      - '.env'
+      - '.github/workflows/pages.yml'
+  workflow_run:
+    workflows: ['Weather snapshot', 'Evening message', 'Morning plan-B check', 'Feedback export', 'Forecast verification', 'Spot photos', 'Weekly report']
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          VITE_BASE: /weather-mood/
+          VITE_GUEST_URL: ${{ vars.VITE_GUEST_URL || 'https://firmusagency.github.io/weather-mood/guest.html' }}
+          VITE_DASHBOARD_URL: ${{ vars.VITE_DASHBOARD_URL || 'https://firmusagency.github.io/weather-mood/' }}
+          VITE_RECEPTION_WHATSAPP: ${{ vars.VITE_RECEPTION_WHATSAPP }}
+          VITE_PROPERTY_ID: ${{ vars.VITE_PROPERTY_ID }}
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

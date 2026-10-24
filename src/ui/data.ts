@@ -1,13 +1,16 @@
 import { SPOTS } from '../data/spots';
 import { REF_POINTS } from '../data/region';
-import { datasetFromRaw, fetchRaw, planPoints, type RawBundle } from '../engine/openmeteo';
+import { dailySun, datasetFromRaw, fetchRaw, planPoints, proxyDataset, sliceDay, type RawBundle } from '../engine/openmeteo';
 import type { Dataset } from '../engine/types';
 import type { VerificationSummary } from '../engine/verify';
 import type { Calibration, FeedbackSummary } from '../engine/feedback';
+import type { WeeklyReport } from '../engine/weekly';
 
 export interface Snapshot {
   generatedAt: string;
   days: Record<string, RawBundle>;
+  /** Multi-day bundle at the reference points (see outlookPlan); absent in older snapshots. */
+  outlook?: RawBundle;
 }
 
 /** True for the single-file demo build, which ships its data inside the page. */
@@ -40,7 +43,7 @@ export interface PlanBReport {
   byProfile: Partial<Record<ProfileId, { diff: PlanDiff; messages: Record<string, string> | null }>>;
 }
 
-async function loadJson<T>(name: 'verification' | 'feedback' | 'calibration' | 'plan-b'): Promise<T | null> {
+async function loadJson<T>(name: 'verification' | 'feedback' | 'calibration' | 'plan-b' | 'weekly'): Promise<T | null> {
   try {
     if (EMBEDDED) {
       // static import paths so the bundler can inline them
@@ -51,7 +54,9 @@ async function loadJson<T>(name: 'verification' | 'feedback' | 'calibration' | '
             ? await import('../../public/data/feedback.json')
             : name === 'plan-b'
               ? await import('../../public/data/plan-b.json')
-              : await import('../../public/data/calibration.json');
+              : name === 'weekly'
+                ? await import('../../public/data/weekly.json')
+                : await import('../../public/data/calibration.json');
       return (mod.default ?? mod) as unknown as T;
     }
     const res = await fetch(`${import.meta.env.BASE_URL}data/${name}.json`, { cache: 'no-cache' });
@@ -65,6 +70,7 @@ export const loadVerification = () => loadJson<VerificationSummary>('verificatio
 export const loadFeedback = () => loadJson<FeedbackSummary>('feedback');
 export const loadCalibration = () => loadJson<Calibration>('calibration');
 export const loadPlanB = () => loadJson<PlanBReport>('plan-b');
+export const loadWeekly = () => loadJson<WeeklyReport>('weekly');
 
 export function datasetsFromSnapshot(s: Snapshot): Record<string, Dataset> {
   const out: Record<string, Dataset> = {};
@@ -74,6 +80,32 @@ export function datasetsFromSnapshot(s: Snapshot): Record<string, Dataset> {
     } catch (e) {
       console.warn(`skipping ${date}`, e);
     }
+  }
+  return out;
+}
+
+/**
+ * Outlook days (beyond the fully fetched ones) as spot-level datasets built from the reference
+ * points. Keys are dates not already present in `days`.
+ */
+export function outlookFromSnapshot(s: Snapshot, full: Record<string, Dataset>): Record<string, Dataset> {
+  const out: Record<string, Dataset> = {};
+  if (!s.outlook) return out;
+  try {
+    const multi = datasetFromRaw(s.outlook, 'snapshot');
+    const sun = dailySun(s.outlook, s.outlook.plan.land.findIndex((p) => p.id === 'ref-town'));
+    const dates = new Set(Object.values(multi.land)[0]?.atmos.map((a) => a.time.slice(0, 10)) ?? []);
+    for (const date of [...dates].sort()) {
+      if (full[date]) continue;
+      const day = sliceDay(multi, date);
+      for (const pw of Object.values(day.land)) {
+        pw.sunrise = sun[date]?.sunrise;
+        pw.sunset = sun[date]?.sunset;
+      }
+      out[date] = proxyDataset(day, SPOTS, REF_POINTS);
+    }
+  } catch (e) {
+    console.warn('outlook unreadable', e);
   }
   return out;
 }

@@ -14,7 +14,8 @@ import { Recommendations } from './Recommendations';
 import { SpotDetail } from './SpotDetail';
 import { EMBEDDED, datasetsFromSnapshot, fetchLive, loadCalibration, loadFeedback, loadSnapshot, loadVerification, readPref, writePref } from './data';
 import { applyCalibration, type Calibration, type FeedbackSummary } from '../engine/feedback';
-import { loadPlanB, type PlanBReport } from './data';
+import { loadPlanB, loadWeekly, type PlanBReport } from './data';
+import type { WeeklyReport } from '../engine/weekly';
 import type { VerificationSummary } from '../engine/verify';
 import { relativeDayLabel, strings } from './i18n';
 
@@ -70,12 +71,14 @@ export function App() {
   const [live, setLive] = useState<'idle' | 'busy' | 'failed'>('idle');
   const [verification, setVerification] = useState<VerificationSummary | null>(null);
   const [feedback, setFeedback] = useState<FeedbackSummary | null>(null);
+  const [weekly, setWeekly] = useState<WeeklyReport | null>(null);
   const [calibration, setCalibration] = useState<Calibration | null>(null);
   const [planB, setPlanB] = useState<PlanBReport | null>(null);
   useEffect(() => {
     loadPlanB().then(setPlanB);
     loadVerification().then(setVerification);
     loadFeedback().then(setFeedback);
+    loadWeekly().then(setWeekly);
     loadCalibration().then(setCalibration);
   }, []);
   // Spot geometry with the guest-feedback wave corrections folded in (no-op until there is data).
@@ -262,7 +265,8 @@ export function App() {
                 isTomorrow={date === athensDate(1)}
               />
             )}
-            {tab === 'method' && <Method spots={spots} lang={lang} types={s.types} verification={verification} feedback={feedback} calibration={calibration} />}
+            {tab === 'method' && <Method spots={spots} lang={lang} types={s.types} verification={verification} feedback={feedback}
+          weekly={weekly} calibration={calibration} />}
           </>
         )}
       </main>

@@ -11,7 +11,7 @@ import { logVisit } from './feedback';
 import { SPOTS } from '../data/spots';
 import { applyCalibration } from '../engine/feedback';
 import { athensDate } from '../engine/dates';
-import { DEMO_PROPERTY, GUEST_LANGS, type GuestLang } from './property';
+import { currentProperty, GUEST_LANGS, type GuestLang } from './property';
 import { defaultDate, useDatasets, useDayPlan } from './useGuestData';
 
 type View = 'phone' | 'lobby' | 'reception' | 'qr';
@@ -23,11 +23,11 @@ const initialView = (): View => {
 };
 
 export function GuestApp() {
-  const property = DEMO_PROPERTY;
+  const [property] = useState(currentProperty);
   const [lang, setLang] = useState<GuestLang>(() => readPref('g-lang', GUEST_LANGS, detectLang()));
   const [profile, setProfile] = useState<ProfileId>(() => readPref('g-profile', PROFILE_IDS, 'couple'));
   const [view, setView] = useState<View>(initialView);
-  const { datasets, generatedAt, status, dates, calibration } = useDatasets();
+  const { datasets, outlook, generatedAt, status, dates, calibration } = useDatasets();
   const [date, setDate] = useState('');
   const effectiveDate = date || defaultDate(dates);
   const data = datasets[effectiveDate];
@@ -95,6 +95,9 @@ export function GuestApp() {
           date={effectiveDate}
           setDate={setDate}
           updatedAt={generatedAt}
+          datasets={datasets}
+          outlook={outlook}
+          calibration={calibration}
         />
       )}
       {view === 'lobby' && lobbyData && <LobbyView data={lobbyData} property={property} spots={applyCalibration(SPOTS, calibration)} />}

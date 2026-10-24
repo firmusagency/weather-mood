@@ -1,5 +1,5 @@
 import { offsetPoint } from './geo';
-import { MODELS, WAVE_MODELS, type AtmosHour, type Dataset, type MarineHour, type ModelId, type ModelWave, type ModelWind, type Spot, type WaveModelId } from './types';
+import { MODELS, WAVE_MODELS, type AtmosHour, type Dataset, type MarineHour, type ModelId, type ModelWave, type ModelWind, type PointWeather, type Spot, type WaveModelId } from './types';
 import type { RefPoint } from '../data/region';
 
 /*
@@ -82,8 +82,8 @@ const coords = (pts: PointRef[]) => ({
   longitude: pts.map((p) => p.lon).join(','),
 });
 
-export function buildUrls(plan: PointPlan, date: string, apiKey?: string) {
-  const common = { timezone: TZ, start_date: date, end_date: date, ...(apiKey ? { apikey: apiKey } : {}) };
+export function buildUrls(plan: PointPlan, date: string, apiKey?: string, endDate = date) {
+  const common = { timezone: TZ, start_date: date, end_date: endDate, ...(apiKey ? { apikey: apiKey } : {}) };
   const q = (o: Record<string, string>) => new URLSearchParams(o).toString();
   return {
     atmos: `${FORECAST_URL}?${q({ ...coords(plan.land), hourly: ATMOS_VARS.join(','), daily: 'sunrise,sunset', ...common })}`,
@@ -96,6 +96,8 @@ export function buildUrls(plan: PointPlan, date: string, apiKey?: string) {
 /** Raw API responses, stored as-is so snapshots can be re-analysed later with an improved engine. */
 export interface RawBundle {
   date: string;
+  /** Last day covered when the bundle spans several days (the 7-day outlook); absent = one day. */
+  endDate?: string;
   fetchedAt: string;
   plan: PointPlan;
   atmos: unknown;
@@ -198,8 +200,8 @@ export function datasetFromRaw(raw: RawBundle, source: Dataset['source']): Datas
   return { date: raw.date, fetchedAt: raw.fetchedAt, source, land, marine, waveModels };
 }
 
-export async function fetchRaw(plan: PointPlan, date: string, apiKey?: string, fetchImpl: typeof fetch = fetch): Promise<RawBundle> {
-  const urls = buildUrls(plan, date, apiKey);
+export async function fetchRaw(plan: PointPlan, date: string, apiKey?: string, fetchImpl: typeof fetch = fetch, endDate = date): Promise<RawBundle> {
+  const urls = buildUrls(plan, date, apiKey, endDate);
   const get = async (url: string) => {
     const res = await fetchImpl(url);
     const body = await res.json();
@@ -207,5 +209,99 @@ export async function fetchRaw(plan: PointPlan, date: string, apiKey?: string, f
     return body;
   };
   const [atmos, models, marine, waves] = await Promise.all([get(urls.atmos), get(urls.models), get(urls.marine), get(urls.waves)]);
-  return { date, fetchedAt: new Date().toISOString(), plan, atmos, models, marine, waves };
+  return { date, ...(endDate !== date ? { endDate } : {}), fetchedAt: new Date().toISOString(), plan, atmos, models, marine, waves };
+}
+
+/*
+ * 7-day outlook. Days 0–2 are fetched in full (every spot, every model). For days 3–7 we only
+ * fetch the handful of reference points (one per coast plus the town), in a single multi-day
+ * request, and map every spot onto its nearest reference. Beyond three days the spot-level
+ * detail is noise anyway; what the stay planner needs is "which day is the west coast calm".
+ */
+export const OUTLOOK_DAYS = 7;
+
+export function outlookPlan(refs: RefPoint[]): PointPlan {
+  return {
+    land: refs.map(({ id, lat, lon }) => ({ id, lat, lon })),
+    marine: refs.filter((r) => r.facing !== undefined).map(({ id, lat, lon }) => ({ id, lat, lon })),
+  };
+}
+
+/** The hours of one calendar day out of a multi-day dataset. */
+export function sliceDay(ds: Dataset, date: string): Dataset {
+  const land: Dataset['land'] = {};
+  for (const [id, pw] of Object.entries(ds.land)) {
+    const idx = pw.atmos.map((a, k) => (a.time.startsWith(date) ? k : -1)).filter((k) => k >= 0);
+    const models = {} as PointWeather['models'];
+    for (const m of MODELS) models[m] = idx.map((k) => pw.models[m]?.[k] ?? { wind: null, dir: null, gust: null });
+    land[id] = { atmos: idx.map((k) => pw.atmos[k]), models, sunrise: pw.sunrise, sunset: pw.sunset };
+  }
+  const marine: Dataset['marine'] = {};
+  const waveModels: NonNullable<Dataset['waveModels']> = {};
+  for (const [id, hours] of Object.entries(ds.marine)) {
+    const idx = hours.map((h, k) => (h.time.startsWith(date) ? k : -1)).filter((k) => k >= 0);
+    marine[id] = idx.map((k) => hours[k]);
+    const wm = ds.waveModels?.[id];
+    if (wm) {
+      const per = {} as Record<WaveModelId, ModelWave[]>;
+      for (const m of WAVE_MODELS) per[m] = idx.map((k) => wm[m]?.[k] ?? { wave: null, dir: null, period: null });
+      waveModels[id] = per;
+    }
+  }
+  return { ...ds, date, land, marine, waveModels: ds.waveModels ? waveModels : undefined };
+}
+
+/** Day-by-day sunrise/sunset for a multi-day bundle (Open-Meteo returns one per day). */
+export function dailySun(raw: RawBundle, pointIndex = 0): Record<string, { sunrise?: string; sunset?: string }> {
+  const list = Array.isArray(raw.atmos) ? (raw.atmos as OMResponse[]) : [raw.atmos as OMResponse];
+  const d = list[pointIndex]?.daily ?? {};
+  const out: Record<string, { sunrise?: string; sunset?: string }> = {};
+  ((d.time ?? []) as string[]).forEach((date, i) => {
+    out[date] = { sunrise: d.sunrise?.[i] as string | undefined, sunset: d.sunset?.[i] as string | undefined };
+  });
+  return out;
+}
+
+function nearestRef<T extends PointRef>(refs: T[], lat: number, lon: number): T {
+  let best = refs[0];
+  let bestD = Infinity;
+  for (const r of refs) {
+    const d = (r.lat - lat) ** 2 + ((r.lon - lon) * Math.cos((lat * Math.PI) / 180)) ** 2;
+    if (d < bestD) {
+      bestD = d;
+      best = r;
+    }
+  }
+  return best;
+}
+
+/**
+ * Builds a full spot-level dataset out of a reference-points-only day: each spot (and its sea-side
+ * wind point and marine point) takes the data of the nearest reference. The spot's own geometry
+ * (facing, shelter, fetch) is still applied by the analysis, so a lee-side beach still comes out
+ * calmer than an exposed one — only the mesoscale detail is lost.
+ */
+export function proxyDataset(ref: Dataset, spots: Spot[], refs: RefPoint[]): Dataset {
+  const landRefs = refs.filter((r) => ref.land[r.id]);
+  const seaRefs = refs.filter((r) => r.facing !== undefined && ref.marine[r.id]);
+  const land: Dataset['land'] = { ...ref.land };
+  const marine: Dataset['marine'] = { ...ref.marine };
+  const waveModels: NonNullable<Dataset['waveModels']> = { ...(ref.waveModels ?? {}) };
+  for (const s of spots) {
+    const lr = nearestRef(landRefs, s.lat, s.lon);
+    land[s.id] = ref.land[lr.id];
+    const sea = (s.type === 'beach' || s.type === 'boat') && seaPointFor(s);
+    if (sea && seaRefs.length) {
+      const sr = nearestRef(seaRefs, sea.lat, sea.lon);
+      marine[s.id] = ref.marine[sr.id];
+      if (ref.waveModels?.[sr.id]) waveModels[s.id] = ref.waveModels[sr.id];
+      land[seaWindId(s.id)] = ref.land[nearestRef(landRefs, sea.lat, sea.lon).id];
+    }
+    if (s.dependsOnSea && seaRefs.length) {
+      const sr = nearestRef(seaRefs, s.dependsOnSea.lat, s.dependsOnSea.lon);
+      marine[depSeaId(s.id)] = ref.marine[sr.id];
+      if (ref.waveModels?.[sr.id]) waveModels[depSeaId(s.id)] = ref.waveModels[sr.id];
+    }
+  }
+  return { ...ref, land, marine, waveModels: ref.waveModels ? waveModels : undefined, source: 'snapshot' };
 }

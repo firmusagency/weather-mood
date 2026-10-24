@@ -1,5 +1,6 @@
 import type { Lang, Sector, Spot } from '../engine/types';
 import type { VerificationSummary } from '../engine/verify';
+import type { WeeklyReport } from '../engine/weekly';
 import type { Calibration, FeedbackSummary, FeedbackTag } from '../engine/feedback';
 import { strings } from './i18n';
 import { MODEL_LABELS, MODELS, WAVE_MODEL_LABELS, WAVE_MODELS } from '../engine/types';
@@ -317,6 +318,72 @@ function GuestFeedback({ f, c, spots, lang }: { f: FeedbackSummary | null; c: Ca
   );
 }
 
+function WeeklyPanel({ w, spots, lang }: { w: WeeklyReport | null; spots: Spot[]; lang: Lang }) {
+  const s = strings(lang);
+  const name = (id: string) => spots.find((x) => x.id === id)?.name[lang] ?? id;
+  const d = (now: number, prev: number) => (prev === 0 ? '' : ` (${now >= prev ? '+' : ''}${now - prev})`);
+  return (
+    <article className="panel feedback-panel">
+      <h3 className="panel-title">{s.weeklyTitle}</h3>
+      <p className="hint">{s.weeklyHint}</p>
+      {!w ? (
+        <p className="hint">{s.weeklyNone}</p>
+      ) : (
+        <>
+          <p className="hint">
+            {w.weekStart} – {w.weekEnd}
+          </p>
+          <dl className="stat-row">
+            <div>
+              <dt>{s.weeklyOpens}</dt>
+              <dd>
+                {w.visits.total}
+                <small>{d(w.visits.total, w.visits.prev)}</small>
+              </dd>
+              <small>
+                {w.visits.devices} {s.weeklyDevices}
+              </small>
+            </div>
+            <div>
+              <dt>{s.weeklyVotes}</dt>
+              <dd>
+                {w.votes.total}
+                <small>{d(w.votes.total, w.votes.prev)}</small>
+              </dd>
+              <small>
+                👍 {w.votes.up} · 👎 {w.votes.down}
+              </small>
+            </div>
+            <div>
+              <dt>{s.weeklyPlanB}</dt>
+              <dd>{w.planBDays}</dd>
+              {w.pushSubscribers != null && (
+                <small>
+                  {w.pushSubscribers} {s.weeklyPush}
+                </small>
+              )}
+            </div>
+            {w.accuracy && (
+              <div>
+                <dt>{s.weeklyAccuracy}</dt>
+                <dd>{Math.round(w.accuracy.bfWithin1Rate * 100)}%</dd>
+                <small>
+                  {w.accuracy.picksHeld}/{w.accuracy.picks} {s.weeklyHeld}
+                </small>
+              </div>
+            )}
+          </dl>
+          {w.picks.length > 0 && (
+            <p className="hint">
+              {s.weeklyPicks}: {w.picks.map((p) => `${name(p.spotId)} (${p.days})`).join(', ')}
+            </p>
+          )}
+        </>
+      )}
+    </article>
+  );
+}
+
 export function Method({
   spots,
   lang,
@@ -324,6 +391,7 @@ export function Method({
   verification,
   feedback,
   calibration,
+  weekly = null,
 }: {
   spots: Spot[];
   lang: Lang;
@@ -331,6 +399,7 @@ export function Method({
   verification: VerificationSummary | null;
   feedback: FeedbackSummary | null;
   calibration: Calibration | null;
+  weekly?: WeeklyReport | null;
 }) {
   const t = TXT[lang];
   return (
@@ -345,6 +414,7 @@ export function Method({
         </a>
       </p>
       <GuestFeedback f={feedback} c={calibration} spots={spots} lang={lang} />
+      <WeeklyPanel w={weekly} spots={spots} lang={lang} />
       <ol className="steps">
         {t.steps.map(([h, p]) => (
           <li key={h}>

@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import type { HourConditions, ProfileId, Spot, SpotScore } from '../engine/types';
-import { guestReasons, guestTips, mainProblem, mapsUrl, seaLevel, shareSpotText, travelLabel, windLevel } from './advice';
+import { guestReasons, guestTips, mainProblem, mapsUrl, seaLevel, shareSpotText, travelLabel, uvLevel, waterLevel, windLevel } from './advice';
 import { ShareButton } from './Share';
 import { compassG, g, pick } from './i18n';
 import type { GuestLang, Property } from './property';
@@ -16,6 +16,7 @@ export function SpotSheet({
   profile,
   lang,
   dayLabel,
+  sunset,
   onClose,
 }: {
   spot: Spot;
@@ -25,6 +26,8 @@ export function SpotSheet({
   profile: ProfileId;
   lang: GuestLang;
   dayLabel: string;
+  /** Local ISO time of sunset that day (shown for sunset spots). */
+  sunset?: string;
   onClose: () => void;
 }) {
   const d = g(lang);
@@ -42,6 +45,10 @@ export function SpotSheet({
   const bfMax = Math.max(0, ...w.map((c) => c.bf));
   const feels = w.length ? Math.round(w.reduce((s, c) => s + (c.apparent ?? 0), 0) / w.length) : null;
   const rain = Math.max(0, ...w.map((c) => c.precipProb ?? 0));
+  const ssts = w.map((c) => c.sea?.sst).filter((x): x is number => x != null);
+  const sst = ssts.length ? Math.round(ssts.reduce((a, b) => a + b, 0) / ssts.length) : null;
+  const uv = Math.max(0, ...w.map((c) => c.uv ?? 0));
+  const fav = property.favourites?.includes(spot.id);
   const avoid = sc.verdict === 'avoid' || sc.verdict === 'unsuitable';
   const lines = avoid ? [] : guestReasons(sc, lang);
   const problem = avoid ? mainProblem(sc, lang) : undefined;
@@ -64,6 +71,7 @@ export function SpotSheet({
           </button>
         </header>
 
+        {fav && <p className="g-fav g-fav-sheet">★ {d.hotelPick.replace('{name}', property.name)}</p>}
         {problem && <p className="g-note g-note-avoid">{problem}</p>}
 
         {!avoid && sc.window.start >= 0 && (
@@ -110,6 +118,15 @@ export function SpotSheet({
                   </small>
                 </dd>
               </div>
+              {sst != null && (
+                <div>
+                  <dt>{d.water}</dt>
+                  <dd>
+                    {d.waterWords[waterLevel(sst)]}
+                    <small>{sst}°C</small>
+                  </dd>
+                </div>
+              )}
               {feels != null && (
                 <div>
                   <dt>{d.feels}</dt>
@@ -120,6 +137,21 @@ export function SpotSheet({
                 <dt>{d.rain}</dt>
                 <dd>{rain}%</dd>
               </div>
+              {uv > 0 && spot.type !== 'museum' && (
+                <div>
+                  <dt>UV</dt>
+                  <dd>
+                    {d.uvWords[uvLevel(uv)]}
+                    <small>{uv >= 6 ? d.uvTip : Math.round(uv)}</small>
+                  </dd>
+                </div>
+              )}
+              {spot.traits.sunset && sunset && (
+                <div>
+                  <dt>{d.sunset}</dt>
+                  <dd>{sunset.slice(11, 16)}</dd>
+                </div>
+              )}
             </dl>
           </section>
         )}
