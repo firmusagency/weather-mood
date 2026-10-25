@@ -270,7 +270,10 @@ export type FactorKey =
   | 'typePref'
   | 'opportunity'
   | 'closed'
-  | 'notForProfile';
+  | 'notForProfile'
+  | 'coldSwim'
+  | 'rainyDay'
+  | 'floodRisk';
 
 export interface Factor {
   key: FactorKey;

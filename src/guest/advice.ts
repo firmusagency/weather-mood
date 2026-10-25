@@ -144,6 +144,24 @@ const WARN: Partial<Record<Factor['key'], L>> = {
     de: 'Rückfahrt mit dem Boot prüfen',
     fr: 'Vérifiez le bateau du retour',
   },
+  coldSwim: {
+    el: 'Κρύο για μπάνιο (αίσθηση {temp}°C, νερό {sst}°C): ωραίο για βόλτα, όχι για θάλασσα',
+    en: 'Too cold for swimming (feels like {temp}°C, sea {sst}°C): nice for a walk, not a beach day',
+    de: 'Zu kalt zum Baden (gefühlt {temp}°C, Wasser {sst}°C): schön für einen Spaziergang, kein Strandtag',
+    fr: 'Trop froid pour se baigner (ressenti {temp}°C, mer {sst}°C) : agréable pour une balade, pas pour la plage',
+  },
+  rainyDay: {
+    el: 'Βροχή ({pp}%): όχι μέρα για θάλασσα',
+    en: 'Rain ({pp}% chance): not a day for the sea',
+    de: 'Regen ({pp}%): kein Tag fürs Meer',
+    fr: 'Pluie ({pp} %) : pas une journée pour la mer',
+  },
+  floodRisk: {
+    el: 'Βροχή στα βουνά ({pp}%): κίνδυνος απότομης πλημμύρας και κλεισίματος, όχι φαράγγι',
+    en: 'Rain in the mountains ({pp}%): flash-flood and closure risk, not a gorge day',
+    de: 'Regen in den Bergen ({pp}%): Gefahr von Sturzfluten und Sperrung, kein Schluchttag',
+    fr: 'Pluie en montagne ({pp} %) : risque de crue subite et de fermeture, pas de gorges',
+  },
   closureRisk: {
     el: 'Μπορεί να κλείσει λόγω καιρού, ενημερωθείτε πριν',
     en: 'May close due to weather, check before going',

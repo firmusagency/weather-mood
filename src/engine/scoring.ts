@@ -304,6 +304,55 @@ function mergeFactors(hours: HourEval[]): Factor[] {
     .filter((x) => Math.abs(x.impact) >= 0.5 || x.key === 'indoor');
 }
 
+/*
+ * Hard limits: yes/no questions that sit above the hour-by-hour score. A sunny, calm January day
+ * can score 75 for a beach on the numbers alone; it is still not a swimming day. Likewise a gorge
+ * on a day with real rain is a flash-flood and closure risk whatever the temperature. These cap the
+ * verdict (and the score, so ranking follows) and add one explaining factor.
+ */
+export const SWIM_LIMITS = { apparentCaution: 18, apparentAvoid: 15, sstCaution: 18, sstAvoid: 16 };
+export const RAIN_LIMITS = { ppCaution: 60, ppAvoid: 80, mmCaution: 1, mmAvoid: 3 };
+export const GORGE_RAIN = { ppCautionBelow: 20, mmCaution: 1, mmAvoid: 3 };
+
+const mean = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null);
+const nn = (xs: (number | null | undefined)[]) => xs.filter((x): x is number => x != null);
+
+export function hardLimits(spot: Spot, windowConds: HourConditions[], dayConds: HourConditions[]): { cap: Verdict; factor: Factor } | null {
+  if (!windowConds.length) return null;
+  const type = spot.type;
+  const swim = type === 'beach' || type === 'lake';
+  const sea = swim || type === 'boat';
+  const trail = type === 'gorge' || type === 'hike';
+  if (!sea && !trail) return null;
+
+  const ppWin = Math.max(0, ...windowConds.map((c) => c.precipProb ?? 0));
+  const mmWin = windowConds.reduce((s, c) => s + (c.precip ?? 0), 0);
+
+  if (sea) {
+    const apparent = mean(nn(windowConds.map((c) => c.apparent)));
+    const sst = mean(nn(windowConds.map((c) => c.sea?.sst)));
+    const params = { apparent: apparent == null ? '-' : Math.round(apparent), sst: sst == null ? '-' : round(sst, 1), pp: ppWin, mm: round(mmWin, 1) };
+    const coldAvoid = (apparent != null && apparent < SWIM_LIMITS.apparentAvoid) || (sst != null && sst < SWIM_LIMITS.sstAvoid);
+    const coldCaution = (apparent != null && apparent < SWIM_LIMITS.apparentCaution) || (sst != null && sst < SWIM_LIMITS.sstCaution);
+    if (ppWin >= RAIN_LIMITS.ppAvoid || mmWin >= RAIN_LIMITS.mmAvoid) return { cap: 'avoid', factor: f('rainyDay', 0, params) };
+    // a boat trip in cool weather is still a boat trip; a beach is not
+    if (coldAvoid) return { cap: swim ? 'avoid' : 'caution', factor: f('coldSwim', 0, params) };
+    if (ppWin >= RAIN_LIMITS.ppCaution || mmWin >= RAIN_LIMITS.mmCaution) return { cap: 'caution', factor: f('rainyDay', 0, params) };
+    if (coldCaution && swim) return { cap: 'caution', factor: f('coldSwim', 0, params) };
+    return null;
+  }
+
+  // gorges: rain anywhere in the day counts (water arrives from upstream hours later), thunder ends it
+  const ppDay = Math.max(0, ...dayConds.map((c) => c.precipProb ?? 0));
+  const mmDay = dayConds.reduce((s, c) => s + (c.precip ?? 0), 0);
+  const thunder = dayConds.some((c) => c.thunder);
+  const limit = spot.limits?.maxPrecipProb ?? (type === 'gorge' ? 50 : 60);
+  const params = { pp: ppDay, mm: round(mmDay, 1), limit };
+  if (thunder || mmDay >= GORGE_RAIN.mmAvoid || (type === 'gorge' && ppDay >= limit)) return { cap: 'avoid', factor: f('floodRisk', 0, params) };
+  if (ppDay >= limit - GORGE_RAIN.ppCautionBelow || mmDay >= GORGE_RAIN.mmCaution || (type === 'hike' && ppDay >= limit)) return { cap: 'caution', factor: f('floodRisk', 0, params) };
+  return null;
+}
+
 export interface ScoreOptions {
   daysAhead?: number;
   /** Ignore windows starting before this hour (e.g. it is already afternoon today). */
@@ -330,7 +379,17 @@ export function scoreSpot(spot: Spot, conditions: HourConditions[], profileId: P
   const windowConds = conditions.filter((c) => c.hour >= best.start && c.hour < best.start + len);
   const merged = windowEvals.length ? mergeFactors(windowEvals) : [];
   const factors = merged.filter((x) => !RANK_ONLY.has(x.key));
-  const score = windowEvals.length ? Math.round(windowEvals.reduce((s, h) => s + h.score, 0) / windowEvals.length) : 0;
+  let score = windowEvals.length ? Math.round(windowEvals.reduce((s, h) => s + h.score, 0) / windowEvals.length) : 0;
+  // hard limits: cap the verdict (and the score, so the ranking follows) and say why
+  const limit = hardLimits(spot, windowConds, conditions.filter((c) => c.hour >= 6 && c.hour <= 20));
+  if (limit) {
+    const capped = Math.min(score, limit.cap === 'avoid' ? 49 : 69);
+    // the limit is the headline reason, so it outweighs every gradual factor
+    const loudest = Math.max(0, ...factors.map((x) => Math.abs(x.impact)));
+    limit.factor.impact = -Math.max(20, score - capped, loudest + 1);
+    score = capped;
+    factors.push(limit.factor);
+  }
 
   // 2. fit: everything that is not weather
   const fit: Factor[] = merged.filter((x) => RANK_ONLY.has(x.key));
