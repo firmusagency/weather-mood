@@ -1,19 +1,37 @@
 {
- "generatedAt": "2026-10-24T09:49:26.045Z",
+ "generatedAt": "2026-10-26T10:30:30.326Z",
  "property": {
   "id": "demo-alkyoni",
   "name": "Alkyoni Suites"
  },
- "weekStart": "2026-10-12",
- "weekEnd": "2026-10-18",
+ "weekStart": "2026-10-19",
+ "weekEnd": "2026-10-25",
  "visits": {
-  "total": 0,
+  "total": 19,
   "prev": 0,
-  "byView": {},
-  "byLang": {},
-  "byProfile": {},
-  "perDay": [],
-  "devices": 0
+  "byView": {
+   "phone": 19
+  },
+  "byLang": {
+   "en": 3,
+   "el": 16
+  },
+  "byProfile": {
+   "couple": 11,
+   "family": 7,
+   "solo": 1
+  },
+  "perDay": [
+   {
+    "date": "2026-10-24",
+    "n": 3
+   },
+   {
+    "date": "2026-10-25",
+    "n": 16
+   }
+  ],
+  "devices": 8
  },
  "votes": {
   "total": 0,
@@ -24,15 +42,40 @@
   "topTags": [],
   "bySpot": []
  },
- "picks": [],
+ "picks": [
+  {
+   "spotId": "marathi",
+   "days": 4
+  },
+  {
+   "spotId": "seitan-limania",
+   "days": 3
+  },
+  {
+   "spotId": "agioi-apostoloi",
+   "days": 3
+  },
+  {
+   "spotId": "falasarna",
+   "days": 2
+  },
+  {
+   "spotId": "gramvousa-boat",
+   "days": 2
+  },
+  {
+   "spotId": "stavros",
+   "days": 2
+  }
+ ],
  "planBDays": 0,
- "pushSubscribers": null,
+ "pushSubscribers": 1,
  "accuracy": {
-  "days": 5,
+  "days": 8,
   "bfWithin1Rate": 1,
-  "windMae": 3,
-  "picksHeld": 27,
-  "picks": 27,
-  "stationDays": 20
+  "windMae": 3.4,
+  "picksHeld": 54,
+  "picks": 54,
+  "stationDays": 32
  }
 }
