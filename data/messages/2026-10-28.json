@@ -1,0 +1,355 @@
+{
+ "date": "2026-10-28",
+ "generatedAt": "2026-10-27T20:13:28.388Z",
+ "basedOn": "2026-10-27T20:13:27.801Z",
+ "property": {
+  "id": "demo-alkyoni",
+  "name": "Alkyoni Suites"
+ },
+ "plans": {
+  "family": {
+   "date": "2026-10-28",
+   "profile": "family",
+   "generatedAt": "2026-10-27T20:13:28.388Z",
+   "picks": [
+    {
+     "spotId": "old-town",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 9,
+      "end": 12
+     }
+    },
+    {
+     "spotId": "botanical-park",
+     "verdict": "go",
+     "score": 98,
+     "window": {
+      "start": 11,
+      "end": 14
+     }
+    },
+    {
+     "spotId": "vamos",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 10,
+      "end": 13
+     }
+    }
+   ],
+   "avoid": [
+    "falasarna",
+    "balos",
+    "elafonisi",
+    "gramvousa-boat"
+   ],
+   "wind": {
+    "bf": 4,
+    "dir": 249,
+    "gust": 48
+   },
+   "rainProbMax": 38,
+   "coasts": {
+    "ref-north": 1.5,
+    "ref-west": 2,
+    "ref-south": 1.6
+   }
+  },
+  "couple": {
+   "date": "2026-10-28",
+   "profile": "couple",
+   "generatedAt": "2026-10-27T20:13:28.388Z",
+   "picks": [
+    {
+     "spotId": "old-town",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 9,
+      "end": 12
+     }
+    },
+    {
+     "spotId": "aptera",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 10,
+      "end": 12
+     }
+    },
+    {
+     "spotId": "chrysoskalitissa",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 8,
+      "end": 9
+     }
+    }
+   ],
+   "avoid": [
+    "falasarna",
+    "balos",
+    "elafonisi",
+    "gramvousa-boat"
+   ],
+   "wind": {
+    "bf": 4,
+    "dir": 249,
+    "gust": 48
+   },
+   "rainProbMax": 38,
+   "coasts": {
+    "ref-north": 1.5,
+    "ref-west": 2,
+    "ref-south": 1.6
+   }
+  },
+  "solo": {
+   "date": "2026-10-28",
+   "profile": "solo",
+   "generatedAt": "2026-10-27T20:13:28.388Z",
+   "picks": [
+    {
+     "spotId": "old-town",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 9,
+      "end": 12
+     }
+    },
+    {
+     "spotId": "aptera",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 10,
+      "end": 12
+     }
+    },
+    {
+     "spotId": "chrysoskalitissa",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 8,
+      "end": 9
+     }
+    }
+   ],
+   "avoid": [
+    "falasarna",
+    "balos",
+    "elafonisi",
+    "gramvousa-boat"
+   ],
+   "wind": {
+    "bf": 4,
+    "dir": 249,
+    "gust": 48
+   },
+   "rainProbMax": 38,
+   "coasts": {
+    "ref-north": 1.5,
+    "ref-west": 2,
+    "ref-south": 1.6
+   }
+  },
+  "active": {
+   "date": "2026-10-28",
+   "profile": "active",
+   "generatedAt": "2026-10-27T20:13:28.388Z",
+   "picks": [
+    {
+     "spotId": "old-town",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 9,
+      "end": 12
+     }
+    },
+    {
+     "spotId": "chrysoskalitissa",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 8,
+      "end": 9
+     }
+    },
+    {
+     "spotId": "aptera",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 10,
+      "end": 12
+     }
+    }
+   ],
+   "avoid": [
+    "falasarna",
+    "balos",
+    "gramvousa-boat",
+    "elafonisi"
+   ],
+   "wind": {
+    "bf": 4,
+    "dir": 249,
+    "gust": 48
+   },
+   "rainProbMax": 38,
+   "coasts": {
+    "ref-north": 1.5,
+    "ref-west": 2,
+    "ref-south": 1.6
+   }
+  },
+  "senior": {
+   "date": "2026-10-28",
+   "profile": "senior",
+   "generatedAt": "2026-10-27T20:13:28.388Z",
+   "picks": [
+    {
+     "spotId": "old-town",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 9,
+      "end": 12
+     }
+    },
+    {
+     "spotId": "vamos",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 10,
+      "end": 13
+     }
+    },
+    {
+     "spotId": "agia-triada",
+     "verdict": "go",
+     "score": 96,
+     "window": {
+      "start": 8,
+      "end": 9
+     }
+    }
+   ],
+   "avoid": [
+    "falasarna",
+    "elafonisi",
+    "gramvousa-boat",
+    "agia-marina"
+   ],
+   "wind": {
+    "bf": 4,
+    "dir": 249,
+    "gust": 48
+   },
+   "rainProbMax": 38,
+   "coasts": {
+    "ref-north": 1.5,
+    "ref-west": 2,
+    "ref-south": 1.6
+   }
+  },
+  "nocar": {
+   "date": "2026-10-28",
+   "profile": "nocar",
+   "generatedAt": "2026-10-27T20:13:28.388Z",
+   "picks": [
+    {
+     "spotId": "old-town",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 9,
+      "end": 12
+     }
+    },
+    {
+     "spotId": "chrysoskalitissa",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 8,
+      "end": 9
+     }
+    },
+    {
+     "spotId": "georgioupoli",
+     "verdict": "go",
+     "score": 82,
+     "window": {
+      "start": 11,
+      "end": 15
+     }
+    }
+   ],
+   "avoid": [
+    "falasarna",
+    "elafonisi",
+    "gramvousa-boat",
+    "agia-marina"
+   ],
+   "wind": {
+    "bf": 4,
+    "dir": 249,
+    "gust": 48
+   },
+   "rainProbMax": 38,
+   "coasts": {
+    "ref-north": 1.5,
+    "ref-west": 2,
+    "ref-south": 1.6
+   }
+  }
+ },
+ "messages": {
+  "family": {
+   "el": "Καλησπέρα από το Alkyoni Suites!\nΑύριο, Τετάρτη 28 Οκτωβρίου:\n19°, μέτριος αέρας Δ, θάλασσα κύμα.\nΜέτριος Δ άνεμος: η δυτική ακτή έχει κύμα, προτιμήστε προστατευμένες παραλίες.\n\nΟι προτάσεις μας για εσάς (Οικογένεια με παιδιά):\n1. Παλιά Πόλη & Ενετικό Λιμάνι · 09:00–12:00\n   ✓ Ιδανικό για παιδιά\n2. Βοτανικό Πάρκο Κρήτης · 11:00–14:00\n   ✓ Ξαπλώστρες, φαγητό, τουαλέτες\n3. Βάμος & χωριά Αποκορώνου · 10:00–13:00\n   ✓ Ευχάριστη θερμοκρασία (18°C)\n   ! Τα μοντέλα καιρού διαφωνούν για εδώ· ρίξτε μια ματιά ξανά το πρωί\n\nΚαλύτερα όχι αύριο: Φαλάσαρνα (κρύο για μπάνιο (αίσθηση 15°c, νερό 21.4°c): ωραίο για βόλτα, όχι για θάλασσα), Μπάλος (λιμνοθάλασσα) (κρύο για μπάνιο (αίσθηση 15°c, νερό 21.6°c): ωραίο για βόλτα, όχι για θάλασσα), Ελαφονήσι (βροχή (68%): όχι μέρα για θάλασσα).\nΠάρτε μαζί: ελαφρύ μπουφάν.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://firmusagency.github.io/weather-mood/guest.html\nΚαλό βράδυ! Αν αλλάξει ο καιρός, θα σας ενημερώσουμε το πρωί.",
+   "en": "Good evening from Alkyoni Suites!\nTomorrow, Wednesday 28 October:\n19°, moderate wind from the W, sea rough.\nModerate W wind: the west coast is rough, prefer sheltered beaches.\n\nOur picks for you (Family with kids):\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Great for kids\n2. Botanical Park of Crete · 11:00–14:00\n   ✓ Sunbeds, food and toilets\n3. Vamos & Apokoronas villages · 10:00–13:00\n   ✓ Pleasant temperature (18°C)\n   ! The weather models disagree here; check again in the morning\n\nBetter not tomorrow: Falasarna (too cold for swimming (feels like 15°c, sea 21.4°c): nice for a walk, not a beach day), Balos Lagoon (too cold for swimming (feels like 15°c, sea 21.6°c): nice for a walk, not a beach day), Elafonisi (rain (68% chance): not a day for the sea).\nBring: a light jacket.\n\nAll picks, maps and directions: https://firmusagency.github.io/weather-mood/guest.html\nHave a good evening! If the weather changes, we will let you know in the morning.",
+   "de": "Guten Abend von Alkyoni Suites!\nMorgen, Mittwoch, 28. Oktober:\n19°, mäßiger Wind aus W, Meer rau.\nMäßiger W-Wind: die West-Küste ist rau, lieber geschützte Strände.\n\nUnsere Tipps für Sie (Familie mit Kindern):\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Ideal für Kinder\n2. Botanical Park of Crete · 11:00–14:00\n   ✓ Liegen, Essen und Toiletten\n3. Vamos & Apokoronas villages · 10:00–13:00\n   ✓ Angenehme Temperatur (18°C)\n   ! Die Wettermodelle sind sich hier uneinig; morgen früh noch einmal nachsehen\n\nMorgen besser nicht: Falasarna (zu kalt zum baden (gefühlt 15°c, wasser 21.4°c): schön für einen spaziergang, kein strandtag), Balos Lagoon (zu kalt zum baden (gefühlt 15°c, wasser 21.6°c): schön für einen spaziergang, kein strandtag), Elafonisi (regen (68%): kein tag fürs meer).\nMitnehmen: eine leichte jacke.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://firmusagency.github.io/weather-mood/guest.html\nSchönen Abend! Falls sich das Wetter ändert, melden wir uns morgen früh.",
+   "fr": "Bonsoir de la part de Alkyoni Suites !\nDemain, mercredi 28 octobre :\n19°, vent modéré de O, mer agitée.\nVent O modéré : la côte ouest est agitée, préférez les plages abritées.\n\nNos conseils pour vous (Famille avec enfants) :\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Idéal pour les enfants\n2. Botanical Park of Crete · 11:00–14:00\n   ✓ Transats, restauration, toilettes\n3. Vamos & Apokoronas villages · 10:00–13:00\n   ✓ Température agréable (18°C)\n   ! Les modèles météo divergent ici ; revérifiez demain matin\n\nÀ éviter demain : Falasarna (trop froid pour se baigner (ressenti 15°c, mer 21.4°c) : agréable pour une balade, pas pour la plage), Balos Lagoon (trop froid pour se baigner (ressenti 15°c, mer 21.6°c) : agréable pour une balade, pas pour la plage), Elafonisi (pluie (68 %) : pas une journée pour la mer).\nÀ emporter : une veste légère.\n\nTous les conseils, cartes et itinéraires : https://firmusagency.github.io/weather-mood/guest.html\nBonne soirée ! Si la météo change, nous vous préviendrons demain matin."
+  },
+  "couple": {
+   "el": "Καλησπέρα από το Alkyoni Suites!\nΑύριο, Τετάρτη 28 Οκτωβρίου:\n19°, μέτριος αέρας Δ, θάλασσα κύμα.\nΜέτριος Δ άνεμος: η δυτική ακτή έχει κύμα, προτιμήστε προστατευμένες παραλίες.\n\nΟι προτάσεις μας για εσάς (Ζευγάρι):\n1. Παλιά Πόλη & Ενετικό Λιμάνι · 09:00–12:00\n   ✓ Εντυπωσιακό τοπίο\n2. Αρχαία Άπτερα · 10:00–12:00\n   ✓ Υπέροχο ηλιοβασίλεμα\n3. Μονή Χρυσοσκαλίτισσας · 08:00–09:00\n   ✓ Εντυπωσιακό τοπίο\n   ! Τα μοντέλα καιρού διαφωνούν για εδώ· ρίξτε μια ματιά ξανά το πρωί\n\nΚαλύτερα όχι αύριο: Φαλάσαρνα (κρύο για μπάνιο (αίσθηση 15°c, νερό 21.4°c): ωραίο για βόλτα, όχι για θάλασσα), Μπάλος (λιμνοθάλασσα) (κρύο για μπάνιο (αίσθηση 15°c, νερό 21.6°c): ωραίο για βόλτα, όχι για θάλασσα), Ελαφονήσι (βροχή (68%): όχι μέρα για θάλασσα).\nΠάρτε μαζί: ελαφρύ μπουφάν.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://firmusagency.github.io/weather-mood/guest.html\nΚαλό βράδυ! Αν αλλάξει ο καιρός, θα σας ενημερώσουμε το πρωί.",
+   "en": "Good evening from Alkyoni Suites!\nTomorrow, Wednesday 28 October:\n19°, moderate wind from the W, sea rough.\nModerate W wind: the west coast is rough, prefer sheltered beaches.\n\nOur picks for you (Couple):\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Stunning scenery\n2. Ancient Aptera · 10:00–12:00\n   ✓ Beautiful sunset\n3. Chrysoskalitissa Monastery · 08:00–09:00\n   ✓ Stunning scenery\n   ! The weather models disagree here; check again in the morning\n\nBetter not tomorrow: Falasarna (too cold for swimming (feels like 15°c, sea 21.4°c): nice for a walk, not a beach day), Balos Lagoon (too cold for swimming (feels like 15°c, sea 21.6°c): nice for a walk, not a beach day), Elafonisi (rain (68% chance): not a day for the sea).\nBring: a light jacket.\n\nAll picks, maps and directions: https://firmusagency.github.io/weather-mood/guest.html\nHave a good evening! If the weather changes, we will let you know in the morning.",
+   "de": "Guten Abend von Alkyoni Suites!\nMorgen, Mittwoch, 28. Oktober:\n19°, mäßiger Wind aus W, Meer rau.\nMäßiger W-Wind: die West-Küste ist rau, lieber geschützte Strände.\n\nUnsere Tipps für Sie (Paar):\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Atemberaubende Landschaft\n2. Ancient Aptera · 10:00–12:00\n   ✓ Schöner Sonnenuntergang\n3. Chrysoskalitissa Monastery · 08:00–09:00\n   ✓ Atemberaubende Landschaft\n   ! Die Wettermodelle sind sich hier uneinig; morgen früh noch einmal nachsehen\n\nMorgen besser nicht: Falasarna (zu kalt zum baden (gefühlt 15°c, wasser 21.4°c): schön für einen spaziergang, kein strandtag), Balos Lagoon (zu kalt zum baden (gefühlt 15°c, wasser 21.6°c): schön für einen spaziergang, kein strandtag), Elafonisi (regen (68%): kein tag fürs meer).\nMitnehmen: eine leichte jacke.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://firmusagency.github.io/weather-mood/guest.html\nSchönen Abend! Falls sich das Wetter ändert, melden wir uns morgen früh.",
+   "fr": "Bonsoir de la part de Alkyoni Suites !\nDemain, mercredi 28 octobre :\n19°, vent modéré de O, mer agitée.\nVent O modéré : la côte ouest est agitée, préférez les plages abritées.\n\nNos conseils pour vous (Couple) :\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Paysage spectaculaire\n2. Ancient Aptera · 10:00–12:00\n   ✓ Superbe coucher de soleil\n3. Chrysoskalitissa Monastery · 08:00–09:00\n   ✓ Paysage spectaculaire\n   ! Les modèles météo divergent ici ; revérifiez demain matin\n\nÀ éviter demain : Falasarna (trop froid pour se baigner (ressenti 15°c, mer 21.4°c) : agréable pour une balade, pas pour la plage), Balos Lagoon (trop froid pour se baigner (ressenti 15°c, mer 21.6°c) : agréable pour une balade, pas pour la plage), Elafonisi (pluie (68 %) : pas une journée pour la mer).\nÀ emporter : une veste légère.\n\nTous les conseils, cartes et itinéraires : https://firmusagency.github.io/weather-mood/guest.html\nBonne soirée ! Si la météo change, nous vous préviendrons demain matin."
+  },
+  "solo": {
+   "el": "Καλησπέρα από το Alkyoni Suites!\nΑύριο, Τετάρτη 28 Οκτωβρίου:\n19°, μέτριος αέρας Δ, θάλασσα κύμα.\nΜέτριος Δ άνεμος: η δυτική ακτή έχει κύμα, προτιμήστε προστατευμένες παραλίες.\n\nΟι προτάσεις μας για εσάς (Μόνος/η):\n1. Παλιά Πόλη & Ενετικό Λιμάνι · 09:00–12:00\n   ✓ Εντυπωσιακό τοπίο\n2. Αρχαία Άπτερα · 10:00–12:00\n   ✓ Εντυπωσιακό τοπίο\n3. Μονή Χρυσοσκαλίτισσας · 08:00–09:00\n   ✓ Εντυπωσιακό τοπίο\n   ! Τα μοντέλα καιρού διαφωνούν για εδώ· ρίξτε μια ματιά ξανά το πρωί\n\nΚαλύτερα όχι αύριο: Φαλάσαρνα (κρύο για μπάνιο (αίσθηση 15°c, νερό 21.4°c): ωραίο για βόλτα, όχι για θάλασσα), Μπάλος (λιμνοθάλασσα) (κρύο για μπάνιο (αίσθηση 15°c, νερό 21.6°c): ωραίο για βόλτα, όχι για θάλασσα), Ελαφονήσι (βροχή (68%): όχι μέρα για θάλασσα).\nΠάρτε μαζί: ελαφρύ μπουφάν.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://firmusagency.github.io/weather-mood/guest.html\nΚαλό βράδυ! Αν αλλάξει ο καιρός, θα σας ενημερώσουμε το πρωί.",
+   "en": "Good evening from Alkyoni Suites!\nTomorrow, Wednesday 28 October:\n19°, moderate wind from the W, sea rough.\nModerate W wind: the west coast is rough, prefer sheltered beaches.\n\nOur picks for you (Solo):\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Stunning scenery\n2. Ancient Aptera · 10:00–12:00\n   ✓ Stunning scenery\n3. Chrysoskalitissa Monastery · 08:00–09:00\n   ✓ Stunning scenery\n   ! The weather models disagree here; check again in the morning\n\nBetter not tomorrow: Falasarna (too cold for swimming (feels like 15°c, sea 21.4°c): nice for a walk, not a beach day), Balos Lagoon (too cold for swimming (feels like 15°c, sea 21.6°c): nice for a walk, not a beach day), Elafonisi (rain (68% chance): not a day for the sea).\nBring: a light jacket.\n\nAll picks, maps and directions: https://firmusagency.github.io/weather-mood/guest.html\nHave a good evening! If the weather changes, we will let you know in the morning.",
+   "de": "Guten Abend von Alkyoni Suites!\nMorgen, Mittwoch, 28. Oktober:\n19°, mäßiger Wind aus W, Meer rau.\nMäßiger W-Wind: die West-Küste ist rau, lieber geschützte Strände.\n\nUnsere Tipps für Sie (Allein):\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Atemberaubende Landschaft\n2. Ancient Aptera · 10:00–12:00\n   ✓ Atemberaubende Landschaft\n3. Chrysoskalitissa Monastery · 08:00–09:00\n   ✓ Atemberaubende Landschaft\n   ! Die Wettermodelle sind sich hier uneinig; morgen früh noch einmal nachsehen\n\nMorgen besser nicht: Falasarna (zu kalt zum baden (gefühlt 15°c, wasser 21.4°c): schön für einen spaziergang, kein strandtag), Balos Lagoon (zu kalt zum baden (gefühlt 15°c, wasser 21.6°c): schön für einen spaziergang, kein strandtag), Elafonisi (regen (68%): kein tag fürs meer).\nMitnehmen: eine leichte jacke.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://firmusagency.github.io/weather-mood/guest.html\nSchönen Abend! Falls sich das Wetter ändert, melden wir uns morgen früh.",
+   "fr": "Bonsoir de la part de Alkyoni Suites !\nDemain, mercredi 28 octobre :\n19°, vent modéré de O, mer agitée.\nVent O modéré : la côte ouest est agitée, préférez les plages abritées.\n\nNos conseils pour vous (En solo) :\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Paysage spectaculaire\n2. Ancient Aptera · 10:00–12:00\n   ✓ Paysage spectaculaire\n3. Chrysoskalitissa Monastery · 08:00–09:00\n   ✓ Paysage spectaculaire\n   ! Les modèles météo divergent ici ; revérifiez demain matin\n\nÀ éviter demain : Falasarna (trop froid pour se baigner (ressenti 15°c, mer 21.4°c) : agréable pour une balade, pas pour la plage), Balos Lagoon (trop froid pour se baigner (ressenti 15°c, mer 21.6°c) : agréable pour une balade, pas pour la plage), Elafonisi (pluie (68 %) : pas une journée pour la mer).\nÀ emporter : une veste légère.\n\nTous les conseils, cartes et itinéraires : https://firmusagency.github.io/weather-mood/guest.html\nBonne soirée ! Si la météo change, nous vous préviendrons demain matin."
+  },
+  "active": {
+   "el": "Καλησπέρα από το Alkyoni Suites!\nΑύριο, Τετάρτη 28 Οκτωβρίου:\n19°, μέτριος αέρας Δ, θάλασσα κύμα.\nΜέτριος Δ άνεμος: η δυτική ακτή έχει κύμα, προτιμήστε προστατευμένες παραλίες.\n\nΟι προτάσεις μας για εσάς (Περιπέτεια & πεζοπορία):\n1. Παλιά Πόλη & Ενετικό Λιμάνι · 09:00–12:00\n   ✓ Εντυπωσιακό τοπίο\n2. Μονή Χρυσοσκαλίτισσας · 08:00–09:00\n   ✓ Εντυπωσιακό τοπίο\n   ! Τα μοντέλα καιρού διαφωνούν για εδώ· ρίξτε μια ματιά ξανά το πρωί\n3. Αρχαία Άπτερα · 10:00–12:00\n   ✓ Εντυπωσιακό τοπίο\n\nΚαλύτερα όχι αύριο: Φαλάσαρνα (κρύο για μπάνιο (αίσθηση 15°c, νερό 21.4°c): ωραίο για βόλτα, όχι για θάλασσα), Μπάλος (λιμνοθάλασσα) (κρύο για μπάνιο (αίσθηση 15°c, νερό 21.6°c): ωραίο για βόλτα, όχι για θάλασσα), Κρουαζιέρα Γραμβούσα & Μπάλος (από Κίσσαμο) (βροχή (90%): όχι μέρα για θάλασσα).\nΠάρτε μαζί: ελαφρύ μπουφάν.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://firmusagency.github.io/weather-mood/guest.html\nΚαλό βράδυ! Αν αλλάξει ο καιρός, θα σας ενημερώσουμε το πρωί.",
+   "en": "Good evening from Alkyoni Suites!\nTomorrow, Wednesday 28 October:\n19°, moderate wind from the W, sea rough.\nModerate W wind: the west coast is rough, prefer sheltered beaches.\n\nOur picks for you (Adventure & hiking):\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Stunning scenery\n2. Chrysoskalitissa Monastery · 08:00–09:00\n   ✓ Stunning scenery\n   ! The weather models disagree here; check again in the morning\n3. Ancient Aptera · 10:00–12:00\n   ✓ Stunning scenery\n\nBetter not tomorrow: Falasarna (too cold for swimming (feels like 15°c, sea 21.4°c): nice for a walk, not a beach day), Balos Lagoon (too cold for swimming (feels like 15°c, sea 21.6°c): nice for a walk, not a beach day), Gramvousa & Balos cruise (from Kissamos) (rain (90% chance): not a day for the sea).\nBring: a light jacket.\n\nAll picks, maps and directions: https://firmusagency.github.io/weather-mood/guest.html\nHave a good evening! If the weather changes, we will let you know in the morning.",
+   "de": "Guten Abend von Alkyoni Suites!\nMorgen, Mittwoch, 28. Oktober:\n19°, mäßiger Wind aus W, Meer rau.\nMäßiger W-Wind: die West-Küste ist rau, lieber geschützte Strände.\n\nUnsere Tipps für Sie (Abenteuer & Wandern):\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Atemberaubende Landschaft\n2. Chrysoskalitissa Monastery · 08:00–09:00\n   ✓ Atemberaubende Landschaft\n   ! Die Wettermodelle sind sich hier uneinig; morgen früh noch einmal nachsehen\n3. Ancient Aptera · 10:00–12:00\n   ✓ Atemberaubende Landschaft\n\nMorgen besser nicht: Falasarna (zu kalt zum baden (gefühlt 15°c, wasser 21.4°c): schön für einen spaziergang, kein strandtag), Balos Lagoon (zu kalt zum baden (gefühlt 15°c, wasser 21.6°c): schön für einen spaziergang, kein strandtag), Gramvousa & Balos cruise (from Kissamos) (regen (90%): kein tag fürs meer).\nMitnehmen: eine leichte jacke.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://firmusagency.github.io/weather-mood/guest.html\nSchönen Abend! Falls sich das Wetter ändert, melden wir uns morgen früh.",
+   "fr": "Bonsoir de la part de Alkyoni Suites !\nDemain, mercredi 28 octobre :\n19°, vent modéré de O, mer agitée.\nVent O modéré : la côte ouest est agitée, préférez les plages abritées.\n\nNos conseils pour vous (Aventure & randonnée) :\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Paysage spectaculaire\n2. Chrysoskalitissa Monastery · 08:00–09:00\n   ✓ Paysage spectaculaire\n   ! Les modèles météo divergent ici ; revérifiez demain matin\n3. Ancient Aptera · 10:00–12:00\n   ✓ Paysage spectaculaire\n\nÀ éviter demain : Falasarna (trop froid pour se baigner (ressenti 15°c, mer 21.4°c) : agréable pour une balade, pas pour la plage), Balos Lagoon (trop froid pour se baigner (ressenti 15°c, mer 21.6°c) : agréable pour une balade, pas pour la plage), Gramvousa & Balos cruise (from Kissamos) (pluie (90 %) : pas une journée pour la mer).\nÀ emporter : une veste légère.\n\nTous les conseils, cartes et itinéraires : https://firmusagency.github.io/weather-mood/guest.html\nBonne soirée ! Si la météo change, nous vous préviendrons demain matin."
+  },
+  "senior": {
+   "el": "Καλησπέρα από το Alkyoni Suites!\nΑύριο, Τετάρτη 28 Οκτωβρίου:\n19°, μέτριος αέρας Δ, θάλασσα κύμα.\nΜέτριος Δ άνεμος: η δυτική ακτή έχει κύμα, προτιμήστε προστατευμένες παραλίες.\n\nΟι προτάσεις μας για εσάς (Χαλαρό πρόγραμμα):\n1. Παλιά Πόλη & Ενετικό Λιμάνι · 09:00–12:00\n   ✓ Εύκολη πρόσβαση\n2. Βάμος & χωριά Αποκορώνου · 10:00–13:00\n   ✓ Ευχάριστη θερμοκρασία (18°C)\n   ! Τα μοντέλα καιρού διαφωνούν για εδώ· ρίξτε μια ματιά ξανά το πρωί\n3. Μονή Αγίας Τριάδας Τζαγκαρόλων · 08:00–09:00\n   ✓ Υπάρχει σκιά\n   ! Τα μοντέλα καιρού διαφωνούν για εδώ· ρίξτε μια ματιά ξανά το πρωί\n\nΚαλύτερα όχι αύριο: Φαλάσαρνα (κρύο για μπάνιο (αίσθηση 15°c, νερό 21.4°c): ωραίο για βόλτα, όχι για θάλασσα), Ελαφονήσι (βροχή (68%): όχι μέρα για θάλασσα), Κρουαζιέρα Γραμβούσα & Μπάλος (από Κίσσαμο) (βροχή (90%): όχι μέρα για θάλασσα).\nΠάρτε μαζί: ελαφρύ μπουφάν.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://firmusagency.github.io/weather-mood/guest.html\nΚαλό βράδυ! Αν αλλάξει ο καιρός, θα σας ενημερώσουμε το πρωί.",
+   "en": "Good evening from Alkyoni Suites!\nTomorrow, Wednesday 28 October:\n19°, moderate wind from the W, sea rough.\nModerate W wind: the west coast is rough, prefer sheltered beaches.\n\nOur picks for you (Easy-going pace):\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Easy access\n2. Vamos & Apokoronas villages · 10:00–13:00\n   ✓ Pleasant temperature (18°C)\n   ! The weather models disagree here; check again in the morning\n3. Agia Triada Monastery · 08:00–09:00\n   ✓ Shade available\n   ! The weather models disagree here; check again in the morning\n\nBetter not tomorrow: Falasarna (too cold for swimming (feels like 15°c, sea 21.4°c): nice for a walk, not a beach day), Elafonisi (rain (68% chance): not a day for the sea), Gramvousa & Balos cruise (from Kissamos) (rain (90% chance): not a day for the sea).\nBring: a light jacket.\n\nAll picks, maps and directions: https://firmusagency.github.io/weather-mood/guest.html\nHave a good evening! If the weather changes, we will let you know in the morning.",
+   "de": "Guten Abend von Alkyoni Suites!\nMorgen, Mittwoch, 28. Oktober:\n19°, mäßiger Wind aus W, Meer rau.\nMäßiger W-Wind: die West-Küste ist rau, lieber geschützte Strände.\n\nUnsere Tipps für Sie (Gemütliches Tempo):\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Leicht zugänglich\n2. Vamos & Apokoronas villages · 10:00–13:00\n   ✓ Angenehme Temperatur (18°C)\n   ! Die Wettermodelle sind sich hier uneinig; morgen früh noch einmal nachsehen\n3. Agia Triada Monastery · 08:00–09:00\n   ✓ Schatten vorhanden\n   ! Die Wettermodelle sind sich hier uneinig; morgen früh noch einmal nachsehen\n\nMorgen besser nicht: Falasarna (zu kalt zum baden (gefühlt 15°c, wasser 21.4°c): schön für einen spaziergang, kein strandtag), Elafonisi (regen (68%): kein tag fürs meer), Gramvousa & Balos cruise (from Kissamos) (regen (90%): kein tag fürs meer).\nMitnehmen: eine leichte jacke.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://firmusagency.github.io/weather-mood/guest.html\nSchönen Abend! Falls sich das Wetter ändert, melden wir uns morgen früh.",
+   "fr": "Bonsoir de la part de Alkyoni Suites !\nDemain, mercredi 28 octobre :\n19°, vent modéré de O, mer agitée.\nVent O modéré : la côte ouest est agitée, préférez les plages abritées.\n\nNos conseils pour vous (Rythme tranquille) :\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Accès facile\n2. Vamos & Apokoronas villages · 10:00–13:00\n   ✓ Température agréable (18°C)\n   ! Les modèles météo divergent ici ; revérifiez demain matin\n3. Agia Triada Monastery · 08:00–09:00\n   ✓ De l'ombre sur place\n   ! Les modèles météo divergent ici ; revérifiez demain matin\n\nÀ éviter demain : Falasarna (trop froid pour se baigner (ressenti 15°c, mer 21.4°c) : agréable pour une balade, pas pour la plage), Elafonisi (pluie (68 %) : pas une journée pour la mer), Gramvousa & Balos cruise (from Kissamos) (pluie (90 %) : pas une journée pour la mer).\nÀ emporter : une veste légère.\n\nTous les conseils, cartes et itinéraires : https://firmusagency.github.io/weather-mood/guest.html\nBonne soirée ! Si la météo change, nous vous préviendrons demain matin."
+  },
+  "nocar": {
+   "el": "Καλησπέρα από το Alkyoni Suites!\nΑύριο, Τετάρτη 28 Οκτωβρίου:\n19°, μέτριος αέρας Δ, θάλασσα κύμα.\nΜέτριος Δ άνεμος: η δυτική ακτή έχει κύμα, προτιμήστε προστατευμένες παραλίες.\n\nΟι προτάσεις μας για εσάς (Χωρίς αυτοκίνητο):\n1. Παλιά Πόλη & Ενετικό Λιμάνι · 09:00–12:00\n   ✓ Φτάνει λεωφορείο\n2. Μονή Χρυσοσκαλίτισσας · 08:00–09:00\n   ! Τα μοντέλα καιρού διαφωνούν για εδώ· ρίξτε μια ματιά ξανά το πρωί\n3. Γεωργιούπολη · 11:00–15:00\n   ✓ Ήρεμα νερά κοντά στην ακτή\n   ! Λίγο δροσερά για μπάνιο (17°C)\n\nΚαλύτερα όχι αύριο: Φαλάσαρνα (κρύο για μπάνιο (αίσθηση 15°c, νερό 21.4°c): ωραίο για βόλτα, όχι για θάλασσα), Ελαφονήσι (βροχή (68%): όχι μέρα για θάλασσα), Κρουαζιέρα Γραμβούσα & Μπάλος (από Κίσσαμο) (βροχή (90%): όχι μέρα για θάλασσα).\nΠάρτε μαζί: ελαφρύ μπουφάν.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://firmusagency.github.io/weather-mood/guest.html\nΚαλό βράδυ! Αν αλλάξει ο καιρός, θα σας ενημερώσουμε το πρωί.",
+   "en": "Good evening from Alkyoni Suites!\nTomorrow, Wednesday 28 October:\n19°, moderate wind from the W, sea rough.\nModerate W wind: the west coast is rough, prefer sheltered beaches.\n\nOur picks for you (No car):\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Reachable by bus\n2. Chrysoskalitissa Monastery · 08:00–09:00\n   ! The weather models disagree here; check again in the morning\n3. Georgioupoli · 11:00–15:00\n   ✓ Calm water close to the shore\n   ! A bit cool for swimming (17°C)\n\nBetter not tomorrow: Falasarna (too cold for swimming (feels like 15°c, sea 21.4°c): nice for a walk, not a beach day), Elafonisi (rain (68% chance): not a day for the sea), Gramvousa & Balos cruise (from Kissamos) (rain (90% chance): not a day for the sea).\nBring: a light jacket.\n\nAll picks, maps and directions: https://firmusagency.github.io/weather-mood/guest.html\nHave a good evening! If the weather changes, we will let you know in the morning.",
+   "de": "Guten Abend von Alkyoni Suites!\nMorgen, Mittwoch, 28. Oktober:\n19°, mäßiger Wind aus W, Meer rau.\nMäßiger W-Wind: die West-Küste ist rau, lieber geschützte Strände.\n\nUnsere Tipps für Sie (Ohne Auto):\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Mit dem Bus erreichbar\n2. Chrysoskalitissa Monastery · 08:00–09:00\n   ! Die Wettermodelle sind sich hier uneinig; morgen früh noch einmal nachsehen\n3. Georgioupoli · 11:00–15:00\n   ✓ Ruhiges Wasser nah am Ufer\n   ! Etwas kühl zum Baden (17°C)\n\nMorgen besser nicht: Falasarna (zu kalt zum baden (gefühlt 15°c, wasser 21.4°c): schön für einen spaziergang, kein strandtag), Elafonisi (regen (68%): kein tag fürs meer), Gramvousa & Balos cruise (from Kissamos) (regen (90%): kein tag fürs meer).\nMitnehmen: eine leichte jacke.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://firmusagency.github.io/weather-mood/guest.html\nSchönen Abend! Falls sich das Wetter ändert, melden wir uns morgen früh.",
+   "fr": "Bonsoir de la part de Alkyoni Suites !\nDemain, mercredi 28 octobre :\n19°, vent modéré de O, mer agitée.\nVent O modéré : la côte ouest est agitée, préférez les plages abritées.\n\nNos conseils pour vous (Sans voiture) :\n1. Old Town & Venetian Harbour · 09:00–12:00\n   ✓ Accessible en bus\n2. Chrysoskalitissa Monastery · 08:00–09:00\n   ! Les modèles météo divergent ici ; revérifiez demain matin\n3. Georgioupoli · 11:00–15:00\n   ✓ Eau calme près du rivage\n   ! Un peu frais pour se baigner (17°C)\n\nÀ éviter demain : Falasarna (trop froid pour se baigner (ressenti 15°c, mer 21.4°c) : agréable pour une balade, pas pour la plage), Elafonisi (pluie (68 %) : pas une journée pour la mer), Gramvousa & Balos cruise (from Kissamos) (pluie (90 %) : pas une journée pour la mer).\nÀ emporter : une veste légère.\n\nTous les conseils, cartes et itinéraires : https://firmusagency.github.io/weather-mood/guest.html\nBonne soirée ! Si la météo change, nous vous préviendrons demain matin."
+  }
+ }
+}
