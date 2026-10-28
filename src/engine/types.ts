@@ -272,7 +272,9 @@ export type FactorKey =
   | 'closed'
   | 'notForProfile'
   | 'coldSwim'
+  | 'coolSwim'
   | 'rainyDay'
+  | 'rainRisk'
   | 'floodRisk';
 
 export interface Factor {

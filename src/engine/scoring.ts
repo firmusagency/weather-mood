@@ -336,9 +336,9 @@ export function hardLimits(spot: Spot, windowConds: HourConditions[], dayConds: 
     const coldCaution = (apparent != null && apparent < SWIM_LIMITS.apparentCaution) || (sst != null && sst < SWIM_LIMITS.sstCaution);
     if (ppWin >= RAIN_LIMITS.ppAvoid || mmWin >= RAIN_LIMITS.mmAvoid) return { cap: 'avoid', factor: f('rainyDay', 0, params) };
     // a boat trip in cool weather is still a boat trip; a beach is not
-    if (coldAvoid) return { cap: swim ? 'avoid' : 'caution', factor: f('coldSwim', 0, params) };
-    if (ppWin >= RAIN_LIMITS.ppCaution || mmWin >= RAIN_LIMITS.mmCaution) return { cap: 'caution', factor: f('rainyDay', 0, params) };
-    if (coldCaution && swim) return { cap: 'caution', factor: f('coldSwim', 0, params) };
+    if (coldAvoid) return swim ? { cap: 'avoid', factor: f('coldSwim', 0, params) } : { cap: 'caution', factor: f('coolSwim', 0, params) };
+    if (ppWin >= RAIN_LIMITS.ppCaution || mmWin >= RAIN_LIMITS.mmCaution) return { cap: 'caution', factor: f('rainRisk', 0, params) };
+    if (coldCaution && swim) return { cap: 'caution', factor: f('coolSwim', 0, params) };
     return null;
   }
 
@@ -384,9 +384,10 @@ export function scoreSpot(spot: Spot, conditions: HourConditions[], profileId: P
   const limit = hardLimits(spot, windowConds, conditions.filter((c) => c.hour >= 6 && c.hour <= 20));
   if (limit) {
     const capped = Math.min(score, limit.cap === 'avoid' ? 49 : 69);
-    // the limit is the headline reason, so it outweighs every gradual factor
+    // when the limit is what actually lowers the verdict it is the headline reason; when the
+    // weather already said "avoid" (rough sea, gale) that reason stays first and the limit is a footnote
     const loudest = Math.max(0, ...factors.map((x) => Math.abs(x.impact)));
-    limit.factor.impact = -Math.max(20, score - capped, loudest + 1);
+    limit.factor.impact = score > capped ? -Math.max(20, score - capped, loudest + 1) : -8;
     score = capped;
     factors.push(limit.factor);
   }

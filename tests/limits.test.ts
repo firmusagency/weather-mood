@@ -17,7 +17,9 @@ describe('hard limits above the score', () => {
     expect(sc['old-town'].verdict).toBe('go');
     expect(sc.theriso.verdict).toBe('go');
     // a cool day is "with reservations", a warm one is fine (water at 25° in the fixture)
-    expect(scores({ ...calm, apparent: 17 }).falasarna.verdict).toBe('caution');
+    const cool = scores({ ...calm, apparent: 17 }).falasarna;
+    expect(cool.verdict).toBe('caution');
+    expect(cool.factors[0].key).toBe('coolSwim');
     expect(scores({ ...calm, apparent: 24 }).falasarna.verdict).toBe('go');
   });
 
@@ -25,11 +27,21 @@ describe('hard limits above the score', () => {
     expect(scores({ ...calm, apparent: 12 })['gramvousa-boat'].verdict).toBe('caution');
   });
 
+  it('keeps the real reason first when the weather already says avoid', () => {
+    // 5 Bf onshore and 1.8 m waves: Falasarna is out because of the sea, the cool air is a footnote
+    const sc = scores({ windKmh: 36, windDir: 280, waveM: 1.8, waveDir: 280, apparent: 17 }).falasarna;
+    expect(sc.verdict).toBe('avoid');
+    expect(sc.factors[0].key).not.toBe('coolSwim');
+    expect(sc.factors.some((f) => f.key === 'coolSwim')).toBe(true);
+  });
+
   it('likely rain rules the sea out', () => {
     const sc = scores({ ...calm, apparent: 26, precipProb: 85, precip: 0.3 });
     expect(sc.falasarna.verdict).toBe('avoid');
     expect(sc.falasarna.factors[0].key).toBe('rainyDay');
-    expect(scores({ ...calm, apparent: 26, precipProb: 65 }).falasarna.verdict).toBe('caution');
+    const risky = scores({ ...calm, apparent: 26, precipProb: 65 }).falasarna;
+    expect(risky.verdict).toBe('caution');
+    expect(risky.factors[0].key).toBe('rainRisk');
     expect(scores({ ...calm, apparent: 26, precipProb: 40 }).falasarna.verdict).toBe('go');
   });
 

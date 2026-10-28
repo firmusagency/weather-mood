@@ -490,6 +490,10 @@ export function factorText(fct: Factor, lang: Lang): string {
           : `May close due to rain (${p.mm} mm/h)`;
     case 'coldSwim':
       return el ? `Κρύο για μπάνιο: αίσθηση ${p.apparent}°C, νερό ${p.sst}°C (όριο 18°/18°, αποφυγή κάτω από 15°/16°)` : `Too cold for swimming: feels like ${p.apparent}°C, sea ${p.sst}°C (limit 18°/18°, avoid below 15°/16°)`;
+    case 'coolSwim':
+      return el ? `Δροσερά για μπάνιο: αίσθηση ${p.apparent}°C, νερό ${p.sst}°C (όριο 18°/18°)` : `Cool for swimming: feels like ${p.apparent}°C, sea ${p.sst}°C (limit 18°/18°)`;
+    case 'rainRisk':
+      return el ? `Πιθανή βροχή ${p.pp}% / ${p.mm} mm στο παράθυρο: θάλασσα μόνο με επιφύλαξη (όριο 60%)` : `Rain likely ${p.pp}% / ${p.mm} mm in the window: sea only with reservations (limit 60%)`;
     case 'rainyDay':
       return el ? `Βροχή ${p.pp}% / ${p.mm} mm στο παράθυρο: όχι μέρα για θάλασσα (όριο 60%, αποφυγή από 80%)` : `Rain ${p.pp}% / ${p.mm} mm in the window: not a sea day (limit 60%, avoid from 80%)`;
     case 'floodRisk':

@@ -150,6 +150,18 @@ const WARN: Partial<Record<Factor['key'], L>> = {
     de: 'Zu kalt zum Baden (gefühlt {temp}°C, Wasser {sst}°C): schön für einen Spaziergang, kein Strandtag',
     fr: 'Trop froid pour se baigner (ressenti {temp}°C, mer {sst}°C) : agréable pour une balade, pas pour la plage',
   },
+  coolSwim: {
+    el: 'Δροσερά για μπάνιο (αίσθηση {temp}°C, νερό {sst}°C): για τους τολμηρούς',
+    en: 'On the cool side for swimming (feels like {temp}°C, sea {sst}°C): for the brave',
+    de: 'Eher kühl zum Baden (gefühlt {temp}°C, Wasser {sst}°C): etwas für Mutige',
+    fr: 'Un peu frais pour se baigner (ressenti {temp}°C, mer {sst}°C) : pour les courageux',
+  },
+  rainRisk: {
+    el: 'Πιθανή βροχή ({pp}%): έχετε εναλλακτική για τη θάλασσα',
+    en: 'Rain likely ({pp}%): keep a backup plan for the sea',
+    de: 'Regen wahrscheinlich ({pp}%): Plan B fürs Meer bereithalten',
+    fr: 'Pluie probable ({pp} %) : prévoyez une alternative à la mer',
+  },
   rainyDay: {
     el: 'Βροχή ({pp}%): όχι μέρα για θάλασσα',
     en: 'Rain ({pp}% chance): not a day for the sea',
