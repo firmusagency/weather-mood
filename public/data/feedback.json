@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-10-28T09:32:07.620Z",
+ "updatedAt": "2026-10-29T09:47:09.546Z",
  "total": 0,
  "from": null,
  "to": null,
@@ -9,16 +9,16 @@
  "recent": [],
  "visits": {
   "days": 30,
-  "total": 20,
+  "total": 21,
   "byView": {
-   "phone": 20
+   "phone": 21
   },
   "byLang": {
-   "en": 3,
+   "en": 4,
    "el": 17
   },
   "byProfile": {
-   "couple": 11,
+   "couple": 12,
    "family": 8,
    "solo": 1
   },
@@ -33,6 +33,10 @@
    },
    {
     "date": "2026-10-27",
+    "n": 1
+   },
+   {
+    "date": "2026-10-28",
     "n": 1
    }
   ]
