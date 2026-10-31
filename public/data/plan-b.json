@@ -1,109 +1,105 @@
 {
- "date": "2026-10-30",
- "checkedAt": "2026-10-30T09:03:30.593Z",
- "eveningGeneratedAt": "2026-10-29T20:30:37.729Z",
+ "date": "2026-10-31",
+ "checkedAt": "2026-10-31T08:56:13.851Z",
+ "eveningGeneratedAt": "2026-10-30T20:04:53.946Z",
  "changed": false,
  "byProfile": {
   "family": {
    "diff": {
-    "date": "2026-10-30",
+    "date": "2026-10-31",
     "profile": "family",
     "significant": false,
     "changes": [],
     "before": {
-     "date": "2026-10-30",
+     "date": "2026-10-31",
      "profile": "family",
-     "generatedAt": "2026-10-29T20:30:37.729Z",
+     "generatedAt": "2026-10-30T20:04:53.946Z",
      "picks": [
       {
-       "spotId": "old-town",
+       "spotId": "agioi-apostoloi",
        "verdict": "go",
-       "score": 100,
+       "score": 99,
        "window": {
-        "start": 9,
-        "end": 12
+        "start": 10,
+        "end": 13
        }
       },
       {
-       "spotId": "botanical-park",
+       "spotId": "stavros",
        "verdict": "go",
-       "score": 100,
+       "score": 98,
        "window": {
-        "start": 8,
-        "end": 11
+        "start": 10,
+        "end": 14
        }
       },
       {
-       "spotId": "theriso",
+       "spotId": "marathi",
+       "verdict": "go",
+       "score": 98,
+       "window": {
+        "start": 10,
+        "end": 14
+       }
+      }
+     ],
+     "avoid": [],
+     "wind": {
+      "bf": 2,
+      "dir": 77,
+      "gust": 15
+     },
+     "rainProbMax": 90,
+     "coasts": {
+      "ref-north": 0.3,
+      "ref-west": 0.3,
+      "ref-south": 0.2
+     }
+    },
+    "after": {
+     "date": "2026-10-31",
+     "profile": "family",
+     "generatedAt": "2026-10-31T08:56:13.851Z",
+     "picks": [
+      {
+       "spotId": "agioi-apostoloi",
        "verdict": "go",
        "score": 100,
        "window": {
         "start": 10,
         "end": 13
        }
-      }
-     ],
-     "avoid": [
-      "agia-marina"
-     ],
-     "wind": {
-      "bf": 3,
-      "dir": 49,
-      "gust": 27
-     },
-     "rainProbMax": 43,
-     "coasts": {
-      "ref-north": 0.8,
-      "ref-west": 0.8,
-      "ref-south": 0.4
-     }
-    },
-    "after": {
-     "date": "2026-10-30",
-     "profile": "family",
-     "generatedAt": "2026-10-30T09:03:30.593Z",
-     "picks": [
-      {
-       "spotId": "old-town",
-       "verdict": "go",
-       "score": 100,
-       "window": {
-        "start": 9,
-        "end": 12
-       }
       },
       {
-       "spotId": "botanical-park",
+       "spotId": "stavros",
        "verdict": "go",
        "score": 100,
        "window": {
-        "start": 8,
-        "end": 11
+        "start": 10,
+        "end": 14
        }
       },
       {
        "spotId": "marathi",
        "verdict": "go",
-       "score": 96,
+       "score": 99,
        "window": {
-        "start": 12,
-        "end": 16
+        "start": 10,
+        "end": 14
        }
       }
      ],
-     "avoid": [
-      "agia-marina"
-     ],
+     "avoid": [],
      "wind": {
-      "bf": 3,
-      "dir": 45,
-      "gust": 26
+      "bf": 2,
+      "dir": 174,
+      "gust": 16
      },
-     "rainProbMax": 0,
+     "rainProbMax": 78,
      "coasts": {
-      "ref-north": 0.8,
-      "ref-west": 0.8,
-      "ref-south": 0.4
+      "ref-north": 0.3,
+      "ref-west": 0.3,
+      "ref-south": 0.2
      }
     }
    },
@@ -111,104 +107,100 @@
   },
   "couple": {
    "diff": {
-    "date": "2026-10-30",
+    "date": "2026-10-31",
     "profile": "couple",
     "significant": false,
     "changes": [],
     "before": {
-     "date": "2026-10-30",
+     "date": "2026-10-31",
      "profile": "couple",
-     "generatedAt": "2026-10-29T20:30:37.729Z",
+     "generatedAt": "2026-10-30T20:04:53.946Z",
      "picks": [
       {
        "spotId": "falasarna",
        "verdict": "go",
-       "score": 94,
+       "score": 96,
        "window": {
-        "start": 14,
-        "end": 18
+        "start": 9,
+        "end": 13
        }
       },
       {
        "spotId": "elafonisi",
        "verdict": "go",
-       "score": 100,
+       "score": 96,
        "window": {
-        "start": 15,
-        "end": 19
+        "start": 9,
+        "end": 13
        }
       },
       {
        "spotId": "balos",
        "verdict": "go",
-       "score": 97,
+       "score": 96,
        "window": {
         "start": 9,
         "end": 13
        }
       }
      ],
-     "avoid": [
-      "samaria"
-     ],
+     "avoid": [],
      "wind": {
-      "bf": 3,
-      "dir": 49,
-      "gust": 27
+      "bf": 2,
+      "dir": 77,
+      "gust": 15
      },
-     "rainProbMax": 43,
+     "rainProbMax": 90,
      "coasts": {
-      "ref-north": 0.8,
-      "ref-west": 0.8,
-      "ref-south": 0.4
+      "ref-north": 0.3,
+      "ref-west": 0.3,
+      "ref-south": 0.2
      }
     },
     "after": {
-     "date": "2026-10-30",
+     "date": "2026-10-31",
      "profile": "couple",
-     "generatedAt": "2026-10-30T09:03:30.593Z",
+     "generatedAt": "2026-10-31T08:56:13.851Z",
      "picks": [
       {
        "spotId": "falasarna",
        "verdict": "go",
-       "score": 95,
+       "score": 99,
        "window": {
-        "start": 11,
-        "end": 15
-       }
-      },
-      {
-       "spotId": "elafonisi",
-       "verdict": "go",
-       "score": 100,
-       "window": {
-        "start": 10,
-        "end": 14
+        "start": 9,
+        "end": 13
        }
       },
       {
        "spotId": "balos",
        "verdict": "go",
-       "score": 100,
+       "score": 99,
        "window": {
-        "start": 12,
-        "end": 16
+        "start": 9,
+        "end": 13
+       }
+      },
+      {
+       "spotId": "elafonisi",
+       "verdict": "go",
+       "score": 98,
+       "window": {
+        "start": 8,
+        "end": 12
        }
       }
      ],
-     "avoid": [
-      "samaria"
-     ],
+     "avoid": [],
      "wind": {
-      "bf": 3,
-      "dir": 45,
-      "gust": 26
+      "bf": 2,
+      "dir": 174,
+      "gust": 16
      },
-     "rainProbMax": 0,
+     "rainProbMax": 78,
      "coasts": {
-      "ref-north": 0.8,
-      "ref-west": 0.8,
-      "ref-south": 0.4
+      "ref-north": 0.3,
+      "ref-west": 0.3,
+      "ref-south": 0.2
      }
     }
    },
@@ -216,15 +208,24 @@
   },
   "solo": {
    "diff": {
-    "date": "2026-10-30",
+    "date": "2026-10-31",
     "profile": "solo",
     "significant": false,
     "changes": [],
     "before": {
-     "date": "2026-10-30",
+     "date": "2026-10-31",
      "profile": "solo",
-     "generatedAt": "2026-10-29T20:30:37.729Z",
+     "generatedAt": "2026-10-30T20:04:53.946Z",
      "picks": [
+      {
+       "spotId": "falasarna",
+       "verdict": "go",
+       "score": 96,
+       "window": {
+        "start": 9,
+        "end": 13
+       }
+      },
       {
        "spotId": "old-town",
        "verdict": "go",
@@ -235,44 +236,42 @@
        }
       },
       {
-       "spotId": "elafonisi",
+       "spotId": "samaria",
        "verdict": "go",
        "score": 100,
        "window": {
-        "start": 15,
-        "end": 19
-       }
-      },
-      {
-       "spotId": "falasarna",
-       "verdict": "go",
-       "score": 94,
-       "window": {
-        "start": 14,
-        "end": 18
+        "start": 7,
+        "end": 14
        }
       }
      ],
-     "avoid": [
-      "samaria"
-     ],
+     "avoid": [],
      "wind": {
-      "bf": 3,
-      "dir": 49,
-      "gust": 27
+      "bf": 2,
+      "dir": 77,
+      "gust": 15
      },
-     "rainProbMax": 43,
+     "rainProbMax": 90,
      "coasts": {
-      "ref-north": 0.8,
-      "ref-west": 0.8,
-      "ref-south": 0.4
+      "ref-north": 0.3,
+      "ref-west": 0.3,
+      "ref-south": 0.2
      }
     },
     "after": {
-     "date": "2026-10-30",
+     "date": "2026-10-31",
      "profile": "solo",
-     "generatedAt": "2026-10-30T09:03:30.593Z",
+     "generatedAt": "2026-10-31T08:56:13.851Z",
      "picks": [
+      {
+       "spotId": "falasarna",
+       "verdict": "go",
+       "score": 99,
+       "window": {
+        "start": 9,
+        "end": 13
+       }
+      },
       {
        "spotId": "old-town",
        "verdict": "go",
@@ -283,37 +282,26 @@
        }
       },
       {
-       "spotId": "elafonisi",
+       "spotId": "samaria",
        "verdict": "go",
        "score": 100,
        "window": {
-        "start": 10,
+        "start": 7,
         "end": 14
-       }
-      },
-      {
-       "spotId": "falasarna",
-       "verdict": "go",
-       "score": 95,
-       "window": {
-        "start": 11,
-        "end": 15
        }
       }
      ],
-     "avoid": [
-      "samaria"
-     ],
+     "avoid": [],
      "wind": {
-      "bf": 3,
-      "dir": 45,
-      "gust": 26
+      "bf": 2,
+      "dir": 174,
+      "gust": 16
      },
-     "rainProbMax": 0,
+     "rainProbMax": 78,
      "coasts": {
-      "ref-north": 0.8,
-      "ref-west": 0.8,
-      "ref-south": 0.4
+      "ref-north": 0.3,
+      "ref-west": 0.3,
+      "ref-south": 0.2
      }
     }
    },
@@ -321,31 +309,22 @@
   },
   "active": {
    "diff": {
-    "date": "2026-10-30",
+    "date": "2026-10-31",
     "profile": "active",
     "significant": false,
     "changes": [],
     "before": {
-     "date": "2026-10-30",
+     "date": "2026-10-31",
      "profile": "active",
-     "generatedAt": "2026-10-29T20:30:37.729Z",
+     "generatedAt": "2026-10-30T20:04:53.946Z",
      "picks": [
       {
-       "spotId": "elafonisi",
+       "spotId": "samaria",
        "verdict": "go",
        "score": 100,
        "window": {
-        "start": 15,
-        "end": 19
-       }
-      },
-      {
-       "spotId": "falasarna",
-       "verdict": "go",
-       "score": 97,
-       "window": {
-        "start": 9,
-        "end": 13
+        "start": 7,
+        "end": 14
        }
       },
       {
@@ -356,44 +335,42 @@
         "start": 7,
         "end": 11
        }
+      },
+      {
+       "spotId": "falasarna",
+       "verdict": "go",
+       "score": 96,
+       "window": {
+        "start": 9,
+        "end": 13
+       }
       }
      ],
-     "avoid": [
-      "samaria"
-     ],
+     "avoid": [],
      "wind": {
-      "bf": 3,
-      "dir": 49,
-      "gust": 27
+      "bf": 2,
+      "dir": 77,
+      "gust": 15
      },
-     "rainProbMax": 43,
+     "rainProbMax": 90,
      "coasts": {
-      "ref-north": 0.8,
-      "ref-west": 0.8,
-      "ref-south": 0.4
+      "ref-north": 0.3,
+      "ref-west": 0.3,
+      "ref-south": 0.2
      }
     },
     "after": {
-     "date": "2026-10-30",
+     "date": "2026-10-31",
      "profile": "active",
-     "generatedAt": "2026-10-30T09:03:30.593Z",
+     "generatedAt": "2026-10-31T08:56:13.851Z",
      "picks": [
       {
-       "spotId": "elafonisi",
+       "spotId": "samaria",
        "verdict": "go",
        "score": 100,
        "window": {
-        "start": 10,
+        "start": 7,
         "end": 14
-       }
-      },
-      {
-       "spotId": "balos",
-       "verdict": "go",
-       "score": 100,
-       "window": {
-        "start": 12,
-        "end": 16
        }
       },
       {
@@ -401,24 +378,31 @@
        "verdict": "go",
        "score": 99,
        "window": {
-        "start": 11,
-        "end": 15
+        "start": 9,
+        "end": 13
+       }
+      },
+      {
+       "spotId": "balos",
+       "verdict": "go",
+       "score": 99,
+       "window": {
+        "start": 9,
+        "end": 13
        }
       }
      ],
-     "avoid": [
-      "samaria"
-     ],
+     "avoid": [],
      "wind": {
-      "bf": 3,
-      "dir": 45,
-      "gust": 26
+      "bf": 2,
+      "dir": 174,
+      "gust": 16
      },
-     "rainProbMax": 0,
+     "rainProbMax": 78,
      "coasts": {
-      "ref-north": 0.8,
-      "ref-west": 0.8,
-      "ref-south": 0.4
+      "ref-north": 0.3,
+      "ref-west": 0.3,
+      "ref-south": 0.2
      }
     }
    },
@@ -426,14 +410,60 @@
   },
   "senior": {
    "diff": {
-    "date": "2026-10-30",
+    "date": "2026-10-31",
     "profile": "senior",
     "significant": false,
     "changes": [],
     "before": {
-     "date": "2026-10-30",
+     "date": "2026-10-31",
      "profile": "senior",
-     "generatedAt": "2026-10-29T20:30:37.729Z",
+     "generatedAt": "2026-10-30T20:04:53.946Z",
+     "picks": [
+      {
+       "spotId": "old-town",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "theriso",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "vamos",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      }
+     ],
+     "avoid": [],
+     "wind": {
+      "bf": 2,
+      "dir": 77,
+      "gust": 15
+     },
+     "rainProbMax": 90,
+     "coasts": {
+      "ref-north": 0.3,
+      "ref-west": 0.3,
+      "ref-south": 0.2
+     }
+    },
+    "after": {
+     "date": "2026-10-31",
+     "profile": "senior",
+     "generatedAt": "2026-10-31T08:56:13.851Z",
      "picks": [
       {
        "spotId": "old-town",
@@ -454,76 +484,26 @@
        }
       },
       {
-       "spotId": "vamos",
+       "spotId": "stavros",
        "verdict": "go",
        "score": 100,
        "window": {
-        "start": 9,
-        "end": 12
-       }
-      }
-     ],
-     "avoid": [
-      "agia-marina"
-     ],
-     "wind": {
-      "bf": 3,
-      "dir": 49,
-      "gust": 27
-     },
-     "rainProbMax": 43,
-     "coasts": {
-      "ref-north": 0.8,
-      "ref-west": 0.8,
-      "ref-south": 0.4
-     }
-    },
-    "after": {
-     "date": "2026-10-30",
-     "profile": "senior",
-     "generatedAt": "2026-10-30T09:03:30.593Z",
-     "picks": [
-      {
-       "spotId": "old-town",
-       "verdict": "go",
-       "score": 100,
-       "window": {
-        "start": 9,
-        "end": 12
-       }
-      },
-      {
-       "spotId": "theriso",
-       "verdict": "go",
-       "score": 100,
-       "window": {
-        "start": 11,
+        "start": 10,
         "end": 14
        }
-      },
-      {
-       "spotId": "vamos",
-       "verdict": "go",
-       "score": 100,
-       "window": {
-        "start": 9,
-        "end": 12
-       }
       }
      ],
-     "avoid": [
-      "agia-marina"
-     ],
+     "avoid": [],
      "wind": {
-      "bf": 3,
-      "dir": 45,
-      "gust": 26
+      "bf": 2,
+      "dir": 174,
+      "gust": 16
      },
-     "rainProbMax": 0,
+     "rainProbMax": 78,
      "coasts": {
-      "ref-north": 0.8,
-      "ref-west": 0.8,
-      "ref-south": 0.4
+      "ref-north": 0.3,
+      "ref-west": 0.3,
+      "ref-south": 0.2
      }
     }
    },
@@ -531,14 +511,14 @@
   },
   "nocar": {
    "diff": {
-    "date": "2026-10-30",
+    "date": "2026-10-31",
     "profile": "nocar",
     "significant": false,
     "changes": [],
     "before": {
-     "date": "2026-10-30",
+     "date": "2026-10-31",
      "profile": "nocar",
-     "generatedAt": "2026-10-29T20:30:37.729Z",
+     "generatedAt": "2026-10-30T20:04:53.946Z",
      "picks": [
       {
        "spotId": "old-town",
@@ -550,43 +530,41 @@
        }
       },
       {
-       "spotId": "stavros",
+       "spotId": "agia-marina",
        "verdict": "go",
-       "score": 96,
+       "score": 97,
        "window": {
-        "start": 13,
-        "end": 17
+        "start": 9,
+        "end": 13
        }
       },
       {
-       "spotId": "kolymbari",
+       "spotId": "stavros",
        "verdict": "go",
-       "score": 92,
+       "score": 98,
        "window": {
-        "start": 14,
-        "end": 18
+        "start": 10,
+        "end": 14
        }
       }
      ],
-     "avoid": [
-      "samaria"
-     ],
+     "avoid": [],
      "wind": {
-      "bf": 3,
-      "dir": 49,
-      "gust": 27
+      "bf": 2,
+      "dir": 77,
+      "gust": 15
      },
-     "rainProbMax": 43,
+     "rainProbMax": 90,
      "coasts": {
-      "ref-north": 0.8,
-      "ref-west": 0.8,
-      "ref-south": 0.4
+      "ref-north": 0.3,
+      "ref-west": 0.3,
+      "ref-south": 0.2
      }
     },
     "after": {
-     "date": "2026-10-30",
+     "date": "2026-10-31",
      "profile": "nocar",
-     "generatedAt": "2026-10-30T09:03:30.593Z",
+     "generatedAt": "2026-10-31T08:56:13.851Z",
      "picks": [
       {
        "spotId": "old-town",
@@ -598,37 +576,35 @@
        }
       },
       {
-       "spotId": "stavros",
+       "spotId": "platanias",
        "verdict": "go",
-       "score": 96,
+       "score": 99,
        "window": {
-        "start": 12,
-        "end": 16
+        "start": 9,
+        "end": 13
        }
       },
       {
-       "spotId": "kolymbari",
+       "spotId": "stavros",
        "verdict": "go",
-       "score": 93,
+       "score": 100,
        "window": {
-        "start": 11,
-        "end": 15
+        "start": 10,
+        "end": 14
        }
       }
      ],
-     "avoid": [
-      "samaria"
-     ],
+     "avoid": [],
      "wind": {
-      "bf": 3,
-      "dir": 45,
-      "gust": 26
+      "bf": 2,
+      "dir": 174,
+      "gust": 16
      },
-     "rainProbMax": 0,
+     "rainProbMax": 78,
      "coasts": {
-      "ref-north": 0.8,
-      "ref-west": 0.8,
-      "ref-south": 0.4
+      "ref-north": 0.3,
+      "ref-west": 0.3,
+      "ref-south": 0.2
      }
     }
    },
