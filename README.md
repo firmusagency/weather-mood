@@ -164,6 +164,7 @@ npm run morning-check  # σύγκριση σημερινής πρόγνωσης 
 npm run photos -- falasarna balos   # (ξανα)επιλογή φωτογραφίας για σημεία· χωρίς ορίσματα: μόνο όσα δεν έχουν
 npm run feedback:export # εξαγωγή ψήφων από τη βάση (SUPABASE_URL, SUPABASE_SERVICE_KEY) ή -- --from-file rows.json
 npm run weekly         # εβδομαδιαία αναφορά ιδιοκτήτη για την τελευταία πλήρη εβδομάδα (ή -- 2026-10-19)
+npm run rain:calibration # πίνακας «βροχή ναι/όχι» ανά κατώφλι από τα logs επαλήθευσης (-- --md για markdown)
 ```
 
 ## Δεδομένα και αυτοματισμός
