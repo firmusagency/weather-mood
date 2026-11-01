@@ -3,7 +3,7 @@ name: Weekly report
 # Monday morning: the owner's weekly report (usage, guest votes, what we recommended, accuracy).
 on:
   schedule:
-    - cron: '40 4 * * 1' # 07:40 Athens (summer) / 06:40 (winter), Mondays
+    - cron: '40 4 * * 1' # late fallback; the on-time Monday 07:40 Athens run is dispatched by Supabase pg_cron (idempotent)
   workflow_dispatch:
 
 permissions:

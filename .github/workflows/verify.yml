@@ -4,7 +4,7 @@ name: Forecast verification
 # Chania airport station actually measured, and update the rolling accuracy summary.
 on:
   schedule:
-    - cron: '35 2 * * *' # 05:35 Athens (summer) / 04:35 (winter)
+    - cron: '35 2 * * *' # late fallback; the on-time 05:35 Athens run is dispatched by Supabase pg_cron (idempotent per day)
   workflow_dispatch:
     inputs:
       date:

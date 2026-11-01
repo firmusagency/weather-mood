@@ -4,7 +4,7 @@ name: Evening message
 # guest profile in 4 languages. Emails the reception a digest when SMTP secrets are set.
 on:
   schedule:
-    - cron: '40 15 * * *' # 18:40 Athens (summer) / 17:40 (winter)
+    - cron: '40 15 * * *' # late fallback only; the on-time 17:40 Athens run is dispatched by Supabase pg_cron
   workflow_dispatch:
 
 permissions:
@@ -19,15 +19,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # GitHub runs this cron 3–5 h late; the on-time run comes from the Supabase scheduler
+      # (supabase/migrations/0003_scheduler.sql). When that run already wrote tomorrow's message,
+      # the late fallback must not regenerate it and push/email the guests a second time.
+      - name: Skip the late fallback when tomorrow's message exists
+        id: guard
+        if: github.event_name == 'schedule'
+        run: |
+          tomorrow=$(TZ=Europe/Athens date -d tomorrow +%F)
+          if [ -f "data/messages/$tomorrow.json" ]; then
+            echo "evening message for $tomorrow already exists; skipping the fallback run"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/setup-node@v4
+        if: steps.guard.outputs.skip != 'true'
         with:
           node-version: 22
           cache: npm
       - run: npm ci
+        if: steps.guard.outputs.skip != 'true'
       - run: npm run snapshot:fetch
+        if: steps.guard.outputs.skip != 'true'
         env:
           OPEN_METEO_API_KEY: ${{ secrets.OPEN_METEO_API_KEY }}
       - run: npm run evening
+        if: steps.guard.outputs.skip != 'true'
         env:
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
@@ -43,6 +59,7 @@ jobs:
           VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
           VAPID_SUBJECT: ${{ vars.VAPID_SUBJECT }}
       - name: Commit
+        if: steps.guard.outputs.skip != 'true'
         run: |
           git config user.name "weather-mood-bot"
           git config user.email "weather-mood-bot@users.noreply.github.com"

@@ -4,7 +4,7 @@ name: Morning plan-B check
 # we sent yesterday. If the picture moved, write the plan-B note (and email the reception).
 on:
   schedule:
-    - cron: '50 2 * * *' # 05:50 Athens (summer) / 04:50 (winter)
+    - cron: '50 2 * * *' # late fallback only; the on-time 05:50 Athens run is dispatched by Supabase pg_cron
   workflow_dispatch:
 
 permissions:
@@ -19,15 +19,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # Same as the evening workflow: the on-time 05:50 run is dispatched by Supabase; the GitHub
+      # cron arrives hours later and must not overwrite today's plan-B verdict or re-send it.
+      - name: Skip the late fallback when today's check exists
+        id: guard
+        if: github.event_name == 'schedule'
+        run: |
+          today=$(TZ=Europe/Athens date +%F)
+          if [ "$(jq -r .date public/data/plan-b.json 2>/dev/null)" = "$today" ]; then
+            echo "plan-B check for $today already done; skipping the fallback run"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/setup-node@v4
+        if: steps.guard.outputs.skip != 'true'
         with:
           node-version: 22
           cache: npm
       - run: npm ci
+        if: steps.guard.outputs.skip != 'true'
       - run: npm run snapshot:fetch
+        if: steps.guard.outputs.skip != 'true'
         env:
           OPEN_METEO_API_KEY: ${{ secrets.OPEN_METEO_API_KEY }}
       - run: npm run morning-check
+        if: steps.guard.outputs.skip != 'true'
         env:
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
@@ -43,6 +58,7 @@ jobs:
           VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
           VAPID_SUBJECT: ${{ vars.VAPID_SUBJECT }}
       - name: Commit
+        if: steps.guard.outputs.skip != 'true'
         run: |
           git config user.name "weather-mood-bot"
           git config user.email "weather-mood-bot@users.noreply.github.com"

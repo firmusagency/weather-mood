@@ -108,6 +108,36 @@
 των τελευταίων 30 ημερών. Γράφεται στο `public/data/weekly.json` (πάνελ στην καρτέλα «Μέθοδος»), αρχειοθετείται στο `data/reports/`
 και στέλνεται με email στο `OWNER_EMAIL` (ή `RECEPTION_EMAIL`) όταν υπάρχει SMTP.
 
+## Ακριβής χρονοδιακόπτης (Supabase pg_cron)
+
+Το GitHub τρέχει τα προγραμματισμένα Actions **4–6 ώρες αργά** σε αυτό το repo (Οκτ 2026: το βραδινό μήνυμα έβγαινε 20:20–22:45
+αντί για 17:40, το πρωινό Plan B 09:40–11:05 αντί για 05:50). Γι' αυτό τα ξεκινάει στην ώρα τους η βάση: το `pg_cron` στο Supabase
+καλεί κάθε ώρα τη συνάρτηση `ops.dispatch_if_athens(workflow, ώρα)` που ελέγχει το ρολόι Αθήνας (χειμερινή/θερινή ώρα αυτόματα)
+και στέλνει `workflow_dispatch` στο GitHub μέσω `pg_net` (`supabase/migrations/0003_scheduler.sql`).
+
+| Workflow | Ώρα Αθήνας |
+|---|---|
+| Βραδινό μήνυμα | 17:40 |
+| Επαλήθευση πρόγνωσης | 05:35 |
+| Πρωινό Plan B | 05:50 |
+| Feedback export | 06:05 |
+| Εβδομαδιαία αναφορά | Δευτέρα 07:40 |
+
+Τα `schedule:` των workflows μένουν ως **καθυστερημένη εφεδρεία**: το βραδινό και το πρωινό παραλείπουν την εφεδρική εκτέλεση όταν
+η κανονική έχει ήδη γράψει το μήνυμα/τον έλεγχο της μέρας (ώστε να μη σταλεί push ή email δεύτερη φορά)· τα υπόλοιπα είναι
+ιδεμποτή ανά μέρα. Το snapshot κάθε 6 ώρες μένει στο GitHub (η καθυστέρηση δεν πειράζει, το βραδινό και το πρωινό φέρνουν δικό τους).
+
+Ρύθμιση μία φορά (SQL Editor του project `weather-mood`):
+
+1. GitHub → Settings → Developer settings → Fine-grained tokens: repository `firmusagency/weather-mood`, permission
+   **Actions: Read and write**. Το token δεν μπαίνει ποτέ στο repo.
+2. `select vault.create_secret('<token>', 'github_dispatch_token');`
+3. Δοκιμή: `select ops.dispatch_workflow('snapshot.yml');` και μετά `select * from ops.dispatch_status;` (HTTP 204 = δεκτό,
+   `no_token` = λείπει το βήμα 2). Στο GitHub → Actions πρέπει να εμφανιστεί νέα εκτέλεση «Weather snapshot».
+
+Αλλαγή branch: `update ops.settings set value = '<branch>' where key = 'github_ref';`. Ανανέωση token:
+`select vault.update_secret(id, '<νέο>') from vault.secrets where name = 'github_dispatch_token';`.
+
 ## Φιλοξενία (GitHub Pages)
 
 Το `.github/workflows/pages.yml` χτίζει και δημοσιεύει τις τρεις σελίδες στο <https://firmusagency.github.io/weather-mood/>

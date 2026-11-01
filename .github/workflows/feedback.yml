@@ -4,7 +4,7 @@ name: Feedback export
 # join them with the forecast we had issued, publish aggregates + calibration for the dashboard.
 on:
   schedule:
-    - cron: '5 3 * * *' # 06:05 Athens (summer) / 05:05 (winter)
+    - cron: '5 3 * * *' # late fallback; the on-time 06:05 Athens run is dispatched by Supabase pg_cron (idempotent)
   workflow_dispatch:
 
 permissions:
