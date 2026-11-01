@@ -181,6 +181,16 @@ export interface Dataset {
   marine: Record<string, MarineHour[]>;
   /** Per marine point, waves from each wave model (absent in snapshots taken before this was added). */
   waveModels?: Record<string, Record<WaveModelId, ModelWave[]>>;
+  /** Rain that already fell before this day at the gorge/hike points (absent in older snapshots). */
+  recentRain?: Record<string, RecentRain>;
+}
+
+/** Rain of the days before the forecast day: what the ground and the stream beds carry into it. */
+export interface RecentRain {
+  /** mm on the previous calendar day. */
+  prevDayMm: number | null;
+  /** mm over the previous three days. */
+  threeDayMm: number | null;
 }
 
 // ---------- Analysis output ----------
@@ -231,6 +241,8 @@ export interface HourConditions {
   cloud: number | null;
   uv: number | null;
   thunder: boolean;
+  /** Same for every hour of the day; carried here so the hard limits see it with the conditions. */
+  recentRain?: RecentRain;
   depSea?: { wave: number; wind: number; exposure: number };
 }
 
@@ -245,6 +257,7 @@ export type FactorKey =
   | 'gusts'
   | 'downslopeGusts'
   | 'rain'
+  | 'afterRain'
   | 'thunder'
   | 'cool'
   | 'cold'

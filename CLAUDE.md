@@ -50,9 +50,14 @@ decisions and conventions that are not obvious from the code.
   refresh and pull the result.
 - The owner reads Greek; reply in Greek, keep code and commit messages in English.
 
-## Open next steps (as of 2026-10-31)
+## Open next steps (as of 2026-11-01)
 
-- Previous-day rain for gorge closures (the archive has the data).
+- Owner to create the GitHub token for the Supabase scheduler (see README «Ακριβής χρονοδιακόπτης»); until then the
+  Actions keep running on the late GitHub crons.
+- Owner to confirm the `AFTER_RAIN` thresholds (gorges after rain: 10/25 mm yesterday, 20/40 mm over 3 days); they were set
+  from judgement, not from data. The first snapshots with `recentRain` arrive after the next `snapshot.yml` run.
+- Rain calibration (`docs/rain-calibration-2026-11-01.md`): re-run `npm run rain:calibration` at ~30 days; the proposal is
+  caution ≥ 40% / 0.5 mm for the sea, and per-model precipitation in the snapshot.
 - Per-spot wind/wave corrections once ~30 days of station data exist (Elafonisi station reads low; weigh it less).
 - Local observer network (taverns on the west coast) via the reception form; own weather stations later.
 - Boat-company line for Balos/Gramvousa cancellations.

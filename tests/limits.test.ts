@@ -55,3 +55,38 @@ describe('hard limits above the score', () => {
     expect(scores({ ...calm, apparent: 24, precipProb: 45, precip: 0.4 }, 'active').imbros.verdict).toBe('avoid');
   });
 });
+
+describe('rain of the previous days (gorges)', () => {
+  const sunny = { ...calm, apparent: 24, precipProb: 5, precip: 0 };
+
+  it('a wet yesterday closes the gorges under a blue sky, and only cautions the coastal walk', () => {
+    const sc = scores({ ...sunny, recentRain: { prevDayMm: 30 } }, 'active');
+    expect(sc.samaria.verdict).toBe('avoid');
+    expect(sc.samaria.factors[0].key).toBe('afterRain');
+    expect(sc.samaria.factors[0].params).toEqual({ prevMm: 30, threeMm: 30 });
+    expect(sc.imbros.verdict).toBe('avoid');
+    expect(sc['gouverneto-katholiko'].verdict).toBe('caution');
+    expect(sc['gouverneto-katholiko'].factors[0].key).toBe('afterRain');
+    // beaches and the town do not care about yesterday's rain
+    expect(sc.falasarna.verdict).toBe('go');
+    expect(sc['old-town'].verdict).toBe('go');
+  });
+
+  it('moderate rain yesterday, or a wet three days, means "with reservations"', () => {
+    expect(scores({ ...sunny, recentRain: { prevDayMm: 12 } }, 'active').samaria.verdict).toBe('caution');
+    const wetWeek = scores({ ...sunny, recentRain: { prevDayMm: 4, threeDayMm: 24 } }, 'active').samaria;
+    expect(wetWeek.verdict).toBe('caution');
+    expect(wetWeek.factors[0].key).toBe('afterRain');
+    expect(scores({ ...sunny, recentRain: { prevDayMm: 5 } }, 'active').samaria.verdict).toBe('go');
+  });
+
+  it("today's own rain stays the headline reason when both apply", () => {
+    const sc = scores({ ...calm, apparent: 24, precipProb: 70, precip: 0, recentRain: { prevDayMm: 30 } }, 'active').samaria;
+    expect(sc.verdict).toBe('avoid');
+    expect(sc.factors[0].key).toBe('floodRisk');
+  });
+
+  it('snapshots without the data behave as before', () => {
+    expect(scores(sunny, 'active').samaria.verdict).toBe('go');
+  });
+});

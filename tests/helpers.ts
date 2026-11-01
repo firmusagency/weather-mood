@@ -18,6 +18,8 @@ export interface Scenario {
   /** Per land point overrides (e.g. { 'ref-west': 78 }) for rain that sits on one coast. */
   precipProbByPoint?: Record<string, number>;
   precipByPoint?: Record<string, number>;
+  /** Rain of the previous days at every gorge/hike point (mm). */
+  recentRain?: { prevDayMm: number; threeDayMm?: number };
   date?: string;
 }
 
@@ -71,5 +73,10 @@ export function scenario(s: Scenario): Dataset {
     });
     waveModels[p.id] = perModel;
   }
-  return { date, fetchedAt: '2026-07-14T18:00:00Z', source: 'snapshot', land, marine, waveModels };
+  let recentRain: Dataset['recentRain'];
+  if (s.recentRain) {
+    recentRain = {};
+    for (const p of plan.recentRain ?? []) recentRain[p.id] = { prevDayMm: s.recentRain.prevDayMm, threeDayMm: s.recentRain.threeDayMm ?? s.recentRain.prevDayMm };
+  }
+  return { date, fetchedAt: '2026-07-14T18:00:00Z', source: 'snapshot', land, marine, waveModels, recentRain };
 }

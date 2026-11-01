@@ -313,6 +313,8 @@ function mergeFactors(hours: HourEval[]): Factor[] {
 export const SWIM_LIMITS = { apparentCaution: 18, apparentAvoid: 15, sstCaution: 18, sstAvoid: 16 };
 export const RAIN_LIMITS = { ppCaution: 60, ppAvoid: 80, mmCaution: 1, mmAvoid: 3 };
 export const GORGE_RAIN = { ppCautionBelow: 20, mmCaution: 1, mmAvoid: 3 };
+/** Rain that already fell: the stream beds carry it into a dry day (Samaria stays shut after a wet day). */
+export const AFTER_RAIN = { prevDayMmCaution: 10, prevDayMmAvoid: 25, threeDayMmCaution: 20, threeDayMmAvoid: 40 };
 
 const mean = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null);
 const nn = (xs: (number | null | undefined)[]) => xs.filter((x): x is number => x != null);
@@ -349,7 +351,14 @@ export function hardLimits(spot: Spot, windowConds: HourConditions[], dayConds: 
   const limit = spot.limits?.maxPrecipProb ?? (type === 'gorge' ? 50 : 60);
   const params = { pp: ppDay, mm: round(mmDay, 1), limit };
   if (thunder || mmDay >= GORGE_RAIN.mmAvoid || (type === 'gorge' && ppDay >= limit)) return { cap: 'avoid', factor: f('floodRisk', 0, params) };
+  // rain of the previous days: water still comes down the gorge and the park may stay closed
+  const recent = dayConds.find((c) => c.recentRain)?.recentRain;
+  const prevMm = recent?.prevDayMm ?? 0;
+  const threeMm = recent?.threeDayMm ?? 0;
+  const after = { prevMm: round(prevMm, 1), threeMm: round(threeMm, 1) };
+  if (type === 'gorge' && (prevMm >= AFTER_RAIN.prevDayMmAvoid || threeMm >= AFTER_RAIN.threeDayMmAvoid)) return { cap: 'avoid', factor: f('afterRain', 0, after) };
   if (ppDay >= limit - GORGE_RAIN.ppCautionBelow || mmDay >= GORGE_RAIN.mmCaution || (type === 'hike' && ppDay >= limit)) return { cap: 'caution', factor: f('floodRisk', 0, params) };
+  if (prevMm >= AFTER_RAIN.prevDayMmCaution || threeMm >= AFTER_RAIN.threeDayMmCaution) return { cap: 'caution', factor: f('afterRain', 0, after) };
   return null;
 }
 

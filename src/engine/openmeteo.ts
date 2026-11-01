@@ -1,5 +1,6 @@
 import { offsetPoint } from './geo';
-import { MODELS, WAVE_MODELS, type AtmosHour, type Dataset, type MarineHour, type ModelId, type ModelWave, type ModelWind, type PointWeather, type Spot, type WaveModelId } from './types';
+import { shiftDate } from './dates';
+import { MODELS, WAVE_MODELS, type AtmosHour, type Dataset, type MarineHour, type ModelId, type ModelWave, type ModelWind, type PointWeather, type RecentRain, type Spot, type WaveModelId } from './types';
 import type { RefPoint } from '../data/region';
 
 /*
@@ -10,6 +11,8 @@ import type { RefPoint } from '../data/region';
  *   atmos  – best-match model: temperature, feels-like, rain, cloud, UV, wind
  *   models – wind/gusts from 5 independent global models, to measure agreement
  *   marine – waves, swell and sea temperature at offshore points
+ * plus, for the gorge and hike points only, the daily rain of the previous days (recentRain):
+ * a gorge after a wet day is closed or dangerous even under a blue sky.
  */
 
 export const FORECAST_URL = 'https://api.open-meteo.com/v1/forecast';
@@ -50,7 +53,12 @@ export interface PointRef {
 export interface PointPlan {
   land: PointRef[];
   marine: PointRef[];
+  /** Points whose previous-days rain we fetch (gorges and hikes). Absent for the outlook plan. */
+  recentRain?: PointRef[];
 }
+
+/** How many days back the previous-days rain request looks. */
+export const RECENT_RAIN_DAYS = 3;
 
 /** Offshore point used for a spot's marine forecast. */
 export function seaPointFor(spot: Spot) {
@@ -74,7 +82,8 @@ export function planPoints(spots: Spot[], refs: RefPoint[]): PointPlan {
     if (s.dependsOnSea) marine.push({ id: depSeaId(s.id), lat: s.dependsOnSea.lat, lon: s.dependsOnSea.lon });
   }
   for (const r of refs) if (r.facing !== undefined) marine.push({ id: r.id, lat: r.lat, lon: r.lon });
-  return { land, marine };
+  const recentRain = spots.filter((s) => s.type === 'gorge' || s.type === 'hike').map(({ id, lat, lon }) => ({ id, lat, lon }));
+  return { land, marine, ...(recentRain.length ? { recentRain } : {}) };
 }
 
 const coords = (pts: PointRef[]) => ({
@@ -90,6 +99,10 @@ export function buildUrls(plan: PointPlan, date: string, apiKey?: string, endDat
     models: `${FORECAST_URL}?${q({ ...coords(plan.land), hourly: MODEL_VARS.join(','), models: MODELS.join(','), ...common })}`,
     marine: `${MARINE_URL}?${q({ ...coords(plan.marine), hourly: MARINE_VARS.join(','), ...common })}`,
     waves: `${MARINE_URL}?${q({ ...coords(plan.marine), hourly: WAVE_MODEL_VARS.join(','), models: WAVE_MODELS.join(','), ...common })}`,
+    // the days before `date` (the forecast API serves recent past days too)
+    recentRain: plan.recentRain?.length
+      ? `${FORECAST_URL}?${q({ ...coords(plan.recentRain), daily: 'precipitation_sum', ...common, start_date: shiftDate(date, -RECENT_RAIN_DAYS), end_date: shiftDate(date, -1) })}`
+      : undefined,
   };
 }
 
@@ -105,6 +118,8 @@ export interface RawBundle {
   marine: unknown;
   /** Multi-model wave request; optional so older snapshots still load. */
   waves?: unknown;
+  /** Daily rain of the previous days at the gorge/hike points; optional (added Nov 2026). */
+  recentRain?: unknown;
 }
 
 type OMResponse = {
@@ -197,7 +212,19 @@ export function datasetFromRaw(raw: RawBundle, source: Dataset['source']): Datas
     });
   }
 
-  return { date: raw.date, fetchedAt: raw.fetchedAt, source, land, marine, waveModels };
+  let recentRain: Dataset['recentRain'];
+  if (raw.recentRain && raw.plan.recentRain?.length) {
+    const list = asList(raw.recentRain, raw.plan.recentRain.length, 'recent rain');
+    recentRain = {};
+    raw.plan.recentRain.forEach((pt, i) => {
+      const sums = ((list[i].daily?.precipitation_sum ?? []) as (number | null)[]).map(num);
+      const known = sums.filter((x): x is number => x != null);
+      const prev = sums[sums.length - 1] ?? null;
+      recentRain![pt.id] = { prevDayMm: prev, threeDayMm: known.length ? Math.round(known.reduce((a, b) => a + b, 0) * 10) / 10 : null } satisfies RecentRain;
+    });
+  }
+
+  return { date: raw.date, fetchedAt: raw.fetchedAt, source, land, marine, waveModels, recentRain };
 }
 
 export async function fetchRaw(plan: PointPlan, date: string, apiKey?: string, fetchImpl: typeof fetch = fetch, endDate = date): Promise<RawBundle> {
@@ -208,8 +235,15 @@ export async function fetchRaw(plan: PointPlan, date: string, apiKey?: string, f
     if (!res.ok) throw new Error(`Open-Meteo ${res.status}: ${body?.reason ?? res.statusText}`);
     return body;
   };
-  const [atmos, models, marine, waves] = await Promise.all([get(urls.atmos), get(urls.models), get(urls.marine), get(urls.waves)]);
-  return { date, ...(endDate !== date ? { endDate } : {}), fetchedAt: new Date().toISOString(), plan, atmos, models, marine, waves };
+  const [atmos, models, marine, waves, recentRain] = await Promise.all([get(urls.atmos), get(urls.models), get(urls.marine), get(urls.waves), urls.recentRain
+      ? get(urls.recentRain).catch((e: unknown) => {
+          // the gorges fall back to today's rain only; the snapshot itself must not fail over it
+          console.warn('previous-days rain request failed; gorge limits use today only', e);
+          return undefined;
+        })
+      : Promise.resolve(undefined),
+  ]);
+  return { date, ...(endDate !== date ? { endDate } : {}), fetchedAt: new Date().toISOString(), plan, atmos, models, marine, waves, ...(recentRain ? { recentRain } : {}) };
 }
 
 /*

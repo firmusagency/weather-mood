@@ -174,6 +174,12 @@ const WARN: Partial<Record<Factor['key'], L>> = {
     de: 'Regen in den Bergen ({pp}%): Gefahr von Sturzfluten und Sperrung, kein Schluchttag',
     fr: 'Pluie en montagne ({pp} %) : risque de crue subite et de fermeture, pas de gorges',
   },
+  afterRain: {
+    el: 'Έβρεξε τις προηγούμενες μέρες ({prevMm} mm χθες): νερό στο φαράγγι, μπορεί να είναι κλειστό',
+    en: 'It rained on the previous days ({prevMm} mm yesterday): water in the gorge, it may be closed',
+    de: 'In den Vortagen hat es geregnet ({prevMm} mm gestern): Wasser in der Schlucht, möglicherweise gesperrt',
+    fr: 'Il a plu les jours précédents ({prevMm} mm hier) : eau dans les gorges, fermeture possible',
+  },
   closureRisk: {
     el: 'Μπορεί να κλείσει λόγω καιρού, ενημερωθείτε πριν',
     en: 'May close due to weather, check before going',

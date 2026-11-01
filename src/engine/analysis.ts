@@ -161,6 +161,7 @@ export function analyzeSpot(spot: Spot, data: Dataset): HourConditions[] {
       cloud: a.cloud,
       uv: a.uv,
       thunder: a.code != null && THUNDER_CODES.has(a.code),
+      ...(data.recentRain?.[spot.id] ? { recentRain: data.recentRain[spot.id] } : {}),
     };
 
     const m = marine?.find((x) => x.time === a.time);

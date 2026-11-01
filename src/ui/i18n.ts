@@ -498,6 +498,10 @@ export function factorText(fct: Factor, lang: Lang): string {
       return el ? `Βροχή ${p.pp}% / ${p.mm} mm στο παράθυρο: όχι μέρα για θάλασσα (όριο 60%, αποφυγή από 80%)` : `Rain ${p.pp}% / ${p.mm} mm in the window: not a sea day (limit 60%, avoid from 80%)`;
     case 'floodRisk':
       return el ? `Βροχή στη μέρα ${p.pp}% / ${p.mm} mm: κίνδυνος πλημμύρας/κλεισίματος (όριο ${p.limit}%)` : `Rain during the day ${p.pp}% / ${p.mm} mm: flash-flood and closure risk (limit ${p.limit}%)`;
+    case 'afterRain':
+      return el
+        ? `Έβρεξε τις προηγούμενες μέρες (${p.prevMm} mm χθες, ${p.threeMm} mm σε 3 μέρες): νερό στο φαράγγι, πιθανό κλείσιμο`
+        : `Rain fell on the previous days (${p.prevMm} mm yesterday, ${p.threeMm} mm in 3 days): water in the gorge, possible closure`;
     case 'pleasant':
       return el ? `Ευχάριστη θερμοκρασία (${p.apparent}°C)` : `Pleasant temperature (${p.apparent}°C)`;
     case 'indoor':

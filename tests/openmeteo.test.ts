@@ -1,0 +1,40 @@
+import { describe, expect, it } from 'vitest';
+import { SPOTS } from '../src/data/spots';
+import { REF_POINTS } from '../src/data/region';
+import { shiftDate } from '../src/engine/dates';
+import { buildUrls, datasetFromRaw, outlookPlan, planPoints, type RawBundle } from '../src/engine/openmeteo';
+
+describe('previous-days rain request', () => {
+  it('asks for the three days before the forecast day, for the gorge and hike points only', () => {
+    const plan = planPoints(SPOTS, REF_POINTS);
+    expect(plan.recentRain?.map((p) => p.id).sort()).toEqual(['agia-irini', 'gouverneto-katholiko', 'imbros', 'samaria']);
+    const url = new URL(buildUrls(plan, '2026-11-01').recentRain!);
+    expect(url.searchParams.get('daily')).toBe('precipitation_sum');
+    expect(url.searchParams.get('start_date')).toBe('2026-10-29');
+    expect(url.searchParams.get('end_date')).toBe('2026-10-31');
+    expect(url.searchParams.get('latitude')!.split(',')).toHaveLength(4);
+    // the reference-points outlook has no gorges, so no request
+    expect(buildUrls(outlookPlan(REF_POINTS), '2026-11-01', undefined, '2026-11-07').recentRain).toBeUndefined();
+  });
+
+  it('shifts dates across month and year ends', () => {
+    expect(shiftDate('2026-11-01', -1)).toBe('2026-10-31');
+    expect(shiftDate('2026-01-01', -3)).toBe('2025-12-29');
+    expect(shiftDate('2026-02-28', 1)).toBe('2026-03-01');
+  });
+
+  it('turns the daily sums into previous-day and three-day totals, and tolerates its absence', () => {
+    const hourly = { time: ['2026-11-01T10:00'], temperature_2m: [20], precipitation: [0] };
+    const base: RawBundle = {
+      date: '2026-11-01',
+      fetchedAt: '2026-10-31T18:00:00Z',
+      plan: { land: [{ id: 'samaria', lat: 35.3, lon: 23.96 }], marine: [{ id: 'x', lat: 35.6, lon: 23.9 }], recentRain: [{ id: 'samaria', lat: 35.3, lon: 23.96 }] },
+      atmos: { hourly },
+      models: { hourly: { time: hourly.time } },
+      marine: { hourly: { time: hourly.time } },
+    };
+    const withRain = datasetFromRaw({ ...base, recentRain: { daily: { time: ['2026-10-29', '2026-10-30', '2026-10-31'], precipitation_sum: [1.2, null, 18.4] } } }, 'snapshot');
+    expect(withRain.recentRain).toEqual({ samaria: { prevDayMm: 18.4, threeDayMm: 19.6 } });
+    expect(datasetFromRaw(base, 'snapshot').recentRain).toBeUndefined();
+  });
+});
