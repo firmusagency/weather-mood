@@ -100,7 +100,7 @@ export function StayPlanner({
     const heads = Object.fromEntries(
       dates.map((date) => {
         const syn = buildSynopsis(datasets[date] ?? outlook[date], REF_POINTS);
-        return [date, { tMax: syn.town.tMax, bf: syn.wind.bf, rain: syn.town.rainProbMax ?? 0 }];
+        return [date, { tMax: syn.town.tMax, bf: syn.wind.bf, rain: syn.rain.probMax }];
       }),
     );
     return { plan: planStay(days, profile, spots), heads };

@@ -15,6 +15,9 @@ export interface Scenario {
   apparent?: number;
   precipProb?: number;
   precip?: number;
+  /** Per land point overrides (e.g. { 'ref-west': 78 }) for rain that sits on one coast. */
+  precipProbByPoint?: Record<string, number>;
+  precipByPoint?: Record<string, number>;
   date?: string;
 }
 
@@ -34,8 +37,8 @@ export function scenario(s: Scenario): Dataset {
         time,
         temp: s.apparent ?? 28,
         apparent: s.apparent ?? 28,
-        precipProb: s.precipProb ?? 0,
-        precip: s.precip ?? 0,
+        precipProb: s.precipProbByPoint?.[p.id] ?? s.precipProb ?? 0,
+        precip: s.precipByPoint?.[p.id] ?? s.precip ?? 0,
         cloud: 10,
         uv: 8,
         code: 0,

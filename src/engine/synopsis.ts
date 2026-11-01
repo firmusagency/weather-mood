@@ -28,6 +28,9 @@ export interface CoastSummary {
   sst: number | null;
   /** Is the wind blowing onto this coast, away from it, or is there hardly any wind? */
   exposure: 'exposed' | 'sheltered' | 'calm';
+  /** Rain at this coast's reference point, 08:00–20:00 (null when the point has no rain data). */
+  rainProbMax: number | null;
+  rainSum: number;
 }
 
 export interface ModelRow {
@@ -49,7 +52,29 @@ export interface Synopsis {
   /** Agreement between the wave models across the coasts; null for snapshots without multi-model waves. */
   waveAgreement: 'high' | 'medium' | 'low' | null;
   town: { tMax: number | null; apparentMax: number | null; uvMax: number | null; rainProbMax: number | null; rainSum: number; sunrise?: string; sunset?: string };
+  /**
+   * Rain over the whole region: the wettest reference point (town or coast). `coast` names the
+   * coast when the rain is local to it (town clearly drier), null when it is regional or absent.
+   * Showers often sit on one coast only (a southerly brings 78% to Elafonisi and 8% to town);
+   * the message and the guest page must say where, not just quote the town figure.
+   */
+  rain: { probMax: number; sum: number; coast: string | null };
   takeaways: { key: string; params: Record<string, string | number> }[];
+}
+
+/** Rain is "local" to a coast when it reaches this probability there... */
+const RAIN_LOCAL_MIN = 40;
+/** ...while the town stays this many points drier. */
+const RAIN_LOCAL_GAP = 20;
+
+export function regionRain(town: { rainProbMax: number | null; rainSum: number }, coasts: Pick<CoastSummary, 'id' | 'rainProbMax' | 'rainSum'>[]): Synopsis['rain'] {
+  const townPp = town.rainProbMax ?? 0;
+  const wettest = coasts.filter((c) => c.rainProbMax != null).reduce<Pick<CoastSummary, 'id' | 'rainProbMax' | 'rainSum'> | null>((a, b) => (!a || b.rainProbMax! > a.rainProbMax! ? b : a), null);
+  if (wettest && wettest.rainProbMax! > townPp) {
+    const local = wettest.rainProbMax! >= RAIN_LOCAL_MIN && wettest.rainProbMax! - townPp >= RAIN_LOCAL_GAP;
+    return { probMax: wettest.rainProbMax!, sum: wettest.rainSum, coast: local ? wettest.id : null };
+  }
+  return { probMax: townPp, sum: town.rainSum, coast: null };
 }
 
 const mean = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : NaN);
@@ -127,6 +152,10 @@ export function buildSynopsis(data: Dataset, refs: RefPoint[]): Synopsis {
       const waveSpread = consensus.length ? round(mean(consensus.map((x) => x.spread)), 2) : null;
       const waveAgr = waveSpread == null ? null : waveAgreement(waveSpread, mean(consensus.map((x) => x.wave)));
       const wdirs = marine.filter((m) => m.waveDir != null).map((m) => m.waveDir!);
+      const coastDay = (data.land[r.id]?.atmos ?? []).filter((a) => {
+        const h = hourOf(a.time);
+        return h >= 8 && h <= 20;
+      });
       return {
         id: r.id,
         wind: { speed: round(mean(csp)), gust: round(Math.max(...c.map((x) => x.gust))), dir: Math.round(cdir), bf: beaufort(mean(csp)) },
@@ -138,6 +167,8 @@ export function buildSynopsis(data: Dataset, refs: RefPoint[]): Synopsis {
         waveModels,
         waveSpread,
         waveAgreement: waveAgr,
+        rainProbMax: maxOf(coastDay.map((a) => a.precipProb)),
+        rainSum: round(coastDay.reduce((s, a) => s + (a.precip ?? 0), 0), 1),
       };
     });
 
@@ -155,6 +186,8 @@ export function buildSynopsis(data: Dataset, refs: RefPoint[]): Synopsis {
     sunrise: town.sunrise,
     sunset: town.sunset,
   };
+
+  const rain = regionRain(townSummary, coasts);
 
   // Plain-language takeaways, generated from the numbers above.
   const takeaways: Synopsis['takeaways'] = [];
@@ -177,7 +210,8 @@ export function buildSynopsis(data: Dataset, refs: RefPoint[]): Synopsis {
   if (hourlyMax - morning >= 10) takeaways.push({ key: 'windPicksUp', params: { from: Math.round(morning), to: Math.round(hourlyMax) } });
   if ((townSummary.apparentMax ?? 0) >= 32) takeaways.push({ key: 'heat', params: { apparent: Math.round(townSummary.apparentMax!) } });
   if ((townSummary.uvMax ?? 0) >= 7) takeaways.push({ key: 'uv', params: { uv: round(townSummary.uvMax!, 0) } });
-  if ((townSummary.rainProbMax ?? 0) >= 40) takeaways.push({ key: 'rain', params: { pp: townSummary.rainProbMax!, mm: townSummary.rainSum } });
+  if (rain.coast) takeaways.push({ key: 'rainCoast', params: { coast: rain.coast, pp: rain.probMax, mm: rain.sum, townPp: townSummary.rainProbMax ?? 0 } });
+  else if (rain.probMax >= 40) takeaways.push({ key: 'rain', params: { pp: rain.probMax, mm: rain.sum } });
   const worstWave = coasts.map((c) => c.waveAgreement).filter(Boolean);
   const waveAgreementAll = worstWave.includes('low') ? 'low' : worstWave.includes('medium') ? 'medium' : worstWave.length ? 'high' : null;
   if (waveAgreementAll && waveAgreementAll !== 'high') takeaways.push({ key: 'waveAgreement', params: { level: waveAgreementAll } });
@@ -193,6 +227,7 @@ export function buildSynopsis(data: Dataset, refs: RefPoint[]): Synopsis {
     agreement,
     waveAgreement: waveAgreementAll,
     town: townSummary,
+    rain,
     takeaways,
   };
 }

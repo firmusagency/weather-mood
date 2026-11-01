@@ -181,7 +181,7 @@ export function PhoneView({
               {d.wind}: {d.windWords[windLevel(syn.wind.bf)]} {syn.wind.bf >= 2 ? compassG(syn.wind.dir, lang) : ''}
             </li>
             <li>
-              {d.rain}: {syn.town.rainProbMax ?? 0}%
+              {d.rain}: {syn.rain.coast ? `${COASTS[syn.rain.coast]?.[lang].toLowerCase() ?? ''} ${syn.rain.probMax}%` : `${syn.rain.probMax}%`}
             </li>
             {seaTemp != null && (
               <li>

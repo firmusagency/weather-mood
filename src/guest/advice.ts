@@ -328,7 +328,7 @@ export function mapsUrl(spot: Spot, profile: ProfileId) {
   return `https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lon}${mode}`;
 }
 
-const SUMMARY: Record<'calm' | 'wind' | 'rain' | 'hot', L> = {
+const SUMMARY: Record<'calm' | 'wind' | 'rain' | 'rainCoast' | 'hot', L> = {
   calm: {
     el: 'Ελαφρύς αέρας και ήρεμη θάλασσα σχεδόν παντού: καλή μέρα και για τα πιο εκτεθειμένα μέρη.',
     en: 'Light wind and a calm sea almost everywhere: a good day even for the exposed spots.',
@@ -346,6 +346,12 @@ const SUMMARY: Record<'calm' | 'wind' | 'rain' | 'hot', L> = {
     en: 'Rain likely ({pp}%): keep a town or museum plan as backup.',
     de: 'Regen wahrscheinlich ({pp}%): Stadt oder Museum als Alternative einplanen.',
     fr: 'Pluie probable ({pp}%) : prévoyez la ville ou un musée en plan B.',
+  },
+  rainCoast: {
+    el: 'Πιθανή βροχή στη {coast} ακτή ({pp}%)· η πόλη και οι άλλες ακτές πιο στεγνές.',
+    en: 'Rain likely on the {coast} coast ({pp}%); town and the other coasts drier.',
+    de: 'Regen wahrscheinlich an der {coast}küste ({pp}%); Stadt und die anderen Küsten trockener.',
+    fr: 'Pluie probable sur la côte {coast} ({pp} %) ; la ville et les autres côtes plus au sec.',
   },
   hot: {
     el: 'Ζέστη (αίσθηση {temp}°C): νερό, σκιά και νωρίς το πρωί για πεζοπορία.',
@@ -379,7 +385,9 @@ export function daySummary(syn: Synopsis, lang: GuestLang): string[] {
     const coast = rough.sort((a, b) => (b.waveMax ?? 0) - (a.waveMax ?? 0))[0].id.replace('ref-', '') as 'north' | 'west' | 'south';
     out.push(t(SUMMARY.wind, lang, { word: t(WIND_WORD[windLevel(bf)], lang), dir: compassG(syn.wind.dir, lang), coast: t(COAST_WORD[coast] ?? COAST_WORD.north, lang) }));
   }
-  if ((syn.town.rainProbMax ?? 0) >= 50) out.push(t(SUMMARY.rain, lang, { pp: syn.town.rainProbMax! }));
+  // rain that sits on one coast is named (the town figure alone would hide it)
+  if (syn.rain.coast) out.push(t(SUMMARY.rainCoast, lang, { pp: syn.rain.probMax, coast: t(COAST_WORD[syn.rain.coast.replace('ref-', '') as 'north' | 'west' | 'south'] ?? COAST_WORD.north, lang) }));
+  else if (syn.rain.probMax >= 50) out.push(t(SUMMARY.rain, lang, { pp: syn.rain.probMax }));
   if ((syn.town.apparentMax ?? 0) >= 32) out.push(t(SUMMARY.hot, lang, { temp: Math.round(syn.town.apparentMax!) }));
   return out;
 }

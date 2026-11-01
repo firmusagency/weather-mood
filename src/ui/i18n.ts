@@ -584,7 +584,11 @@ export function takeawayText(t: { key: string; params: Record<string, string | n
     case 'uv':
       return el ? `Υψηλός δείκτης UV (${p.uv}): αντηλιακό και καπέλο 11:00–16:00.` : `High UV index (${p.uv}): sunscreen and a hat 11:00–16:00.`;
     case 'rain':
-      return el ? `Πιθανότητα βροχής έως ${p.pp}% (σύνολο ~${p.mm} mm στην πόλη).` : `Rain chance up to ${p.pp}% (~${p.mm} mm in town).`;
+      return el ? `Πιθανότητα βροχής έως ${p.pp}% (σύνολο ~${p.mm} mm).` : `Rain chance up to ${p.pp}% (~${p.mm} mm).`;
+    case 'rainCoast':
+      return el
+        ? `Βροχή κυρίως στη ${coastName(String(p.coast), lang).toLowerCase()}: έως ${p.pp}% (~${p.mm} mm)· στην πόλη ${p.townPp}%.`
+        : `Rain mainly on the ${coastName(String(p.coast), lang).toLowerCase()}: up to ${p.pp}% (~${p.mm} mm); ${p.townPp}% in town.`;
     case 'waveAgreement':
       return p.level === 'low'
         ? el

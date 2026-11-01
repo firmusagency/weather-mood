@@ -22,7 +22,11 @@ export interface PlanSnapshot {
   picks: PlanPick[];
   avoid: string[];
   wind: { bf: number; dir: number; gust: number };
+  /** Town rain chance (kept for older archived plans). */
   rainProbMax: number;
+  /** Wettest reference point in the region and, when the rain is local, which coast. */
+  rainProbMaxRegion?: number;
+  rainCoast?: string | null;
   /** Max wave per reference coast (m). */
   coasts: Record<string, number>;
 }
@@ -56,6 +60,8 @@ export function planSnapshot(date: string, profile: ProfileId, rec: Recommendati
     avoid: rec.avoid.map((sc) => sc.spotId),
     wind: { bf: syn.wind.bf, dir: Math.round(syn.wind.dir), gust: Math.round(syn.wind.gust) },
     rainProbMax: syn.town.rainProbMax ?? 0,
+    rainProbMaxRegion: syn.rain.probMax,
+    rainCoast: syn.rain.coast,
     coasts,
   };
 }
@@ -85,7 +91,10 @@ export function comparePlans(before: PlanSnapshot, after: PlanSnapshot): PlanDif
   const dBf = after.wind.bf - before.wind.bf;
   if (dBf >= 2) changes.push({ kind: 'windUp', params: { from: before.wind.bf, to: after.wind.bf, dir: after.wind.dir } });
   else if (dBf <= -2 && before.wind.bf >= 4) changes.push({ kind: 'windDown', params: { from: before.wind.bf, to: after.wind.bf } });
-  if (after.rainProbMax >= 50 && before.rainProbMax < 30) changes.push({ kind: 'rainUp', params: { pp: after.rainProbMax } });
+  // Compare the regional figure when both plans have it (a shower arriving on the west coast
+  // matters to a guest headed there); older archived plans only know the town figure.
+  const rainOf = (p: PlanSnapshot) => (before.rainProbMaxRegion != null && after.rainProbMaxRegion != null ? p.rainProbMaxRegion! : p.rainProbMax);
+  if (rainOf(after) >= 50 && rainOf(before) < 30) changes.push({ kind: 'rainUp', params: { pp: rainOf(after), coast: after.rainCoast ?? '' } });
   for (const [coast, wave] of Object.entries(after.coasts)) {
     const was = before.coasts[coast] ?? 0;
     if (wave >= 0.8 && was < 0.5) changes.push({ kind: 'seaUp', params: { coast, from: was, to: wave } });
