@@ -1,101 +1,158 @@
 {
- "date": "2026-11-01",
- "checkedAt": "2026-11-01T09:47:45.490Z",
- "eveningGeneratedAt": "2026-10-31T19:30:40.702Z",
- "changed": true,
+ "date": "2026-11-02",
+ "checkedAt": "2026-11-02T10:02:30.141Z",
+ "eveningGeneratedAt": "2026-11-01T19:52:44.595Z",
+ "changed": false,
  "byProfile": {
   "family": {
    "diff": {
-    "date": "2026-11-01",
+    "date": "2026-11-02",
     "profile": "family",
-    "significant": true,
-    "changes": [
-     {
-      "kind": "rainUp",
-      "params": {
-       "pp": 95,
-       "coast": ""
-      }
-     }
-    ],
+    "significant": false,
+    "changes": [],
     "before": {
-     "date": "2026-11-01",
+     "date": "2026-11-02",
      "profile": "family",
-     "generatedAt": "2026-10-31T19:30:40.702Z",
+     "generatedAt": "2026-11-01T19:52:44.595Z",
      "picks": [
       {
        "spotId": "agioi-apostoloi",
        "verdict": "go",
-       "score": 99,
+       "score": 100,
        "window": {
-        "start": 11,
-        "end": 14
+        "start": 15,
+        "end": 18
        }
       },
       {
        "spotId": "stavros",
        "verdict": "go",
-       "score": 99,
+       "score": 100,
        "window": {
-        "start": 11,
-        "end": 15
-       }
-      },
-      {
-       "spotId": "marathi",
-       "verdict": "go",
-       "score": 99,
-       "window": {
-        "start": 10,
-        "end": 14
-       }
-      }
-     ],
-     "avoid": [
-      "elafonisi"
-     ],
-     "wind": {
-      "bf": 3,
-      "dir": 194,
-      "gust": 39
-     },
-     "rainProbMax": 8,
-     "coasts": {
-      "ref-north": 0.3,
-      "ref-west": 0.8,
-      "ref-south": 0.3
-     }
-    },
-    "after": {
-     "date": "2026-11-01",
-     "profile": "family",
-     "generatedAt": "2026-11-01T09:47:45.490Z",
-     "picks": [
-      {
-       "spotId": "agioi-apostoloi",
-       "verdict": "go",
-       "score": 99,
-       "window": {
-        "start": 16,
+        "start": 15,
         "end": 19
        }
       },
       {
+       "spotId": "marathi",
+       "verdict": "go",
+       "score": 99,
+       "window": {
+        "start": 15,
+        "end": 19
+       }
+      }
+     ],
+     "avoid": [
+      "elafonisi",
+      "frangokastello",
+      "falasarna"
+     ],
+     "wind": {
+      "bf": 3,
+      "dir": 186,
+      "gust": 41
+     },
+     "rainProbMax": 10,
+     "rainProbMaxRegion": 93,
+     "rainCoast": "ref-south",
+     "coasts": {
+      "ref-north": 0.5,
+      "ref-west": 0.9,
+      "ref-south": 0.6
+     }
+    },
+    "after": {
+     "date": "2026-11-02",
+     "profile": "family",
+     "generatedAt": "2026-11-02T10:02:30.141Z",
+     "picks": [
+      {
+       "spotId": "agioi-apostoloi",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 14,
+        "end": 17
+       }
+      },
+      {
        "spotId": "stavros",
        "verdict": "go",
-       "score": 98,
+       "score": 100,
        "window": {
-        "start": 10,
-        "end": 14
+        "start": 14,
+        "end": 18
        }
       },
       {
        "spotId": "marathi",
        "verdict": "go",
-       "score": 98,
+       "score": 99,
        "window": {
-        "start": 10,
-        "end": 14
+        "start": 15,
+        "end": 19
+       }
+      }
+     ],
+     "avoid": [
+      "elafonisi",
+      "frangokastello",
+      "falasarna"
+     ],
+     "wind": {
+      "bf": 3,
+      "dir": 187,
+      "gust": 44
+     },
+     "rainProbMax": 60,
+     "rainProbMaxRegion": 95,
+     "rainCoast": "ref-west",
+     "coasts": {
+      "ref-north": 0.4,
+      "ref-west": 1.1,
+      "ref-south": 0.6
+     }
+    }
+   },
+   "messages": null
+  },
+  "couple": {
+   "diff": {
+    "date": "2026-11-02",
+    "profile": "couple",
+    "significant": false,
+    "changes": [],
+    "before": {
+     "date": "2026-11-02",
+     "profile": "couple",
+     "generatedAt": "2026-11-01T19:52:44.595Z",
+     "picks": [
+      {
+       "spotId": "seitan-limania",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 17,
+        "end": 19
+       }
+      },
+      {
+       "spotId": "old-town",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "aptera",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 11
        }
       }
      ],
@@ -105,61 +162,39 @@
      ],
      "wind": {
       "bf": 3,
-      "dir": 197,
-      "gust": 36
+      "dir": 186,
+      "gust": 41
      },
-     "rainProbMax": 95,
-     "rainProbMaxRegion": 95,
-     "rainCoast": null,
+     "rainProbMax": 10,
+     "rainProbMaxRegion": 93,
+     "rainCoast": "ref-south",
      "coasts": {
-      "ref-north": 0.2,
-      "ref-west": 0.6,
-      "ref-south": 0.3
+      "ref-north": 0.5,
+      "ref-west": 0.9,
+      "ref-south": 0.6
      }
-    }
-   },
-   "messages": {
-    "el": "Καλημέρα από το Alkyoni Suites! Άλλαξε λίγο ο καιρός για σήμερα.\nΠιθανότητα βροχής 95%.\nΣήμερα προτείνουμε: Άγιοι Απόστολοι 16:00–19:00, Σταυρός 10:00–14:00, Μαράθι 10:00–14:00.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://firmusagency.github.io/weather-mood/guest.html",
-    "en": "Good morning from Alkyoni Suites! The weather for today has changed a little.\nRain chance 95%.\nToday we suggest: Agioi Apostoloi 16:00–19:00, Stavros 10:00–14:00, Marathi 10:00–14:00.\n\nAll picks, maps and directions: https://firmusagency.github.io/weather-mood/guest.html",
-    "de": "Guten Morgen von Alkyoni Suites! Das Wetter für heute hat sich etwas geändert.\nRegenwahrscheinlichkeit 95%.\nHeute empfehlen wir: Agioi Apostoloi 16:00–19:00, Stavros 10:00–14:00, Marathi 10:00–14:00.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://firmusagency.github.io/weather-mood/guest.html",
-    "fr": "Bonjour de la part de Alkyoni Suites ! La météo d'aujourd'hui a un peu changé.\nRisque de pluie 95 %.\nAujourd'hui nous conseillons : Agioi Apostoloi 16:00–19:00, Stavros 10:00–14:00, Marathi 10:00–14:00.\n\nTous les conseils, cartes et itinéraires : https://firmusagency.github.io/weather-mood/guest.html"
-   }
-  },
-  "couple": {
-   "diff": {
-    "date": "2026-11-01",
-    "profile": "couple",
-    "significant": true,
-    "changes": [
-     {
-      "kind": "rainUp",
-      "params": {
-       "pp": 95,
-       "coast": ""
-      }
-     }
-    ],
-    "before": {
-     "date": "2026-11-01",
+    },
+    "after": {
+     "date": "2026-11-02",
      "profile": "couple",
-     "generatedAt": "2026-10-31T19:30:40.702Z",
+     "generatedAt": "2026-11-02T10:02:30.141Z",
      "picks": [
+      {
+       "spotId": "seitan-limania",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 15,
+        "end": 17
+       }
+      },
       {
        "spotId": "old-town",
        "verdict": "go",
        "score": 100,
        "window": {
-        "start": 9,
-        "end": 12
-       }
-      },
-      {
-       "spotId": "seitan-limania",
-       "verdict": "go",
-       "score": 99,
-       "window": {
-        "start": 11,
-        "end": 13
+        "start": 15,
+        "end": 18
        }
       },
       {
@@ -173,96 +208,36 @@
       }
      ],
      "avoid": [
-      "elafonisi"
+      "elafonisi",
+      "frangokastello"
      ],
      "wind": {
       "bf": 3,
-      "dir": 194,
-      "gust": 39
+      "dir": 187,
+      "gust": 44
      },
-     "rainProbMax": 8,
-     "coasts": {
-      "ref-north": 0.3,
-      "ref-west": 0.8,
-      "ref-south": 0.3
-     }
-    },
-    "after": {
-     "date": "2026-11-01",
-     "profile": "couple",
-     "generatedAt": "2026-11-01T09:47:45.490Z",
-     "picks": [
-      {
-       "spotId": "aptera",
-       "verdict": "go",
-       "score": 100,
-       "window": {
-        "start": 9,
-        "end": 11
-       }
-      },
-      {
-       "spotId": "polyrinia",
-       "verdict": "go",
-       "score": 100,
-       "window": {
-        "start": 8,
-        "end": 10
-       }
-      },
-      {
-       "spotId": "seitan-limania",
-       "verdict": "go",
-       "score": 98,
-       "window": {
-        "start": 9,
-        "end": 11
-       }
-      }
-     ],
-     "avoid": [
-      "elafonisi"
-     ],
-     "wind": {
-      "bf": 3,
-      "dir": 197,
-      "gust": 36
-     },
-     "rainProbMax": 95,
+     "rainProbMax": 60,
      "rainProbMaxRegion": 95,
-     "rainCoast": null,
+     "rainCoast": "ref-west",
      "coasts": {
-      "ref-north": 0.2,
-      "ref-west": 0.6,
-      "ref-south": 0.3
+      "ref-north": 0.4,
+      "ref-west": 1.1,
+      "ref-south": 0.6
      }
     }
    },
-   "messages": {
-    "el": "Καλημέρα από το Alkyoni Suites! Άλλαξε λίγο ο καιρός για σήμερα.\nΠιθανότητα βροχής 95%.\nΣήμερα προτείνουμε: Αρχαία Άπτερα 09:00–11:00, Αρχαία Πολυρρήνια 08:00–10:00, Σεϊτάν Λιμάνια 09:00–11:00.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://firmusagency.github.io/weather-mood/guest.html",
-    "en": "Good morning from Alkyoni Suites! The weather for today has changed a little.\nRain chance 95%.\nToday we suggest: Ancient Aptera 09:00–11:00, Ancient Polyrinia 08:00–10:00, Seitan Limania 09:00–11:00.\n\nAll picks, maps and directions: https://firmusagency.github.io/weather-mood/guest.html",
-    "de": "Guten Morgen von Alkyoni Suites! Das Wetter für heute hat sich etwas geändert.\nRegenwahrscheinlichkeit 95%.\nHeute empfehlen wir: Ancient Aptera 09:00–11:00, Ancient Polyrinia 08:00–10:00, Seitan Limania 09:00–11:00.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://firmusagency.github.io/weather-mood/guest.html",
-    "fr": "Bonjour de la part de Alkyoni Suites ! La météo d'aujourd'hui a un peu changé.\nRisque de pluie 95 %.\nAujourd'hui nous conseillons : Ancient Aptera 09:00–11:00, Ancient Polyrinia 08:00–10:00, Seitan Limania 09:00–11:00.\n\nTous les conseils, cartes et itinéraires : https://firmusagency.github.io/weather-mood/guest.html"
-   }
+   "messages": null
   },
   "solo": {
    "diff": {
-    "date": "2026-11-01",
+    "date": "2026-11-02",
     "profile": "solo",
-    "significant": true,
-    "changes": [
-     {
-      "kind": "rainUp",
-      "params": {
-       "pp": 95,
-       "coast": ""
-      }
-     }
-    ],
+    "significant": false,
+    "changes": [],
     "before": {
-     "date": "2026-11-01",
+     "date": "2026-11-02",
      "profile": "solo",
-     "generatedAt": "2026-10-31T19:30:40.702Z",
+     "generatedAt": "2026-11-01T19:52:44.595Z",
      "picks": [
       {
        "spotId": "old-town",
@@ -276,10 +251,10 @@
       {
        "spotId": "stavros",
        "verdict": "go",
-       "score": 99,
+       "score": 100,
        "window": {
-        "start": 11,
-        "end": 15
+        "start": 15,
+        "end": 19
        }
       },
       {
@@ -293,41 +268,44 @@
       }
      ],
      "avoid": [
-      "elafonisi"
+      "elafonisi",
+      "frangokastello"
      ],
      "wind": {
       "bf": 3,
-      "dir": 194,
-      "gust": 39
+      "dir": 186,
+      "gust": 41
      },
-     "rainProbMax": 8,
+     "rainProbMax": 10,
+     "rainProbMaxRegion": 93,
+     "rainCoast": "ref-south",
      "coasts": {
-      "ref-north": 0.3,
-      "ref-west": 0.8,
-      "ref-south": 0.3
+      "ref-north": 0.5,
+      "ref-west": 0.9,
+      "ref-south": 0.6
      }
     },
     "after": {
-     "date": "2026-11-01",
+     "date": "2026-11-02",
      "profile": "solo",
-     "generatedAt": "2026-11-01T09:47:45.490Z",
+     "generatedAt": "2026-11-02T10:02:30.141Z",
      "picks": [
       {
        "spotId": "old-town",
        "verdict": "go",
-       "score": 97,
+       "score": 100,
        "window": {
-        "start": 18,
-        "end": 21
+        "start": 15,
+        "end": 18
        }
       },
       {
        "spotId": "stavros",
        "verdict": "go",
-       "score": 98,
+       "score": 100,
        "window": {
-        "start": 10,
-        "end": 14
+        "start": 14,
+        "end": 18
        }
       },
       {
@@ -341,54 +319,36 @@
       }
      ],
      "avoid": [
-      "elafonisi"
+      "elafonisi",
+      "frangokastello"
      ],
      "wind": {
       "bf": 3,
-      "dir": 197,
-      "gust": 36
+      "dir": 187,
+      "gust": 44
      },
-     "rainProbMax": 95,
+     "rainProbMax": 60,
      "rainProbMaxRegion": 95,
-     "rainCoast": null,
+     "rainCoast": "ref-west",
      "coasts": {
-      "ref-north": 0.2,
-      "ref-west": 0.6,
-      "ref-south": 0.3
+      "ref-north": 0.4,
+      "ref-west": 1.1,
+      "ref-south": 0.6
      }
     }
    },
-   "messages": {
-    "el": "Καλημέρα από το Alkyoni Suites! Άλλαξε λίγο ο καιρός για σήμερα.\nΠιθανότητα βροχής 95%.\nΣήμερα προτείνουμε: Παλιά Πόλη & Ενετικό Λιμάνι 18:00–21:00, Σταυρός 10:00–14:00, Αρχαία Άπτερα 09:00–11:00.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://firmusagency.github.io/weather-mood/guest.html",
-    "en": "Good morning from Alkyoni Suites! The weather for today has changed a little.\nRain chance 95%.\nToday we suggest: Old Town & Venetian Harbour 18:00–21:00, Stavros 10:00–14:00, Ancient Aptera 09:00–11:00.\n\nAll picks, maps and directions: https://firmusagency.github.io/weather-mood/guest.html",
-    "de": "Guten Morgen von Alkyoni Suites! Das Wetter für heute hat sich etwas geändert.\nRegenwahrscheinlichkeit 95%.\nHeute empfehlen wir: Old Town & Venetian Harbour 18:00–21:00, Stavros 10:00–14:00, Ancient Aptera 09:00–11:00.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://firmusagency.github.io/weather-mood/guest.html",
-    "fr": "Bonjour de la part de Alkyoni Suites ! La météo d'aujourd'hui a un peu changé.\nRisque de pluie 95 %.\nAujourd'hui nous conseillons : Old Town & Venetian Harbour 18:00–21:00, Stavros 10:00–14:00, Ancient Aptera 09:00–11:00.\n\nTous les conseils, cartes et itinéraires : https://firmusagency.github.io/weather-mood/guest.html"
-   }
+   "messages": null
   },
   "active": {
    "diff": {
-    "date": "2026-11-01",
+    "date": "2026-11-02",
     "profile": "active",
-    "significant": true,
-    "changes": [
-     {
-      "kind": "newTop",
-      "params": {
-       "spot": "loutro"
-      }
-     },
-     {
-      "kind": "rainUp",
-      "params": {
-       "pp": 95,
-       "coast": ""
-      }
-     }
-    ],
+    "significant": false,
+    "changes": [],
     "before": {
-     "date": "2026-11-01",
+     "date": "2026-11-02",
      "profile": "active",
-     "generatedAt": "2026-10-31T19:30:40.702Z",
+     "generatedAt": "2026-11-01T19:52:44.595Z",
      "picks": [
       {
        "spotId": "gouverneto-katholiko",
@@ -409,106 +369,97 @@
        }
       },
       {
-       "spotId": "kolymbari",
+       "spotId": "almyrida",
        "verdict": "go",
        "score": 99,
        "window": {
-        "start": 10,
-        "end": 14
+        "start": 14,
+        "end": 18
        }
       }
      ],
      "avoid": [
-      "elafonisi"
+      "elafonisi",
+      "frangokastello"
      ],
      "wind": {
       "bf": 3,
-      "dir": 194,
-      "gust": 39
+      "dir": 186,
+      "gust": 41
      },
-     "rainProbMax": 8,
+     "rainProbMax": 10,
+     "rainProbMaxRegion": 93,
+     "rainCoast": "ref-south",
      "coasts": {
-      "ref-north": 0.3,
-      "ref-west": 0.8,
-      "ref-south": 0.3
+      "ref-north": 0.5,
+      "ref-west": 0.9,
+      "ref-south": 0.6
      }
     },
     "after": {
-     "date": "2026-11-01",
+     "date": "2026-11-02",
      "profile": "active",
-     "generatedAt": "2026-11-01T09:47:45.490Z",
+     "generatedAt": "2026-11-02T10:02:30.141Z",
      "picks": [
       {
-       "spotId": "loutro",
+       "spotId": "gouverneto-katholiko",
        "verdict": "go",
-       "score": 96,
+       "score": 100,
        "window": {
-        "start": 13,
-        "end": 17
+        "start": 7,
+        "end": 9
        }
       },
       {
-       "spotId": "seitan-limania",
+       "spotId": "old-town",
        "verdict": "go",
-       "score": 98,
+       "score": 100,
        "window": {
-        "start": 9,
-        "end": 11
+        "start": 15,
+        "end": 18
        }
       },
       {
-       "spotId": "kolymbari",
+       "spotId": "almyrida",
        "verdict": "go",
-       "score": 98,
+       "score": 100,
        "window": {
-        "start": 10,
-        "end": 14
+        "start": 14,
+        "end": 18
        }
       }
      ],
      "avoid": [
-      "elafonisi"
+      "elafonisi",
+      "frangokastello"
      ],
      "wind": {
       "bf": 3,
-      "dir": 197,
-      "gust": 36
+      "dir": 187,
+      "gust": 44
      },
-     "rainProbMax": 95,
+     "rainProbMax": 60,
      "rainProbMaxRegion": 95,
-     "rainCoast": null,
+     "rainCoast": "ref-west",
      "coasts": {
-      "ref-north": 0.2,
-      "ref-west": 0.6,
-      "ref-south": 0.3
+      "ref-north": 0.4,
+      "ref-west": 1.1,
+      "ref-south": 0.6
      }
     }
    },
-   "messages": {
-    "el": "Καλημέρα από το Alkyoni Suites! Άλλαξε λίγο ο καιρός για σήμερα.\nΠιθανότητα βροχής 95%.\nΣήμερα προτείνουμε: Λουτρό 13:00–17:00, Σεϊτάν Λιμάνια 09:00–11:00, Κολυμπάρι 10:00–14:00.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://firmusagency.github.io/weather-mood/guest.html",
-    "en": "Good morning from Alkyoni Suites! The weather for today has changed a little.\nRain chance 95%.\nToday we suggest: Loutro 13:00–17:00, Seitan Limania 09:00–11:00, Kolymbari 10:00–14:00.\n\nAll picks, maps and directions: https://firmusagency.github.io/weather-mood/guest.html",
-    "de": "Guten Morgen von Alkyoni Suites! Das Wetter für heute hat sich etwas geändert.\nRegenwahrscheinlichkeit 95%.\nHeute empfehlen wir: Loutro 13:00–17:00, Seitan Limania 09:00–11:00, Kolymbari 10:00–14:00.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://firmusagency.github.io/weather-mood/guest.html",
-    "fr": "Bonjour de la part de Alkyoni Suites ! La météo d'aujourd'hui a un peu changé.\nRisque de pluie 95 %.\nAujourd'hui nous conseillons : Loutro 13:00–17:00, Seitan Limania 09:00–11:00, Kolymbari 10:00–14:00.\n\nTous les conseils, cartes et itinéraires : https://firmusagency.github.io/weather-mood/guest.html"
-   }
+   "messages": null
   },
   "senior": {
    "diff": {
-    "date": "2026-11-01",
+    "date": "2026-11-02",
     "profile": "senior",
-    "significant": true,
-    "changes": [
-     {
-      "kind": "rainUp",
-      "params": {
-       "pp": 95,
-       "coast": ""
-      }
-     }
-    ],
+    "significant": false,
+    "changes": [],
     "before": {
-     "date": "2026-11-01",
+     "date": "2026-11-02",
      "profile": "senior",
-     "generatedAt": "2026-10-31T19:30:40.702Z",
+     "generatedAt": "2026-11-01T19:52:44.595Z",
      "picks": [
       {
        "spotId": "old-town",
@@ -533,38 +484,41 @@
        "verdict": "go",
        "score": 100,
        "window": {
-        "start": 8,
-        "end": 11
+        "start": 9,
+        "end": 12
        }
       }
      ],
      "avoid": [
-      "elafonisi"
+      "elafonisi",
+      "frangokastello"
      ],
      "wind": {
       "bf": 3,
-      "dir": 194,
-      "gust": 39
+      "dir": 186,
+      "gust": 41
      },
-     "rainProbMax": 8,
+     "rainProbMax": 10,
+     "rainProbMaxRegion": 93,
+     "rainCoast": "ref-south",
      "coasts": {
-      "ref-north": 0.3,
-      "ref-west": 0.8,
-      "ref-south": 0.3
+      "ref-north": 0.5,
+      "ref-west": 0.9,
+      "ref-south": 0.6
      }
     },
     "after": {
-     "date": "2026-11-01",
+     "date": "2026-11-02",
      "profile": "senior",
-     "generatedAt": "2026-11-01T09:47:45.490Z",
+     "generatedAt": "2026-11-02T10:02:30.141Z",
      "picks": [
       {
        "spotId": "old-town",
        "verdict": "go",
-       "score": 97,
+       "score": 100,
        "window": {
-        "start": 18,
-        "end": 21
+        "start": 15,
+        "end": 18
        }
       },
       {
@@ -587,48 +541,37 @@
       }
      ],
      "avoid": [
-      "elafonisi"
+      "elafonisi",
+      "frangokastello",
+      "falasarna"
      ],
      "wind": {
       "bf": 3,
-      "dir": 197,
-      "gust": 36
+      "dir": 187,
+      "gust": 44
      },
-     "rainProbMax": 95,
+     "rainProbMax": 60,
      "rainProbMaxRegion": 95,
-     "rainCoast": null,
+     "rainCoast": "ref-west",
      "coasts": {
-      "ref-north": 0.2,
-      "ref-west": 0.6,
-      "ref-south": 0.3
+      "ref-north": 0.4,
+      "ref-west": 1.1,
+      "ref-south": 0.6
      }
     }
    },
-   "messages": {
-    "el": "Καλημέρα από το Alkyoni Suites! Άλλαξε λίγο ο καιρός για σήμερα.\nΠιθανότητα βροχής 95%.\nΣήμερα προτείνουμε: Παλιά Πόλη & Ενετικό Λιμάνι 18:00–21:00, Θέρισο & φαράγγι (με αυτοκίνητο) 10:00–13:00, Βάμος & χωριά Αποκορώνου 09:00–12:00.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://firmusagency.github.io/weather-mood/guest.html",
-    "en": "Good morning from Alkyoni Suites! The weather for today has changed a little.\nRain chance 95%.\nToday we suggest: Old Town & Venetian Harbour 18:00–21:00, Theriso village & gorge drive 10:00–13:00, Vamos & Apokoronas villages 09:00–12:00.\n\nAll picks, maps and directions: https://firmusagency.github.io/weather-mood/guest.html",
-    "de": "Guten Morgen von Alkyoni Suites! Das Wetter für heute hat sich etwas geändert.\nRegenwahrscheinlichkeit 95%.\nHeute empfehlen wir: Old Town & Venetian Harbour 18:00–21:00, Theriso village & gorge drive 10:00–13:00, Vamos & Apokoronas villages 09:00–12:00.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://firmusagency.github.io/weather-mood/guest.html",
-    "fr": "Bonjour de la part de Alkyoni Suites ! La météo d'aujourd'hui a un peu changé.\nRisque de pluie 95 %.\nAujourd'hui nous conseillons : Old Town & Venetian Harbour 18:00–21:00, Theriso village & gorge drive 10:00–13:00, Vamos & Apokoronas villages 09:00–12:00.\n\nTous les conseils, cartes et itinéraires : https://firmusagency.github.io/weather-mood/guest.html"
-   }
+   "messages": null
   },
   "nocar": {
    "diff": {
-    "date": "2026-11-01",
+    "date": "2026-11-02",
     "profile": "nocar",
-    "significant": true,
-    "changes": [
-     {
-      "kind": "rainUp",
-      "params": {
-       "pp": 95,
-       "coast": ""
-      }
-     }
-    ],
+    "significant": false,
+    "changes": [],
     "before": {
-     "date": "2026-11-01",
+     "date": "2026-11-02",
      "profile": "nocar",
-     "generatedAt": "2026-10-31T19:30:40.702Z",
+     "generatedAt": "2026-11-01T19:52:44.595Z",
      "picks": [
       {
        "spotId": "old-town",
@@ -640,92 +583,89 @@
        }
       },
       {
-       "spotId": "platanias",
+       "spotId": "agia-marina",
        "verdict": "go",
-       "score": 99,
-       "window": {
-        "start": 10,
-        "end": 14
-       }
-      },
-      {
-       "spotId": "kolymbari",
-       "verdict": "go",
-       "score": 99,
-       "window": {
-        "start": 10,
-        "end": 14
-       }
-      }
-     ],
-     "avoid": [],
-     "wind": {
-      "bf": 3,
-      "dir": 194,
-      "gust": 39
-     },
-     "rainProbMax": 8,
-     "coasts": {
-      "ref-north": 0.3,
-      "ref-west": 0.8,
-      "ref-south": 0.3
-     }
-    },
-    "after": {
-     "date": "2026-11-01",
-     "profile": "nocar",
-     "generatedAt": "2026-11-01T09:47:45.490Z",
-     "picks": [
-      {
-       "spotId": "old-town",
-       "verdict": "go",
-       "score": 97,
-       "window": {
-        "start": 18,
-        "end": 21
-       }
-      },
-      {
-       "spotId": "platanias",
-       "verdict": "go",
-       "score": 99,
+       "score": 100,
        "window": {
         "start": 15,
         "end": 19
        }
       },
       {
-       "spotId": "kolymbari",
+       "spotId": "stavros",
        "verdict": "go",
-       "score": 98,
+       "score": 100,
        "window": {
-        "start": 10,
-        "end": 14
+        "start": 15,
+        "end": 19
        }
       }
      ],
      "avoid": [],
      "wind": {
       "bf": 3,
-      "dir": 197,
-      "gust": 36
+      "dir": 186,
+      "gust": 41
      },
-     "rainProbMax": 95,
-     "rainProbMaxRegion": 95,
-     "rainCoast": null,
+     "rainProbMax": 10,
+     "rainProbMaxRegion": 93,
+     "rainCoast": "ref-south",
      "coasts": {
-      "ref-north": 0.2,
-      "ref-west": 0.6,
-      "ref-south": 0.3
+      "ref-north": 0.5,
+      "ref-west": 0.9,
+      "ref-south": 0.6
+     }
+    },
+    "after": {
+     "date": "2026-11-02",
+     "profile": "nocar",
+     "generatedAt": "2026-11-02T10:02:30.141Z",
+     "picks": [
+      {
+       "spotId": "old-town",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 15,
+        "end": 18
+       }
+      },
+      {
+       "spotId": "platanias",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 13,
+        "end": 17
+       }
+      },
+      {
+       "spotId": "kolymbari",
+       "verdict": "go",
+       "score": 99,
+       "window": {
+        "start": 13,
+        "end": 17
+       }
+      }
+     ],
+     "avoid": [],
+     "wind": {
+      "bf": 3,
+      "dir": 187,
+      "gust": 44
+     },
+     "rainProbMax": 60,
+     "rainProbMaxRegion": 95,
+     "rainCoast": "ref-west",
+     "coasts": {
+      "ref-north": 0.4,
+      "ref-west": 1.1,
+      "ref-south": 0.6
      }
     }
    },
-   "messages": {
-    "el": "Καλημέρα από το Alkyoni Suites! Άλλαξε λίγο ο καιρός για σήμερα.\nΠιθανότητα βροχής 95%.\nΣήμερα προτείνουμε: Παλιά Πόλη & Ενετικό Λιμάνι 18:00–21:00, Πλατανιάς 15:00–19:00, Κολυμπάρι 10:00–14:00.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://firmusagency.github.io/weather-mood/guest.html",
-    "en": "Good morning from Alkyoni Suites! The weather for today has changed a little.\nRain chance 95%.\nToday we suggest: Old Town & Venetian Harbour 18:00–21:00, Platanias 15:00–19:00, Kolymbari 10:00–14:00.\n\nAll picks, maps and directions: https://firmusagency.github.io/weather-mood/guest.html",
-    "de": "Guten Morgen von Alkyoni Suites! Das Wetter für heute hat sich etwas geändert.\nRegenwahrscheinlichkeit 95%.\nHeute empfehlen wir: Old Town & Venetian Harbour 18:00–21:00, Platanias 15:00–19:00, Kolymbari 10:00–14:00.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://firmusagency.github.io/weather-mood/guest.html",
-    "fr": "Bonjour de la part de Alkyoni Suites ! La météo d'aujourd'hui a un peu changé.\nRisque de pluie 95 %.\nAujourd'hui nous conseillons : Old Town & Venetian Harbour 18:00–21:00, Platanias 15:00–19:00, Kolymbari 10:00–14:00.\n\nTous les conseils, cartes et itinéraires : https://firmusagency.github.io/weather-mood/guest.html"
-   }
+   "messages": null
   }
  }
 }
