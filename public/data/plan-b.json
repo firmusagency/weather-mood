@@ -1,7 +1,668 @@
 {
- "date": "2026-11-03",
- "checkedAt": "2026-11-03T10:07:53.729Z",
- "eveningGeneratedAt": null,
+ "date": "2026-11-05",
+ "checkedAt": "2026-11-05T09:53:01.070Z",
+ "eveningGeneratedAt": "2026-11-04T21:27:57.362Z",
  "changed": false,
- "byProfile": {}
+ "byProfile": {
+  "family": {
+   "diff": {
+    "date": "2026-11-05",
+    "profile": "family",
+    "significant": false,
+    "changes": [],
+    "before": {
+     "date": "2026-11-05",
+     "profile": "family",
+     "generatedAt": "2026-11-04T21:27:57.362Z",
+     "picks": [
+      {
+       "spotId": "botanical-park",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "old-town",
+       "verdict": "go",
+       "score": 97,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "theriso",
+       "verdict": "go",
+       "score": 95,
+       "window": {
+        "start": 10,
+        "end": 13
+       }
+      }
+     ],
+     "avoid": [
+      "agia-marina",
+      "falasarna",
+      "stavros",
+      "balos"
+     ],
+     "wind": {
+      "bf": 4,
+      "dir": 46,
+      "gust": 51
+     },
+     "rainProbMax": 55,
+     "rainProbMaxRegion": 55,
+     "rainCoast": null,
+     "coasts": {
+      "ref-north": 1.7,
+      "ref-west": 1.7,
+      "ref-south": 0.7
+     }
+    },
+    "after": {
+     "date": "2026-11-05",
+     "profile": "family",
+     "generatedAt": "2026-11-05T09:53:01.070Z",
+     "picks": [
+      {
+       "spotId": "botanical-park",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 8,
+        "end": 11
+       }
+      },
+      {
+       "spotId": "old-town",
+       "verdict": "go",
+       "score": 94,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "theriso",
+       "verdict": "go",
+       "score": 94,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      }
+     ],
+     "avoid": [
+      "agia-marina",
+      "stavros",
+      "falasarna",
+      "balos"
+     ],
+     "wind": {
+      "bf": 4,
+      "dir": 45,
+      "gust": 56
+     },
+     "rainProbMax": 83,
+     "rainProbMaxRegion": 83,
+     "rainCoast": null,
+     "coasts": {
+      "ref-north": 1.7,
+      "ref-west": 1.8,
+      "ref-south": 0.7
+     }
+    }
+   },
+   "messages": null
+  },
+  "couple": {
+   "diff": {
+    "date": "2026-11-05",
+    "profile": "couple",
+    "significant": false,
+    "changes": [],
+    "before": {
+     "date": "2026-11-05",
+     "profile": "couple",
+     "generatedAt": "2026-11-04T21:27:57.362Z",
+     "picks": [
+      {
+       "spotId": "aptera",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 11
+       }
+      },
+      {
+       "spotId": "polyrinia",
+       "verdict": "go",
+       "score": 99,
+       "window": {
+        "start": 10,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "old-town",
+       "verdict": "go",
+       "score": 97,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      }
+     ],
+     "avoid": [
+      "agia-marina"
+     ],
+     "wind": {
+      "bf": 4,
+      "dir": 46,
+      "gust": 51
+     },
+     "rainProbMax": 55,
+     "rainProbMaxRegion": 55,
+     "rainCoast": null,
+     "coasts": {
+      "ref-north": 1.7,
+      "ref-west": 1.7,
+      "ref-south": 0.7
+     }
+    },
+    "after": {
+     "date": "2026-11-05",
+     "profile": "couple",
+     "generatedAt": "2026-11-05T09:53:01.070Z",
+     "picks": [
+      {
+       "spotId": "aptera",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 11
+       }
+      },
+      {
+       "spotId": "sfakia-ferry",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 10,
+        "end": 16
+       }
+      },
+      {
+       "spotId": "polyrinia",
+       "verdict": "go",
+       "score": 98,
+       "window": {
+        "start": 10,
+        "end": 12
+       }
+      }
+     ],
+     "avoid": [
+      "agia-marina"
+     ],
+     "wind": {
+      "bf": 4,
+      "dir": 45,
+      "gust": 56
+     },
+     "rainProbMax": 83,
+     "rainProbMaxRegion": 83,
+     "rainCoast": null,
+     "coasts": {
+      "ref-north": 1.7,
+      "ref-west": 1.8,
+      "ref-south": 0.7
+     }
+    }
+   },
+   "messages": null
+  },
+  "solo": {
+   "diff": {
+    "date": "2026-11-05",
+    "profile": "solo",
+    "significant": false,
+    "changes": [],
+    "before": {
+     "date": "2026-11-05",
+     "profile": "solo",
+     "generatedAt": "2026-11-04T21:27:57.362Z",
+     "picks": [
+      {
+       "spotId": "old-town",
+       "verdict": "go",
+       "score": 97,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "imbros",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 7,
+        "end": 10
+       }
+      },
+      {
+       "spotId": "aptera",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 11
+       }
+      }
+     ],
+     "avoid": [
+      "agia-marina"
+     ],
+     "wind": {
+      "bf": 4,
+      "dir": 46,
+      "gust": 51
+     },
+     "rainProbMax": 55,
+     "rainProbMaxRegion": 55,
+     "rainCoast": null,
+     "coasts": {
+      "ref-north": 1.7,
+      "ref-west": 1.7,
+      "ref-south": 0.7
+     }
+    },
+    "after": {
+     "date": "2026-11-05",
+     "profile": "solo",
+     "generatedAt": "2026-11-05T09:53:01.070Z",
+     "picks": [
+      {
+       "spotId": "imbros",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "old-town",
+       "verdict": "go",
+       "score": 94,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "aptera",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 11
+       }
+      }
+     ],
+     "avoid": [
+      "agia-marina"
+     ],
+     "wind": {
+      "bf": 4,
+      "dir": 45,
+      "gust": 56
+     },
+     "rainProbMax": 83,
+     "rainProbMaxRegion": 83,
+     "rainCoast": null,
+     "coasts": {
+      "ref-north": 1.7,
+      "ref-west": 1.8,
+      "ref-south": 0.7
+     }
+    }
+   },
+   "messages": null
+  },
+  "active": {
+   "diff": {
+    "date": "2026-11-05",
+    "profile": "active",
+    "significant": false,
+    "changes": [],
+    "before": {
+     "date": "2026-11-05",
+     "profile": "active",
+     "generatedAt": "2026-11-04T21:27:57.362Z",
+     "picks": [
+      {
+       "spotId": "imbros",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 7,
+        "end": 10
+       }
+      },
+      {
+       "spotId": "sougia",
+       "verdict": "go",
+       "score": 98,
+       "window": {
+        "start": 11,
+        "end": 15
+       }
+      },
+      {
+       "spotId": "chrysoskalitissa",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 8,
+        "end": 9
+       }
+      }
+     ],
+     "avoid": [],
+     "wind": {
+      "bf": 4,
+      "dir": 46,
+      "gust": 51
+     },
+     "rainProbMax": 55,
+     "rainProbMaxRegion": 55,
+     "rainCoast": null,
+     "coasts": {
+      "ref-north": 1.7,
+      "ref-west": 1.7,
+      "ref-south": 0.7
+     }
+    },
+    "after": {
+     "date": "2026-11-05",
+     "profile": "active",
+     "generatedAt": "2026-11-05T09:53:01.070Z",
+     "picks": [
+      {
+       "spotId": "imbros",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "chrysoskalitissa",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 8,
+        "end": 9
+       }
+      },
+      {
+       "spotId": "aptera",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 11
+       }
+      }
+     ],
+     "avoid": [],
+     "wind": {
+      "bf": 4,
+      "dir": 45,
+      "gust": 56
+     },
+     "rainProbMax": 83,
+     "rainProbMaxRegion": 83,
+     "rainCoast": null,
+     "coasts": {
+      "ref-north": 1.7,
+      "ref-west": 1.8,
+      "ref-south": 0.7
+     }
+    }
+   },
+   "messages": null
+  },
+  "senior": {
+   "diff": {
+    "date": "2026-11-05",
+    "profile": "senior",
+    "significant": false,
+    "changes": [],
+    "before": {
+     "date": "2026-11-05",
+     "profile": "senior",
+     "generatedAt": "2026-11-04T21:27:57.362Z",
+     "picks": [
+      {
+       "spotId": "old-town",
+       "verdict": "go",
+       "score": 97,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "vamos",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "agia-triada",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 10
+       }
+      }
+     ],
+     "avoid": [
+      "agia-marina",
+      "falasarna",
+      "stavros"
+     ],
+     "wind": {
+      "bf": 4,
+      "dir": 46,
+      "gust": 51
+     },
+     "rainProbMax": 55,
+     "rainProbMaxRegion": 55,
+     "rainCoast": null,
+     "coasts": {
+      "ref-north": 1.7,
+      "ref-west": 1.7,
+      "ref-south": 0.7
+     }
+    },
+    "after": {
+     "date": "2026-11-05",
+     "profile": "senior",
+     "generatedAt": "2026-11-05T09:53:01.070Z",
+     "picks": [
+      {
+       "spotId": "vamos",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "old-town",
+       "verdict": "go",
+       "score": 94,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "agia-triada",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 8,
+        "end": 9
+       }
+      }
+     ],
+     "avoid": [
+      "agia-marina",
+      "falasarna",
+      "stavros"
+     ],
+     "wind": {
+      "bf": 4,
+      "dir": 45,
+      "gust": 56
+     },
+     "rainProbMax": 83,
+     "rainProbMaxRegion": 83,
+     "rainCoast": null,
+     "coasts": {
+      "ref-north": 1.7,
+      "ref-west": 1.8,
+      "ref-south": 0.7
+     }
+    }
+   },
+   "messages": null
+  },
+  "nocar": {
+   "diff": {
+    "date": "2026-11-05",
+    "profile": "nocar",
+    "significant": false,
+    "changes": [],
+    "before": {
+     "date": "2026-11-05",
+     "profile": "nocar",
+     "generatedAt": "2026-11-04T21:27:57.362Z",
+     "picks": [
+      {
+       "spotId": "old-town",
+       "verdict": "go",
+       "score": 97,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "loutro",
+       "verdict": "go",
+       "score": 99,
+       "window": {
+        "start": 11,
+        "end": 15
+       }
+      },
+      {
+       "spotId": "sougia",
+       "verdict": "go",
+       "score": 98,
+       "window": {
+        "start": 11,
+        "end": 15
+       }
+      }
+     ],
+     "avoid": [
+      "agia-marina"
+     ],
+     "wind": {
+      "bf": 4,
+      "dir": 46,
+      "gust": 51
+     },
+     "rainProbMax": 55,
+     "rainProbMaxRegion": 55,
+     "rainCoast": null,
+     "coasts": {
+      "ref-north": 1.7,
+      "ref-west": 1.7,
+      "ref-south": 0.7
+     }
+    },
+    "after": {
+     "date": "2026-11-05",
+     "profile": "nocar",
+     "generatedAt": "2026-11-05T09:53:01.070Z",
+     "picks": [
+      {
+       "spotId": "old-town",
+       "verdict": "go",
+       "score": 94,
+       "window": {
+        "start": 9,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "loutro",
+       "verdict": "go",
+       "score": 96,
+       "window": {
+        "start": 8,
+        "end": 12
+       }
+      },
+      {
+       "spotId": "sougia",
+       "verdict": "go",
+       "score": 96,
+       "window": {
+        "start": 9,
+        "end": 13
+       }
+      }
+     ],
+     "avoid": [
+      "agia-marina"
+     ],
+     "wind": {
+      "bf": 4,
+      "dir": 45,
+      "gust": 56
+     },
+     "rainProbMax": 83,
+     "rainProbMaxRegion": 83,
+     "rainCoast": null,
+     "coasts": {
+      "ref-north": 1.7,
+      "ref-west": 1.8,
+      "ref-south": 0.7
+     }
+    }
+   },
+   "messages": null
+  }
+ }
 }
