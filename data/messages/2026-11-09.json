@@ -1,0 +1,339 @@
+{
+ "date": "2026-11-09",
+ "generatedAt": "2026-11-08T15:40:13.861Z",
+ "basedOn": "2026-11-08T15:40:13.506Z",
+ "property": {
+  "id": "demo-alkyoni",
+  "name": "Alkyoni Suites"
+ },
+ "plans": {
+  "family": {
+   "date": "2026-11-09",
+   "profile": "family",
+   "generatedAt": "2026-11-08T15:40:13.861Z",
+   "picks": [
+    {
+     "spotId": "old-town",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 10,
+      "end": 13
+     }
+    },
+    {
+     "spotId": "botanical-park",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 11,
+      "end": 14
+     }
+    },
+    {
+     "spotId": "theriso",
+     "verdict": "go",
+     "score": 96,
+     "window": {
+      "start": 13,
+      "end": 16
+     }
+    }
+   ],
+   "avoid": [
+    "agia-marina"
+   ],
+   "wind": {
+    "bf": 2,
+    "dir": 74,
+    "gust": 15
+   },
+   "rainProbMax": 3,
+   "rainProbMaxRegion": 3,
+   "rainCoast": null,
+   "coasts": {
+    "ref-north": 0.7,
+    "ref-west": 0.7,
+    "ref-south": 0.1
+   }
+  },
+  "couple": {
+   "date": "2026-11-09",
+   "profile": "couple",
+   "generatedAt": "2026-11-08T15:40:13.861Z",
+   "picks": [
+    {
+     "spotId": "falasarna",
+     "verdict": "go",
+     "score": 90,
+     "window": {
+      "start": 14,
+      "end": 18
+     }
+    },
+    {
+     "spotId": "old-town",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 10,
+      "end": 13
+     }
+    },
+    {
+     "spotId": "aptera",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 12,
+      "end": 14
+     }
+    }
+   ],
+   "avoid": [],
+   "wind": {
+    "bf": 2,
+    "dir": 74,
+    "gust": 15
+   },
+   "rainProbMax": 3,
+   "rainProbMaxRegion": 3,
+   "rainCoast": null,
+   "coasts": {
+    "ref-north": 0.7,
+    "ref-west": 0.7,
+    "ref-south": 0.1
+   }
+  },
+  "solo": {
+   "date": "2026-11-09",
+   "profile": "solo",
+   "generatedAt": "2026-11-08T15:40:13.861Z",
+   "picks": [
+    {
+     "spotId": "old-town",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 10,
+      "end": 13
+     }
+    },
+    {
+     "spotId": "imbros",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 10,
+      "end": 13
+     }
+    },
+    {
+     "spotId": "gouverneto-katholiko",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 7,
+      "end": 9
+     }
+    }
+   ],
+   "avoid": [],
+   "wind": {
+    "bf": 2,
+    "dir": 74,
+    "gust": 15
+   },
+   "rainProbMax": 3,
+   "rainProbMaxRegion": 3,
+   "rainCoast": null,
+   "coasts": {
+    "ref-north": 0.7,
+    "ref-west": 0.7,
+    "ref-south": 0.1
+   }
+  },
+  "active": {
+   "date": "2026-11-09",
+   "profile": "active",
+   "generatedAt": "2026-11-08T15:40:13.861Z",
+   "picks": [
+    {
+     "spotId": "imbros",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 10,
+      "end": 13
+     }
+    },
+    {
+     "spotId": "gouverneto-katholiko",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 7,
+      "end": 9
+     }
+    },
+    {
+     "spotId": "old-town",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 10,
+      "end": 13
+     }
+    }
+   ],
+   "avoid": [],
+   "wind": {
+    "bf": 2,
+    "dir": 74,
+    "gust": 15
+   },
+   "rainProbMax": 3,
+   "rainProbMaxRegion": 3,
+   "rainCoast": null,
+   "coasts": {
+    "ref-north": 0.7,
+    "ref-west": 0.7,
+    "ref-south": 0.1
+   }
+  },
+  "senior": {
+   "date": "2026-11-09",
+   "profile": "senior",
+   "generatedAt": "2026-11-08T15:40:13.861Z",
+   "picks": [
+    {
+     "spotId": "old-town",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 10,
+      "end": 13
+     }
+    },
+    {
+     "spotId": "vamos",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 12,
+      "end": 15
+     }
+    },
+    {
+     "spotId": "theriso",
+     "verdict": "go",
+     "score": 96,
+     "window": {
+      "start": 13,
+      "end": 16
+     }
+    }
+   ],
+   "avoid": [],
+   "wind": {
+    "bf": 2,
+    "dir": 74,
+    "gust": 15
+   },
+   "rainProbMax": 3,
+   "rainProbMaxRegion": 3,
+   "rainCoast": null,
+   "coasts": {
+    "ref-north": 0.7,
+    "ref-west": 0.7,
+    "ref-south": 0.1
+   }
+  },
+  "nocar": {
+   "date": "2026-11-09",
+   "profile": "nocar",
+   "generatedAt": "2026-11-08T15:40:13.861Z",
+   "picks": [
+    {
+     "spotId": "old-town",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 10,
+      "end": 13
+     }
+    },
+    {
+     "spotId": "imbros",
+     "verdict": "go",
+     "score": 100,
+     "window": {
+      "start": 10,
+      "end": 13
+     }
+    },
+    {
+     "spotId": "platanias",
+     "verdict": "caution",
+     "score": 69,
+     "window": {
+      "start": 15,
+      "end": 19
+     }
+    }
+   ],
+   "avoid": [],
+   "wind": {
+    "bf": 2,
+    "dir": 74,
+    "gust": 15
+   },
+   "rainProbMax": 3,
+   "rainProbMaxRegion": 3,
+   "rainCoast": null,
+   "coasts": {
+    "ref-north": 0.7,
+    "ref-west": 0.7,
+    "ref-south": 0.1
+   }
+  }
+ },
+ "messages": {
+  "family": {
+   "el": "Καλησπέρα από το Alkyoni Suites!\nΑύριο, Δευτέρα 9 Νοεμβρίου:\n18°, ελαφρύς αέρας Α, θάλασσα βόρεια κυματάκι, δυτική κυματάκι, νότια ήρεμη.\nΕλαφρύς αέρας και ήρεμη θάλασσα σχεδόν παντού: καλή μέρα και για τα πιο εκτεθειμένα μέρη.\n\nΟι προτάσεις μας για εσάς (Οικογένεια με παιδιά):\n1. Παλιά Πόλη & Ενετικό Λιμάνι · 10:00–13:00\n   ✓ Ιδανικό για παιδιά\n2. Βοτανικό Πάρκο Κρήτης · 11:00–14:00\n   ✓ Ξαπλώστρες, φαγητό, τουαλέτες\n3. Θέρισο & φαράγγι (με αυτοκίνητο) · 13:00–16:00\n   ✓ Υπάρχει σκιά\n\nΚαλύτερα όχι αύριο: Αγία Μαρίνα (έχει κύμα (~0.52 m), προσοχή στο μπάνιο).\nΠάρτε μαζί: ελαφρύ μπουφάν.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://firmusagency.github.io/weather-mood/guest.html\nΚαλό βράδυ! Αν αλλάξει ο καιρός, θα σας ενημερώσουμε το πρωί.",
+   "en": "Good evening from Alkyoni Suites!\nTomorrow, Monday 9 November:\n18°, light wind from the E, sea north small waves, west small waves, south calm.\nLight wind and a calm sea almost everywhere: a good day even for the exposed spots.\n\nOur picks for you (Family with kids):\n1. Old Town & Venetian Harbour · 10:00–13:00\n   ✓ Great for kids\n2. Botanical Park of Crete · 11:00–14:00\n   ✓ Sunbeds, food and toilets\n3. Theriso village & gorge drive · 13:00–16:00\n   ✓ Shade available\n\nBetter not tomorrow: Agia Marina (some waves (~0.52 m), swim with care).\nBring: a light jacket.\n\nAll picks, maps and directions: https://firmusagency.github.io/weather-mood/guest.html\nHave a good evening! If the weather changes, we will let you know in the morning.",
+   "de": "Guten Abend von Alkyoni Suites!\nMorgen, Montag, 9. November:\n18°, leichter Wind aus O, Meer Nord kleine Wellen, West kleine Wellen, Süd ruhig.\nLeichter Wind und fast überall ruhiges Meer: ein guter Tag auch für die exponierten Orte.\n\nUnsere Tipps für Sie (Familie mit Kindern):\n1. Old Town & Venetian Harbour · 10:00–13:00\n   ✓ Ideal für Kinder\n2. Botanical Park of Crete · 11:00–14:00\n   ✓ Liegen, Essen und Toiletten\n3. Theriso village & gorge drive · 13:00–16:00\n   ✓ Schatten vorhanden\n\nMorgen besser nicht: Agia Marina (etwas wellengang (~0.52 m), vorsichtig baden).\nMitnehmen: eine leichte jacke.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://firmusagency.github.io/weather-mood/guest.html\nSchönen Abend! Falls sich das Wetter ändert, melden wir uns morgen früh.",
+   "fr": "Bonsoir de la part de Alkyoni Suites !\nDemain, lundi 9 novembre :\n18°, vent léger de E, mer nord petites vagues, ouest petites vagues, sud calme.\nVent léger et mer calme presque partout : une bonne journée même pour les endroits exposés.\n\nNos conseils pour vous (Famille avec enfants) :\n1. Old Town & Venetian Harbour · 10:00–13:00\n   ✓ Idéal pour les enfants\n2. Botanical Park of Crete · 11:00–14:00\n   ✓ Transats, restauration, toilettes\n3. Theriso village & gorge drive · 13:00–16:00\n   ✓ De l'ombre sur place\n\nÀ éviter demain : Agia Marina (quelques vagues (~0.52 m), baignade prudente).\nÀ emporter : une veste légère.\n\nTous les conseils, cartes et itinéraires : https://firmusagency.github.io/weather-mood/guest.html\nBonne soirée ! Si la météo change, nous vous préviendrons demain matin."
+  },
+  "couple": {
+   "el": "Καλησπέρα από το Alkyoni Suites!\nΑύριο, Δευτέρα 9 Νοεμβρίου:\n18°, ελαφρύς αέρας Α, θάλασσα βόρεια κυματάκι, δυτική κυματάκι, νότια ήρεμη.\nΕλαφρύς αέρας και ήρεμη θάλασσα σχεδόν παντού: καλή μέρα και για τα πιο εκτεθειμένα μέρη.\n\nΟι προτάσεις μας για εσάς (Ζευγάρι):\n1. Φαλάσαρνα · 14:00–18:00\n   ✓ Εδώ συνήθως έχει αέρα· αυτή τη μέρα είναι ήρεμα, σπάνια ευκαιρία\n   ! Λίγο δροσερά για μπάνιο (18°C)\n2. Παλιά Πόλη & Ενετικό Λιμάνι · 10:00–13:00\n   ✓ Εντυπωσιακό τοπίο\n3. Αρχαία Άπτερα · 12:00–14:00\n   ✓ Υπέροχο ηλιοβασίλεμα\nΠάρτε μαζί: ελαφρύ μπουφάν.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://firmusagency.github.io/weather-mood/guest.html\nΚαλό βράδυ! Αν αλλάξει ο καιρός, θα σας ενημερώσουμε το πρωί.",
+   "en": "Good evening from Alkyoni Suites!\nTomorrow, Monday 9 November:\n18°, light wind from the E, sea north small waves, west small waves, south calm.\nLight wind and a calm sea almost everywhere: a good day even for the exposed spots.\n\nOur picks for you (Couple):\n1. Falasarna · 14:00–18:00\n   ✓ Usually windy here; calm on this day, a rare chance\n   ! A bit cool for swimming (18°C)\n2. Old Town & Venetian Harbour · 10:00–13:00\n   ✓ Stunning scenery\n3. Ancient Aptera · 12:00–14:00\n   ✓ Beautiful sunset\nBring: a light jacket.\n\nAll picks, maps and directions: https://firmusagency.github.io/weather-mood/guest.html\nHave a good evening! If the weather changes, we will let you know in the morning.",
+   "de": "Guten Abend von Alkyoni Suites!\nMorgen, Montag, 9. November:\n18°, leichter Wind aus O, Meer Nord kleine Wellen, West kleine Wellen, Süd ruhig.\nLeichter Wind und fast überall ruhiges Meer: ein guter Tag auch für die exponierten Orte.\n\nUnsere Tipps für Sie (Paar):\n1. Falasarna · 14:00–18:00\n   ✓ Hier ist es meist windig; an diesem Tag ruhig, eine seltene Gelegenheit\n   ! Etwas kühl zum Baden (18°C)\n2. Old Town & Venetian Harbour · 10:00–13:00\n   ✓ Atemberaubende Landschaft\n3. Ancient Aptera · 12:00–14:00\n   ✓ Schöner Sonnenuntergang\nMitnehmen: eine leichte jacke.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://firmusagency.github.io/weather-mood/guest.html\nSchönen Abend! Falls sich das Wetter ändert, melden wir uns morgen früh.",
+   "fr": "Bonsoir de la part de Alkyoni Suites !\nDemain, lundi 9 novembre :\n18°, vent léger de E, mer nord petites vagues, ouest petites vagues, sud calme.\nVent léger et mer calme presque partout : une bonne journée même pour les endroits exposés.\n\nNos conseils pour vous (Couple) :\n1. Falasarna · 14:00–18:00\n   ✓ D'habitude venté ici ; calme ce jour-là, une occasion rare\n   ! Un peu frais pour se baigner (18°C)\n2. Old Town & Venetian Harbour · 10:00–13:00\n   ✓ Paysage spectaculaire\n3. Ancient Aptera · 12:00–14:00\n   ✓ Superbe coucher de soleil\nÀ emporter : une veste légère.\n\nTous les conseils, cartes et itinéraires : https://firmusagency.github.io/weather-mood/guest.html\nBonne soirée ! Si la météo change, nous vous préviendrons demain matin."
+  },
+  "solo": {
+   "el": "Καλησπέρα από το Alkyoni Suites!\nΑύριο, Δευτέρα 9 Νοεμβρίου:\n18°, ελαφρύς αέρας Α, θάλασσα βόρεια κυματάκι, δυτική κυματάκι, νότια ήρεμη.\nΕλαφρύς αέρας και ήρεμη θάλασσα σχεδόν παντού: καλή μέρα και για τα πιο εκτεθειμένα μέρη.\n\nΟι προτάσεις μας για εσάς (Μόνος/η):\n1. Παλιά Πόλη & Ενετικό Λιμάνι · 10:00–13:00\n   ✓ Εντυπωσιακό τοπίο\n2. Φαράγγι Ίμπρου · 10:00–13:00\n   ✓ Φτάνει λεωφορείο\n3. Γουβερνέτο & Καθολικό (μονοπάτι) · 07:00–09:00\n   ✓ Εντυπωσιακό τοπίο\nΠάρτε μαζί: ελαφρύ μπουφάν.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://firmusagency.github.io/weather-mood/guest.html\nΚαλό βράδυ! Αν αλλάξει ο καιρός, θα σας ενημερώσουμε το πρωί.",
+   "en": "Good evening from Alkyoni Suites!\nTomorrow, Monday 9 November:\n18°, light wind from the E, sea north small waves, west small waves, south calm.\nLight wind and a calm sea almost everywhere: a good day even for the exposed spots.\n\nOur picks for you (Solo):\n1. Old Town & Venetian Harbour · 10:00–13:00\n   ✓ Stunning scenery\n2. Imbros Gorge · 10:00–13:00\n   ✓ Reachable by bus\n3. Gouverneto & Katholiko walk · 07:00–09:00\n   ✓ Stunning scenery\nBring: a light jacket.\n\nAll picks, maps and directions: https://firmusagency.github.io/weather-mood/guest.html\nHave a good evening! If the weather changes, we will let you know in the morning.",
+   "de": "Guten Abend von Alkyoni Suites!\nMorgen, Montag, 9. November:\n18°, leichter Wind aus O, Meer Nord kleine Wellen, West kleine Wellen, Süd ruhig.\nLeichter Wind und fast überall ruhiges Meer: ein guter Tag auch für die exponierten Orte.\n\nUnsere Tipps für Sie (Allein):\n1. Old Town & Venetian Harbour · 10:00–13:00\n   ✓ Atemberaubende Landschaft\n2. Imbros Gorge · 10:00–13:00\n   ✓ Mit dem Bus erreichbar\n3. Gouverneto & Katholiko walk · 07:00–09:00\n   ✓ Atemberaubende Landschaft\nMitnehmen: eine leichte jacke.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://firmusagency.github.io/weather-mood/guest.html\nSchönen Abend! Falls sich das Wetter ändert, melden wir uns morgen früh.",
+   "fr": "Bonsoir de la part de Alkyoni Suites !\nDemain, lundi 9 novembre :\n18°, vent léger de E, mer nord petites vagues, ouest petites vagues, sud calme.\nVent léger et mer calme presque partout : une bonne journée même pour les endroits exposés.\n\nNos conseils pour vous (En solo) :\n1. Old Town & Venetian Harbour · 10:00–13:00\n   ✓ Paysage spectaculaire\n2. Imbros Gorge · 10:00–13:00\n   ✓ Accessible en bus\n3. Gouverneto & Katholiko walk · 07:00–09:00\n   ✓ Paysage spectaculaire\nÀ emporter : une veste légère.\n\nTous les conseils, cartes et itinéraires : https://firmusagency.github.io/weather-mood/guest.html\nBonne soirée ! Si la météo change, nous vous préviendrons demain matin."
+  },
+  "active": {
+   "el": "Καλησπέρα από το Alkyoni Suites!\nΑύριο, Δευτέρα 9 Νοεμβρίου:\n18°, ελαφρύς αέρας Α, θάλασσα βόρεια κυματάκι, δυτική κυματάκι, νότια ήρεμη.\nΕλαφρύς αέρας και ήρεμη θάλασσα σχεδόν παντού: καλή μέρα και για τα πιο εκτεθειμένα μέρη.\n\nΟι προτάσεις μας για εσάς (Περιπέτεια & πεζοπορία):\n1. Φαράγγι Ίμπρου · 10:00–13:00\n   ✓ Ωραία πεζοπορία\n2. Γουβερνέτο & Καθολικό (μονοπάτι) · 07:00–09:00\n   ✓ Εντυπωσιακό τοπίο\n3. Παλιά Πόλη & Ενετικό Λιμάνι · 10:00–13:00\n   ✓ Εντυπωσιακό τοπίο\nΠάρτε μαζί: κλειστά παπούτσια πεζοπορίας, αρκετό νερό, ελαφρύ μπουφάν.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://firmusagency.github.io/weather-mood/guest.html\nΚαλό βράδυ! Αν αλλάξει ο καιρός, θα σας ενημερώσουμε το πρωί.",
+   "en": "Good evening from Alkyoni Suites!\nTomorrow, Monday 9 November:\n18°, light wind from the E, sea north small waves, west small waves, south calm.\nLight wind and a calm sea almost everywhere: a good day even for the exposed spots.\n\nOur picks for you (Adventure & hiking):\n1. Imbros Gorge · 10:00–13:00\n   ✓ A great hike\n2. Gouverneto & Katholiko walk · 07:00–09:00\n   ✓ Stunning scenery\n3. Old Town & Venetian Harbour · 10:00–13:00\n   ✓ Stunning scenery\nBring: proper walking shoes, plenty of water, a light jacket.\n\nAll picks, maps and directions: https://firmusagency.github.io/weather-mood/guest.html\nHave a good evening! If the weather changes, we will let you know in the morning.",
+   "de": "Guten Abend von Alkyoni Suites!\nMorgen, Montag, 9. November:\n18°, leichter Wind aus O, Meer Nord kleine Wellen, West kleine Wellen, Süd ruhig.\nLeichter Wind und fast überall ruhiges Meer: ein guter Tag auch für die exponierten Orte.\n\nUnsere Tipps für Sie (Abenteuer & Wandern):\n1. Imbros Gorge · 10:00–13:00\n   ✓ Eine tolle Wanderung\n2. Gouverneto & Katholiko walk · 07:00–09:00\n   ✓ Atemberaubende Landschaft\n3. Old Town & Venetian Harbour · 10:00–13:00\n   ✓ Atemberaubende Landschaft\nMitnehmen: feste wanderschuhe, genug wasser, eine leichte jacke.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://firmusagency.github.io/weather-mood/guest.html\nSchönen Abend! Falls sich das Wetter ändert, melden wir uns morgen früh.",
+   "fr": "Bonsoir de la part de Alkyoni Suites !\nDemain, lundi 9 novembre :\n18°, vent léger de E, mer nord petites vagues, ouest petites vagues, sud calme.\nVent léger et mer calme presque partout : une bonne journée même pour les endroits exposés.\n\nNos conseils pour vous (Aventure & randonnée) :\n1. Imbros Gorge · 10:00–13:00\n   ✓ Une belle randonnée\n2. Gouverneto & Katholiko walk · 07:00–09:00\n   ✓ Paysage spectaculaire\n3. Old Town & Venetian Harbour · 10:00–13:00\n   ✓ Paysage spectaculaire\nÀ emporter : de bonnes chaussures de marche, beaucoup d'eau, une veste légère.\n\nTous les conseils, cartes et itinéraires : https://firmusagency.github.io/weather-mood/guest.html\nBonne soirée ! Si la météo change, nous vous préviendrons demain matin."
+  },
+  "senior": {
+   "el": "Καλησπέρα από το Alkyoni Suites!\nΑύριο, Δευτέρα 9 Νοεμβρίου:\n18°, ελαφρύς αέρας Α, θάλασσα βόρεια κυματάκι, δυτική κυματάκι, νότια ήρεμη.\nΕλαφρύς αέρας και ήρεμη θάλασσα σχεδόν παντού: καλή μέρα και για τα πιο εκτεθειμένα μέρη.\n\nΟι προτάσεις μας για εσάς (Χαλαρό πρόγραμμα):\n1. Παλιά Πόλη & Ενετικό Λιμάνι · 10:00–13:00\n   ✓ Εύκολη πρόσβαση\n2. Βάμος & χωριά Αποκορώνου · 12:00–15:00\n   ✓ Ξαπλώστρες, φαγητό, τουαλέτες\n3. Θέρισο & φαράγγι (με αυτοκίνητο) · 13:00–16:00\n   ✓ Υπάρχει σκιά\nΠάρτε μαζί: ελαφρύ μπουφάν.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://firmusagency.github.io/weather-mood/guest.html\nΚαλό βράδυ! Αν αλλάξει ο καιρός, θα σας ενημερώσουμε το πρωί.",
+   "en": "Good evening from Alkyoni Suites!\nTomorrow, Monday 9 November:\n18°, light wind from the E, sea north small waves, west small waves, south calm.\nLight wind and a calm sea almost everywhere: a good day even for the exposed spots.\n\nOur picks for you (Easy-going pace):\n1. Old Town & Venetian Harbour · 10:00–13:00\n   ✓ Easy access\n2. Vamos & Apokoronas villages · 12:00–15:00\n   ✓ Sunbeds, food and toilets\n3. Theriso village & gorge drive · 13:00–16:00\n   ✓ Shade available\nBring: a light jacket.\n\nAll picks, maps and directions: https://firmusagency.github.io/weather-mood/guest.html\nHave a good evening! If the weather changes, we will let you know in the morning.",
+   "de": "Guten Abend von Alkyoni Suites!\nMorgen, Montag, 9. November:\n18°, leichter Wind aus O, Meer Nord kleine Wellen, West kleine Wellen, Süd ruhig.\nLeichter Wind und fast überall ruhiges Meer: ein guter Tag auch für die exponierten Orte.\n\nUnsere Tipps für Sie (Gemütliches Tempo):\n1. Old Town & Venetian Harbour · 10:00–13:00\n   ✓ Leicht zugänglich\n2. Vamos & Apokoronas villages · 12:00–15:00\n   ✓ Liegen, Essen und Toiletten\n3. Theriso village & gorge drive · 13:00–16:00\n   ✓ Schatten vorhanden\nMitnehmen: eine leichte jacke.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://firmusagency.github.io/weather-mood/guest.html\nSchönen Abend! Falls sich das Wetter ändert, melden wir uns morgen früh.",
+   "fr": "Bonsoir de la part de Alkyoni Suites !\nDemain, lundi 9 novembre :\n18°, vent léger de E, mer nord petites vagues, ouest petites vagues, sud calme.\nVent léger et mer calme presque partout : une bonne journée même pour les endroits exposés.\n\nNos conseils pour vous (Rythme tranquille) :\n1. Old Town & Venetian Harbour · 10:00–13:00\n   ✓ Accès facile\n2. Vamos & Apokoronas villages · 12:00–15:00\n   ✓ Transats, restauration, toilettes\n3. Theriso village & gorge drive · 13:00–16:00\n   ✓ De l'ombre sur place\nÀ emporter : une veste légère.\n\nTous les conseils, cartes et itinéraires : https://firmusagency.github.io/weather-mood/guest.html\nBonne soirée ! Si la météo change, nous vous préviendrons demain matin."
+  },
+  "nocar": {
+   "el": "Καλησπέρα από το Alkyoni Suites!\nΑύριο, Δευτέρα 9 Νοεμβρίου:\n18°, ελαφρύς αέρας Α, θάλασσα βόρεια κυματάκι, δυτική κυματάκι, νότια ήρεμη.\nΕλαφρύς αέρας και ήρεμη θάλασσα σχεδόν παντού: καλή μέρα και για τα πιο εκτεθειμένα μέρη.\n\nΟι προτάσεις μας για εσάς (Χωρίς αυτοκίνητο):\n1. Παλιά Πόλη & Ενετικό Λιμάνι · 10:00–13:00\n   ✓ Φτάνει λεωφορείο\n2. Φαράγγι Ίμπρου · 10:00–13:00\n   ✓ Φτάνει λεωφορείο\n3. Πλατανιάς · 15:00–19:00\n   ✓ Ξαπλώστρες, φαγητό, τουαλέτες\n   ! Δροσερά για μπάνιο (αίσθηση 17°C, νερό 21.1°C): για τους τολμηρούς\nΠάρτε μαζί: ελαφρύ μπουφάν.\n\nΌλες οι προτάσεις, χάρτες και οδηγίες: https://firmusagency.github.io/weather-mood/guest.html\nΚαλό βράδυ! Αν αλλάξει ο καιρός, θα σας ενημερώσουμε το πρωί.",
+   "en": "Good evening from Alkyoni Suites!\nTomorrow, Monday 9 November:\n18°, light wind from the E, sea north small waves, west small waves, south calm.\nLight wind and a calm sea almost everywhere: a good day even for the exposed spots.\n\nOur picks for you (No car):\n1. Old Town & Venetian Harbour · 10:00–13:00\n   ✓ Reachable by bus\n2. Imbros Gorge · 10:00–13:00\n   ✓ Reachable by bus\n3. Platanias · 15:00–19:00\n   ✓ Sunbeds, food and toilets\n   ! On the cool side for swimming (feels like 17°C, sea 21.1°C): for the brave\nBring: a light jacket.\n\nAll picks, maps and directions: https://firmusagency.github.io/weather-mood/guest.html\nHave a good evening! If the weather changes, we will let you know in the morning.",
+   "de": "Guten Abend von Alkyoni Suites!\nMorgen, Montag, 9. November:\n18°, leichter Wind aus O, Meer Nord kleine Wellen, West kleine Wellen, Süd ruhig.\nLeichter Wind und fast überall ruhiges Meer: ein guter Tag auch für die exponierten Orte.\n\nUnsere Tipps für Sie (Ohne Auto):\n1. Old Town & Venetian Harbour · 10:00–13:00\n   ✓ Mit dem Bus erreichbar\n2. Imbros Gorge · 10:00–13:00\n   ✓ Mit dem Bus erreichbar\n3. Platanias · 15:00–19:00\n   ✓ Liegen, Essen und Toiletten\n   ! Eher kühl zum Baden (gefühlt 17°C, Wasser 21.1°C): etwas für Mutige\nMitnehmen: eine leichte jacke.\n\nAlle Tipps, Karten und Wegbeschreibungen: https://firmusagency.github.io/weather-mood/guest.html\nSchönen Abend! Falls sich das Wetter ändert, melden wir uns morgen früh.",
+   "fr": "Bonsoir de la part de Alkyoni Suites !\nDemain, lundi 9 novembre :\n18°, vent léger de E, mer nord petites vagues, ouest petites vagues, sud calme.\nVent léger et mer calme presque partout : une bonne journée même pour les endroits exposés.\n\nNos conseils pour vous (Sans voiture) :\n1. Old Town & Venetian Harbour · 10:00–13:00\n   ✓ Accessible en bus\n2. Imbros Gorge · 10:00–13:00\n   ✓ Accessible en bus\n3. Platanias · 15:00–19:00\n   ✓ Transats, restauration, toilettes\n   ! Un peu frais pour se baigner (ressenti 17°C, mer 21.1°C) : pour les courageux\nÀ emporter : une veste légère.\n\nTous les conseils, cartes et itinéraires : https://firmusagency.github.io/weather-mood/guest.html\nBonne soirée ! Si la météo change, nous vous préviendrons demain matin."
+  }
+ }
+}
