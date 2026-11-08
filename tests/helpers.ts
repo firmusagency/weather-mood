@@ -32,7 +32,7 @@ export function scenario(s: Scenario): Dataset {
   const land: Dataset['land'] = {};
   for (const p of plan.land) {
     const models = {} as Record<ModelId, ModelWind[]>;
-    for (const m of MODELS) models[m] = hours.map(() => ({ wind: s.windKmh, dir: s.windDir, gust }));
+    for (const m of MODELS) models[m] = hours.map(() => ({ wind: s.windKmh, dir: s.windDir, gust, precip: s.precipByPoint?.[p.id] ?? s.precip ?? 0 }));
     land[p.id] = {
       models,
       atmos: hours.map((time) => ({

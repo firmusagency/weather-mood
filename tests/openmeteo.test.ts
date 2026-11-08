@@ -30,11 +30,28 @@ describe('previous-days rain request', () => {
       fetchedAt: '2026-10-31T18:00:00Z',
       plan: { land: [{ id: 'samaria', lat: 35.3, lon: 23.96 }], marine: [{ id: 'x', lat: 35.6, lon: 23.9 }], recentRain: [{ id: 'samaria', lat: 35.3, lon: 23.96 }] },
       atmos: { hourly },
-      models: { hourly: { time: hourly.time } },
+      models: { hourly: { time: hourly.time, wind_speed_10m_icon_seamless: [12], precipitation_icon_seamless: [0.7] } },
       marine: { hourly: { time: hourly.time } },
     };
     const withRain = datasetFromRaw({ ...base, recentRain: { daily: { time: ['2026-10-29', '2026-10-30', '2026-10-31'], precipitation_sum: [1.2, null, 18.4] } } }, 'snapshot');
     expect(withRain.recentRain).toEqual({ samaria: { prevDayMm: 18.4, threeDayMm: 19.6 } });
     expect(datasetFromRaw(base, 'snapshot').recentRain).toBeUndefined();
+  });
+
+  it('keeps rain per model next to the wind, and leaves it null for models without it', () => {
+    const hourly = { time: ['2026-11-01T10:00'], temperature_2m: [20], precipitation: [0] };
+    const ds = datasetFromRaw(
+      {
+        date: '2026-11-01',
+        fetchedAt: '2026-10-31T18:00:00Z',
+        plan: { land: [{ id: 'p', lat: 35.3, lon: 23.96 }], marine: [{ id: 'x', lat: 35.6, lon: 23.9 }] },
+        atmos: { hourly },
+        models: { hourly: { time: hourly.time, wind_speed_10m_icon_seamless: [12], precipitation_icon_seamless: [0.7], wind_speed_10m_gfs_seamless: [10] } },
+        marine: { hourly: { time: hourly.time } },
+      },
+      'snapshot',
+    );
+    expect(ds.land.p.models.icon_seamless[0]).toMatchObject({ wind: 12, precip: 0.7 });
+    expect(ds.land.p.models.gfs_seamless[0].precip).toBeNull();
   });
 });

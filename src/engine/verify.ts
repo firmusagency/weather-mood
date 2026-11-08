@@ -3,7 +3,7 @@ import { hourOf } from './dates';
 import { angleDiff, beaufort, haversineKm, round } from './geo';
 import { summarizeStations, type StationSummary } from './noa';
 import { summarizeRechecks, type RecheckResult, type RecheckSummary } from './recheck';
-import { MODELS, type Dataset, type ModelId } from './types';
+import { MODELS, type Dataset, type ModelId, type AtmosHour, type PointWeather } from './types';
 import type { PointPlan } from './openmeteo';
 import type { HourObs } from './metar';
 
@@ -34,6 +34,8 @@ export interface VerificationRow {
   rain: { forecastProbMax: number; forecastSumMm: number; observed: boolean; agree: boolean };
   /** Per wind model: mean absolute error of speed (km/h) over the compared hours. */
   perModel: Record<ModelId, number | null>;
+  /** Per model: forecast rain sum (mm) over the day; null when the archived forecast has no per-model rain. */
+  rainPerModel?: Record<ModelId, number | null>;
   hourly: { hour: number; fc: number; obs: number; fcDir: number | null; obsDir: number | null; fcTemp: number | null; obsTemp: number | null }[];
   /** Recommendation re-run with the measured wind (north-coast spots only). */
   recs?: RecheckResult;
@@ -56,6 +58,16 @@ export function nearestLandPoint(plan: PointPlan, lat = STATION.lat, lon = STATI
 
 const mean = (xs: number[]) => (xs.length ? xs.reduce((s, x) => s + x, 0) / xs.length : NaN);
 const orNull = (x: number) => (Number.isNaN(x) ? null : round(x, 1));
+
+/** Rain sum per model over the hours `inDay` selects; null per model when the forecast carries no per-model rain. */
+export function modelRainSums(land: PointWeather, inDay: (a: AtmosHour) => boolean): Record<ModelId, number | null> {
+  const out = {} as Record<ModelId, number | null>;
+  for (const m of MODELS) {
+    const vals = land.atmos.map((a, k) => (inDay(a) ? land.models[m]?.[k]?.precip : undefined)).filter((x): x is number => x != null);
+    out[m] = vals.length ? round(vals.reduce((s, x) => s + x, 0), 1) : null;
+  }
+  return out;
+}
 
 export function verifyDay(data: Dataset, plan: PointPlan, obs: HourObs[], date: string): VerificationRow {
   const { point, km } = nearestLandPoint(plan);
@@ -111,6 +123,10 @@ export function verifyDay(data: Dataset, plan: PointPlan, obs: HourObs[], date: 
 
   const perModel = {} as Record<ModelId, number | null>;
   for (const m of MODELS) perModel[m] = pmErr[m]?.length ? round(mean(pmErr[m])) : null;
+  const rainPerModel = modelRainSums(land, (a) => {
+    const h = hourOf(a.time);
+    return h >= DAY_FROM && h <= DAY_TO;
+  });
 
   return {
     date,
@@ -130,6 +146,7 @@ export function verifyDay(data: Dataset, plan: PointPlan, obs: HourObs[], date: 
     bf: { forecastMax: fcBfMax, observedMax: obsBfMax, within1: Math.abs(fcBfMax - obsBfMax) <= 1 },
     rain: { forecastProbMax: probMax, forecastSumMm: sumMm, observed: rainObs, agree: rainFc === rainObs },
     perModel,
+    rainPerModel,
     hourly: rows,
   };
 }

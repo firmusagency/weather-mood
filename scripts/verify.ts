@@ -15,7 +15,7 @@ import { athensDate } from '../src/engine/dates';
 import { hourlyObs, parseMetars } from '../src/engine/metar';
 import { datasetFromRaw, type RawBundle } from '../src/engine/openmeteo';
 import { MODEL_LABELS, MODELS } from '../src/engine/types';
-import { STATION, summarize, verifyDay, type VerificationRow } from '../src/engine/verify';
+import { STATION, summarize, verifyDay, type VerificationRow, type VerificationSummary } from '../src/engine/verify';
 import { NOA_STATIONS, noaUrl, parseNoaaMonthly, verifyDaily, type DailyVerificationRow } from '../src/engine/noa';
 import { recheckRecommendations } from '../src/engine/recheck';
 import { SPOTS } from '../src/data/spots';
@@ -78,9 +78,28 @@ function writeSummary(rows: VerificationRow[], stationRows: DailyVerificationRow
   const s = summarize(rows, 30, new Date(), stationRows);
   mkdirSync(dirname(SUMMARY_JSON), { recursive: true });
   writeFileSync(SUMMARY_JSON, JSON.stringify(s, null, 1));
+  writeFileSync(SUMMARY_MD, summaryMarkdown(s, `Έλεγχος πρόγνωσης vs σταθμός ${STATION.id} (${STATION.name})`));
+}
+
+/**
+ * Monthly archive of the accuracy page: the same summary restricted to one calendar month, rewritten
+ * on every run of that month and final after its last day. The public page always shows the rolling
+ * 30 days; this keeps the record of how each month went (data/reports/accuracy-YYYY-MM.{json,md}).
+ */
+export function writeMonthlyArchive(rows: VerificationRow[], stationRows: DailyVerificationRow[], month: string, dir = join(root, 'data/reports')) {
+  const monthRows = rows.filter((r) => r.date.startsWith(month));
+  if (!monthRows.length) return null;
+  const s = summarize(monthRows, 31, new Date(), stationRows.filter((r) => r.date.startsWith(month)));
+  mkdirSync(dir, { recursive: true });
+  writeFileSync(join(dir, `accuracy-${month}.json`), JSON.stringify(s, null, 1));
+  writeFileSync(join(dir, `accuracy-${month}.md`), summaryMarkdown(s, `Ακρίβεια πρόγνωσης · ${month} (σταθμός ${STATION.id} και σταθμοί ΕΑΑ)`));
+  return s;
+}
+
+export function summaryMarkdown(s: VerificationSummary, title: string): string {
   const pct = (x: number) => `${Math.round(x * 100)}%`;
-  const md = [
-    `# Έλεγχος πρόγνωσης vs σταθμός ${STATION.id} (${STATION.name})`,
+  return [
+    `# ${title}`,
     '',
     `Ενημέρωση: ${s.updatedAt} · ${s.days} ημέρες (${s.from} → ${s.to})`,
     '',
@@ -120,7 +139,6 @@ function writeSummary(rows: VerificationRow[], stationRows: DailyVerificationRow
     ),
     '',
   ].join('\n');
-  writeFileSync(SUMMARY_MD, md);
 }
 
 async function main() {
@@ -195,6 +213,7 @@ async function main() {
     writeFileSync(STATIONS_LOG, stationRows.map((r) => JSON.stringify(r)).join('\n') + (stationRows.length ? '\n' : ''));
   }
   writeSummary(rows, stationRows);
+  writeMonthlyArchive(rows, stationRows, date.slice(0, 7));
 }
 
 main().catch((e) => {

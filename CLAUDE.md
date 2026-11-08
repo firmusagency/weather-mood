@@ -55,8 +55,8 @@ decisions and conventions that are not obvious from the code.
 - Owner to confirm the `AFTER_RAIN` thresholds (gorges after rain: 10/25 mm yesterday, 20/40 mm over 3 days); they were set
   from judgement, not from data. The first snapshots with `recentRain` arrive after the next `snapshot.yml` run.
 - Rain calibration (`docs/rain-calibration-2026-11-01.md`): re-run `npm run rain:calibration` at ~30 days; the proposal is
-  caution ≥ 40% / 0.5 mm for the sea, and per-model precipitation in the snapshot.
+  caution ≥ 40% / 0.5 mm for the sea. Per-model rain is in the snapshot and the verification rows since 2026-11-08, so the
+  per-model table in that script fills up from the 2026-11-09 verification on.
 - Per-spot wind/wave corrections once ~30 days of station data exist (Elafonisi station reads low; weigh it less).
 - Local observer network (taverns on the west coast) via the reception form; own weather stations later.
 - Boat-company line for Balos/Gramvousa cancellations.
-- Monthly archive of the accuracy page.

@@ -58,6 +58,9 @@ describe('verification', () => {
     expect(row.temp.mae).toBe(0);
     expect(row.bf.within1).toBe(true);
     expect(row.rain.agree).toBe(true);
+    // per-model rain: the fixture gives every model the same 0 mm; the field exists for every model
+    expect(Object.keys(row.rainPerModel!)).toHaveLength(5);
+    expect(row.rainPerModel!.icon_seamless).toBe(0);
   });
   it('measures an under-forecast afternoon as a negative bias', () => {
     const data = scenario({ windKmh: 10, windDir: 270, waveM: 0.3, waveDir: 270 });

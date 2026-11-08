@@ -2,8 +2,8 @@ import { angleDiff, beaufort, circularMean, round } from './geo';
 import { windConsensus } from './analysis';
 import type { PointPlan } from './openmeteo';
 import { scoreSpot } from './scoring';
-import type { Base, Dataset, Spot } from './types';
-import { nearestLandPoint } from './verify';
+import type { Base, Dataset, ModelId, Spot } from './types';
+import { modelRainSums, nearestLandPoint } from './verify';
 
 /*
  * Second, third and fourth verification stations: the National Observatory of Athens (meteo.gr)
@@ -108,6 +108,8 @@ export interface DailyVerificationRow {
   gust: { forecastMax: number; forecastHour: number; observedMax: number; observedHour: number; withinHours: number };
   temp: { forecastMax: number | null; observedMax: number; forecastMin: number | null; observedMin: number };
   rain: { forecastSumMm: number; forecastProbMax: number; observed: boolean; agree: boolean };
+  /** Per model: forecast rain sum (mm) over the whole day; null when the archive has no per-model rain. */
+  rainPerModel?: Record<ModelId, number | null>;
   /** Did the recommendation for the station's spot survive the day? */
   pick: { spotId: string; verdict: string; window: { start: number; end: number }; gustInWindow: boolean; held: boolean } | null;
 }
@@ -159,6 +161,7 @@ export function verifyDaily(data: Dataset, plan: PointPlan, obs: DailyObs, stati
     gust: { forecastMax: round(fcGustMax), forecastHour: fcGustHour, observedMax: obs.highWind, observedHour: obsGustHour, withinHours: Math.abs(fcGustHour - obsGustHour) },
     temp: { forecastMax: temps.length ? round(Math.max(...temps)) : null, observedMax: obs.high, forecastMin: temps.length ? round(Math.min(...temps)) : null, observedMin: obs.low },
     rain: { forecastSumMm: rainSum, forecastProbMax: probMax, observed: rainObs, agree: rainFc === rainObs },
+    rainPerModel: modelRainSums(land, () => true),
     pick,
   };
 }

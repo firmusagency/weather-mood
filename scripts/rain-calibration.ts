@@ -19,13 +19,16 @@ interface RainRow {
   pp: number;
   mm: number;
   observed: boolean;
+  /** Rain sum per model (mm), when the archived forecast carried it (from Nov 2026). */
+  perModel?: Record<string, number | null>;
 }
 
 export function loadRainRows(dir = join(root, 'data/verification')): RainRow[] {
   const read = (file: string) => (existsSync(join(dir, file)) ? readFileSync(join(dir, file), 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l)) : []);
   const rows: RainRow[] = [];
-  for (const r of read('log.jsonl')) rows.push({ date: r.date, station: r.station, pp: r.rain.forecastProbMax, mm: r.rain.forecastSumMm, observed: r.rain.observed });
-  for (const r of read('stations.jsonl')) rows.push({ date: r.date, station: r.station, pp: r.rain.forecastProbMax, mm: r.rain.forecastSumMm, observed: r.rain.observed });
+  for (const r of [...read('log.jsonl'), ...read('stations.jsonl')]) {
+    rows.push({ date: r.date, station: r.station, pp: r.rain.forecastProbMax, mm: r.rain.forecastSumMm, observed: r.rain.observed, perModel: r.rainPerModel });
+  }
   return rows;
 }
 
@@ -68,8 +71,19 @@ export const RULES: { rule: string; predict: (r: RainRow) => boolean }[] = [
   { rule: 'prob ≥ 30% or ≥ 0.1 mm', predict: (r) => r.pp >= 30 || r.mm >= 0.1 },
 ];
 
-function table(rows: RainRow[], md: boolean): string {
-  const scores = RULES.map((x) => scoreRule(rows, x.rule, x.predict));
+const modelVals = (r: RainRow) => Object.values(r.perModel ?? {}).filter((x): x is number => x != null);
+const hasModels = (r: RainRow) => modelVals(r).length >= 3;
+
+/** Rules that need rain per model (rows from Nov 2026 on). */
+export const MODEL_RULES: { rule: string; predict: (r: RainRow) => boolean }[] = [
+  { rule: 'any model ≥ 0.5 mm', predict: (r) => modelVals(r).some((x) => x >= 0.5) },
+  { rule: 'majority of models ≥ 0.5 mm', predict: (r) => modelVals(r).filter((x) => x >= 0.5).length * 2 > modelVals(r).length },
+  { rule: 'all models ≥ 0.5 mm', predict: (r) => modelVals(r).every((x) => x >= 0.5) },
+  { rule: 'best-match ≥ 60% or ≥ 1 mm (for comparison)', predict: (r) => r.pp >= 60 || r.mm >= 1 },
+];
+
+function table(rows: RainRow[], md: boolean, rules = RULES): string {
+  const scores = rules.map((x) => scoreRule(rows, x.rule, x.predict));
   const head = ['Rule', 'Hits', 'Misses', 'False alarms', 'Dry OK', 'Caught', 'Right', 'Accuracy'];
   const lines = scores.map((s) => [s.rule, s.hits, s.misses, s.falseAlarms, s.correctNegatives, `${s.caught}%`, `${s.right}%`, `${s.accuracy}%`].map(String));
   if (md) return [`| ${head.join(' | ')} |`, `|${head.map(() => '---').join('|')}|`, ...lines.map((l) => `| ${l.join(' | ')} |`)].join('\n');
@@ -84,6 +98,11 @@ function main() {
   const dates = new Set(rows.map((r) => r.date));
   console.log(md ? `**${rows.length} station-days** (${dates.size} days, ${rainy} with rain) · ${[...dates].sort()[0]} → ${[...dates].sort().at(-1)}\n` : `${rows.length} station-days, ${dates.size} days, ${rainy} with rain\n`);
   console.log(table(rows, md));
+  const withModels = rows.filter(hasModels);
+  if (withModels.length) {
+    console.log(md ? `\n**Rain per model** (${withModels.length} station-days with per-model rain, ${withModels.filter((r) => r.observed).length} with rain):\n` : `\nRain per model (${withModels.length} station-days with per-model rain):\n`);
+    console.log(table(withModels, md, MODEL_RULES));
+  }
   const misses = rows.filter((r) => r.observed && !(r.pp >= 60 || r.mm >= 1));
   console.log(md ? '\n**Rain we did not warn about (below the caution limit):**\n' : '\nRain below the caution limit (prob < 60% and < 1 mm):');
   for (const r of misses) console.log(`${md ? '- ' : '  '}${r.date} ${r.station}: forecast ${r.pp}% / ${r.mm} mm`);

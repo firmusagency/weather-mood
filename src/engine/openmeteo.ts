@@ -31,7 +31,8 @@ const ATMOS_VARS = [
   'wind_direction_10m',
   'wind_gusts_10m',
 ];
-const MODEL_VARS = ['wind_speed_10m', 'wind_direction_10m', 'wind_gusts_10m'];
+// rain per model too: the best-match model alone missed half the showers in Oct 2026 (docs/rain-calibration-2026-11-01.md)
+const MODEL_VARS = ['wind_speed_10m', 'wind_direction_10m', 'wind_gusts_10m', 'precipitation'];
 const WAVE_MODEL_VARS = ['wave_height', 'wave_direction', 'wave_period'];
 const MARINE_VARS = [
   'wave_height',
@@ -168,6 +169,7 @@ export function datasetFromRaw(raw: RawBundle, source: Dataset['source']): Datas
         wind: num(mh[`wind_speed_10m_${m}`]?.[k]),
         dir: num(mh[`wind_direction_10m_${m}`]?.[k]),
         gust: num(mh[`wind_gusts_10m_${m}`]?.[k]),
+        precip: num(mh[`precipitation_${m}`]?.[k]),
       }));
     }
     const d = atmosList[i].daily ?? {};

@@ -146,11 +146,13 @@ export interface AtmosHour {
   gust: number | null;
 }
 
-/** Wind from one model for one hour. */
+/** Wind (and, since Nov 2026, rain) from one model for one hour. */
 export interface ModelWind {
   wind: number | null;
   dir: number | null;
   gust: number | null;
+  /** mm in the hour; absent in snapshots taken before per-model rain was added. */
+  precip?: number | null;
 }
 
 export interface MarineHour {
