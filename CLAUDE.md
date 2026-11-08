@@ -45,15 +45,13 @@ decisions and conventions that are not obvious from the code.
 - GitHub runs `schedule:` crons 4–6 h late here. The on-time runs are dispatched by Supabase pg_cron
   (`supabase/migrations/0003_scheduler.sql`, schema `ops`, Athens-time check); the GitHub crons are a late fallback and the
   evening/morning workflows skip the fallback when the day's output exists. Needs the vault secret `github_dispatch_token`
-  (fine-grained PAT, Actions: write) which only the owner can create; `select * from ops.dispatch_status` shows what happened.
+  (fine-grained PAT, Actions: write, no expiry; in place since 2026-11-07); `select * from ops.dispatch_status` shows what happened.
 - Open-Meteo is not reachable from the cloud sandbox: data comes from the GitHub Actions; trigger `snapshot.yml` to
   refresh and pull the result.
 - The owner reads Greek; reply in Greek, keep code and commit messages in English.
 
 ## Open next steps (as of 2026-11-01)
 
-- Owner to create the GitHub token for the Supabase scheduler (see README «Ακριβής χρονοδιακόπτης»); until then the
-  Actions keep running on the late GitHub crons.
 - Owner to confirm the `AFTER_RAIN` thresholds (gorges after rain: 10/25 mm yesterday, 20/40 mm over 3 days); they were set
   from judgement, not from data. The first snapshots with `recentRain` arrive after the next `snapshot.yml` run.
 - Rain calibration (`docs/rain-calibration-2026-11-01.md`): re-run `npm run rain:calibration` at ~30 days; the proposal is
