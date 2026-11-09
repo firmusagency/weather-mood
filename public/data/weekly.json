@@ -1,44 +1,30 @@
 {
- "generatedAt": "2026-11-02T12:51:39.792Z",
+ "generatedAt": "2026-11-09T05:40:15.483Z",
  "property": {
   "id": "demo-alkyoni",
   "name": "Alkyoni Suites"
  },
- "weekStart": "2026-10-26",
- "weekEnd": "2026-11-01",
+ "weekStart": "2026-11-02",
+ "weekEnd": "2026-11-08",
  "visits": {
-  "total": 4,
-  "prev": 19,
+  "total": 3,
+  "prev": 4,
   "byView": {
-   "phone": 4
+   "phone": 3
   },
   "byLang": {
-   "el": 3,
-   "en": 1
+   "el": 3
   },
   "byProfile": {
-   "family": 3,
-   "couple": 1
+   "family": 3
   },
   "perDay": [
    {
-    "date": "2026-10-27",
-    "n": 1
-   },
-   {
-    "date": "2026-10-28",
-    "n": 1
-   },
-   {
-    "date": "2026-10-31",
-    "n": 1
-   },
-   {
-    "date": "2026-11-01",
-    "n": 1
+    "date": "2026-11-08",
+    "n": 3
    }
   ],
-  "devices": 2
+  "devices": 1
  },
  "votes": {
   "total": 0,
@@ -55,34 +41,34 @@
    "days": 6
   },
   {
-   "spotId": "aptera",
-   "days": 5
-  },
-  {
    "spotId": "botanical-park",
    "days": 5
   },
   {
-   "spotId": "theriso",
+   "spotId": "aptera",
    "days": 4
   },
   {
-   "spotId": "falasarna",
+   "spotId": "sfakia-ferry",
+   "days": 3
+  },
+  {
+   "spotId": "marathi",
    "days": 2
   },
   {
-   "spotId": "elafonisi",
+   "spotId": "polyrinia",
    "days": 2
   }
  ],
  "planBDays": 1,
  "pushSubscribers": 1,
  "accuracy": {
-  "days": 15,
+  "days": 22,
   "bfWithin1Rate": 1,
   "windMae": 4.5,
-  "picksHeld": 117,
-  "picks": 117,
-  "stationDays": 57
+  "picksHeld": 180,
+  "picks": 180,
+  "stationDays": 85
  }
 }
