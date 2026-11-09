@@ -55,8 +55,8 @@ decisions and conventions that are not obvious from the code.
 - `AFTER_RAIN` thresholds (gorges after rain) stay as set: public closure notices show OFYPEKA shuts Samaria on a same-day
   forecast of ~8–10 mm (we are stricter) and keeps it shut for inspections after heavy rain (see
   `docs/gorges-after-rain-2026-11-09.md`). Re-check only against the official status in season (May–Oct 2027).
-- Samaria official status reader: the ticket page samaria-tickets.necca.gov.gr/checkout shows a plain-text open/closed notice;
-  read it each morning and take Samaria out of the picks when it says closed (build before May 2027).
+- Samaria official status is read twice a day (`scripts/samaria-status.ts` → `public/data/closures.json`, engine `closures.ts`);
+  the in-season weather-closure wording has not been seen yet, so check `data/closures/log.jsonl` in May 2027 and adjust the parser.
 - Rain calibration (`docs/rain-calibration-2026-11-01.md`): re-run `npm run rain:calibration` at ~30 days; the proposal is
   caution ≥ 40% / 0.5 mm for the sea. Per-model rain is in the snapshot and the verification rows since 2026-11-08, so the
   per-model table in that script fills up from the 2026-11-09 verification on.

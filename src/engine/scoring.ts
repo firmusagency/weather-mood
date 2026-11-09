@@ -1,5 +1,6 @@
 import { haversineKm, ramp, round } from './geo';
 import { monthOf } from './dates';
+import { isClosedOn } from './closures';
 import { profileById, type Profile } from '../data/profiles';
 import type { Base, Factor, FactorKey, HourConditions, ProfileId, Spot, SpotScore, Verdict } from './types';
 
@@ -206,6 +207,8 @@ export function travelMinutes(base: Base, spot: Spot, profile: ProfileId): numbe
 
 function unsuitable(spot: Spot, p: Profile, date: string, base: Base): Factor | undefined {
   const month = monthOf(date);
+  // the authority's word beats the calendar and the forecast
+  if (isClosedOn(spot, date)) return f('closed', 0, { kind: 'official' });
   if (spot.season && (month < spot.season.from || month > spot.season.to)) {
     return f('closed', 0, { from: spot.season.from, to: spot.season.to });
   }

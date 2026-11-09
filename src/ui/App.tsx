@@ -12,7 +12,8 @@ import { Method } from './Method';
 import { Overview } from './Overview';
 import { Recommendations } from './Recommendations';
 import { SpotDetail } from './SpotDetail';
-import { EMBEDDED, datasetsFromSnapshot, fetchLive, loadCalibration, loadFeedback, loadSnapshot, loadVerification, readPref, writePref } from './data';
+import { EMBEDDED, datasetsFromSnapshot, fetchLive, loadCalibration, loadClosures, loadFeedback, loadSnapshot, loadVerification, readPref, writePref } from './data';
+import { applyClosures, type Closures } from '../engine/closures';
 import { applyCalibration, type Calibration, type FeedbackSummary } from '../engine/feedback';
 import { loadPlanB, loadWeekly, type PlanBReport } from './data';
 import type { WeeklyReport } from '../engine/weekly';
@@ -73,6 +74,7 @@ export function App() {
   const [feedback, setFeedback] = useState<FeedbackSummary | null>(null);
   const [weekly, setWeekly] = useState<WeeklyReport | null>(null);
   const [calibration, setCalibration] = useState<Calibration | null>(null);
+  const [closures, setClosures] = useState<Closures | null>(null);
   const [planB, setPlanB] = useState<PlanBReport | null>(null);
   useEffect(() => {
     loadPlanB().then(setPlanB);
@@ -80,9 +82,10 @@ export function App() {
     loadFeedback().then(setFeedback);
     loadWeekly().then(setWeekly);
     loadCalibration().then(setCalibration);
+    loadClosures().then(setClosures);
   }, []);
-  // Spot geometry with the guest-feedback wave corrections folded in (no-op until there is data).
-  const spots = useMemo(() => applyCalibration(SPOTS, calibration), [calibration]);
+  // Spot geometry with the guest-feedback wave corrections and the official closures folded in (no-ops without data).
+  const spots = useMemo(() => applyClosures(applyCalibration(SPOTS, calibration), closures), [calibration, closures]);
   const s = strings(lang);
   const today = athensDate(0);
 

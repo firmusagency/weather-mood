@@ -525,6 +525,7 @@ export function factorText(fct: Factor, lang: Lang): string {
     case 'crowds':
       return el ? 'Πολύς κόσμος 11:00–16:00: πηγαίνετε νωρίς ή αργά' : 'Crowded 11:00–16:00: go early or late';
     case 'closed':
+      if (p.kind === 'official') return el ? 'Κλειστό με επίσημη ανακοίνωση του Πάρκου (σελίδα εισιτηρίων ΟΦΥΠΕΚΑ)' : 'Closed by official notice of the park (OFYPEKA ticket page)';
       return p.kind === 'tooLate'
         ? el
           ? 'Δεν προλαβαίνετε πια σήμερα'

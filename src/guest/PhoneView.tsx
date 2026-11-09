@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { spotById } from '../data/spots';
 import { athensDate } from '../engine/dates';
 import type { Dataset, ProfileId, Spot, SpotScore } from '../engine/types';
+import type { Closures } from '../engine/closures';
 import type { Calibration } from '../engine/feedback';
 import { PROFILES } from '../data/profiles';
 import { daySummary, dedupeReasons, mainProblem, mapsUrl, seaLevel, sharePlanText, travelLabel, uvLevel, windLevel, type GuestLine } from './advice';
@@ -77,6 +78,7 @@ export function PhoneView({
   datasets,
   outlook,
   calibration,
+  closures = null,
 }: {
   plan: DayPlan;
   property: Property;
@@ -91,6 +93,7 @@ export function PhoneView({
   datasets: Record<string, Dataset>;
   outlook: Record<string, Dataset>;
   calibration: Calibration | null;
+  closures?: Closures | null;
 }) {
   const d = g(lang);
   const [open, setOpen] = useState<string | null>(null);
@@ -245,6 +248,7 @@ export function PhoneView({
         profile={profile}
         property={property}
         calibration={calibration}
+        closures={closures}
         lang={lang}
         today={today}
         hourNow={hourNow}

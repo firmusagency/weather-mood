@@ -75,6 +75,8 @@ export interface Spot {
   };
   /** Months (1-12) the place operates; omitted = all year. */
   season?: { from: number; to: number };
+  /** Official closures (ISO dates, inclusive) attached from public/data/closures.json; see engine/closures.ts. */
+  closures?: { from: string; to: string }[];
   /** Hard limits beyond which the place is likely closed / the trip cancelled. */
   limits?: { maxGustKmh?: number; maxWindKmh?: number; maxWaveM?: number; maxPrecipProb?: number };
   /** Another spot whose sea conditions also matter (e.g. Samaria's return boat). */

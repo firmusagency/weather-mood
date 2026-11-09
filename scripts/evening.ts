@@ -11,7 +11,12 @@
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SPOTS } from '../src/data/spots';
+import { SPOTS as BASE_SPOTS } from '../src/data/spots';
+import { applyClosures } from '../src/engine/closures';
+import { readClosures } from './samaria-status';
+
+// spots with the official closures folded in (the park's word beats the forecast)
+const SPOTS = applyClosures(BASE_SPOTS, readClosures());
 import { REF_POINTS } from '../src/data/region';
 import { PROFILES } from '../src/data/profiles';
 import { athensDate } from '../src/engine/dates';

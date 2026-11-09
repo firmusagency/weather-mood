@@ -247,6 +247,7 @@ export function dedupeReasons(scores: SpotScore[], lang: GuestLang): GuestLine[]
 
 const UNSUITABLE: Record<string, L> = {
   closed: { el: 'Κλειστό αυτή την εποχή', en: 'Closed at this time of year', de: 'Zu dieser Jahreszeit geschlossen', fr: 'Fermé à cette période de l’année' },
+  official: { el: 'Κλειστό με απόφαση του Πάρκου', en: 'Closed by decision of the park authority', de: 'Auf Beschluss der Parkverwaltung geschlossen', fr: 'Fermé par décision du parc' },
   tooLate: { el: 'Πολύ αργά για σήμερα', en: 'Too late for today', de: 'Zu spät für heute', fr: 'Trop tard pour aujourd’hui' },
   kids: { el: 'Δύσκολο για παιδιά', en: 'Hard going for children', de: 'Schwierig für Kinder', fr: 'Difficile pour les enfants' },
   mobility: { el: 'Απαιτητική διαδρομή', en: 'A demanding route', de: 'Anspruchsvolle Strecke', fr: 'Parcours exigeant' },
@@ -256,7 +257,7 @@ const UNSUITABLE: Record<string, L> = {
 /** A single factor as a guest sentence (warnings and "unsuitable" reasons). */
 export function factorText(f: Factor | undefined, lang: GuestLang): string | undefined {
   if (!f) return undefined;
-  if (f.key === 'closed') return t(f.params.kind === 'tooLate' ? UNSUITABLE.tooLate : UNSUITABLE.closed, lang);
+  if (f.key === 'closed') return t(f.params.kind === 'tooLate' ? UNSUITABLE.tooLate : f.params.kind === 'official' ? UNSUITABLE.official : UNSUITABLE.closed, lang);
   if (f.key === 'notForProfile') return t(UNSUITABLE[String(f.params.why)] ?? UNSUITABLE.mobility, lang);
   const tpl = WARN[f.key];
   if (!tpl) return undefined;

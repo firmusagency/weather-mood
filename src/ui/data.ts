@@ -33,6 +33,7 @@ export async function fetchLive(date: string): Promise<Dataset> {
 }
 
 import type { PlanDiff } from '../engine/planchange';
+import type { Closures } from '../engine/closures';
 import type { ProfileId } from '../engine/types';
 
 export interface PlanBReport {
@@ -43,7 +44,7 @@ export interface PlanBReport {
   byProfile: Partial<Record<ProfileId, { diff: PlanDiff; messages: Record<string, string> | null }>>;
 }
 
-async function loadJson<T>(name: 'verification' | 'feedback' | 'calibration' | 'plan-b' | 'weekly'): Promise<T | null> {
+async function loadJson<T>(name: 'verification' | 'feedback' | 'calibration' | 'plan-b' | 'weekly' | 'closures'): Promise<T | null> {
   try {
     if (EMBEDDED) {
       // static import paths so the bundler can inline them
@@ -56,7 +57,9 @@ async function loadJson<T>(name: 'verification' | 'feedback' | 'calibration' | '
               ? await import('../../public/data/plan-b.json')
               : name === 'weekly'
                 ? await import('../../public/data/weekly.json')
-                : await import('../../public/data/calibration.json');
+                : name === 'closures'
+                  ? await import('../../public/data/closures.json')
+                  : await import('../../public/data/calibration.json');
       return (mod.default ?? mod) as unknown as T;
     }
     const res = await fetch(`${import.meta.env.BASE_URL}data/${name}.json`, { cache: 'no-cache' });
@@ -71,6 +74,7 @@ export const loadFeedback = () => loadJson<FeedbackSummary>('feedback');
 export const loadCalibration = () => loadJson<Calibration>('calibration');
 export const loadPlanB = () => loadJson<PlanBReport>('plan-b');
 export const loadWeekly = () => loadJson<WeeklyReport>('weekly');
+export const loadClosures = () => loadJson<Closures>('closures');
 
 export function datasetsFromSnapshot(s: Snapshot): Record<string, Dataset> {
   const out: Record<string, Dataset> = {};

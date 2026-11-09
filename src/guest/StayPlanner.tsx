@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { SPOTS, spotById } from '../data/spots';
 import { REF_POINTS } from '../data/region';
 import { applyCalibration, type Calibration } from '../engine/feedback';
+import { applyClosures, type Closures } from '../engine/closures';
 import { analyzeDay } from '../engine/recommend';
 import { planStay, shift, stayDates, type PlannedTrip, type StayDayInput } from '../engine/stay';
 import { buildSynopsis } from '../engine/synopsis';
@@ -58,6 +59,7 @@ export function StayPlanner({
   profile,
   property,
   calibration,
+  closures = null,
   lang,
   today,
   hourNow,
@@ -68,6 +70,7 @@ export function StayPlanner({
   profile: ProfileId;
   property: Property;
   calibration: Calibration | null;
+  closures?: Closures | null;
   lang: GuestLang;
   today: string;
   hourNow: number;
@@ -89,7 +92,7 @@ export function StayPlanner({
 
   const plan = useMemo(() => {
     if (!dates.length) return null;
-    const spots = applyCalibration(SPOTS, calibration);
+    const spots = applyClosures(applyCalibration(SPOTS, calibration), closures);
     const days: StayDayInput[] = dates.map((date) => {
       const full = datasets[date];
       const ds = full ?? outlook[date];
@@ -104,7 +107,7 @@ export function StayPlanner({
       }),
     );
     return { plan: planStay(days, profile, spots), heads };
-  }, [dates, datasets, outlook, profile, property.base, calibration, today, hourNow]);
+  }, [dates, datasets, outlook, profile, property.base, calibration, closures, today, hourNow]);
 
   const options = Array.from({ length: 8 }, (_, i) => shift(today, i + 1));
   const selector = (

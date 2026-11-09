@@ -23,7 +23,8 @@
     "photos:inline": "node scripts/photos-inline.mjs",
     "demo:accuracy": "ENTRY=accuracy vite build --mode single && node scripts/export-demo.mjs accuracy",
     "weekly": "tsx scripts/weekly-report.ts",
-    "rain:calibration": "tsx scripts/rain-calibration.ts"
+    "rain:calibration": "tsx scripts/rain-calibration.ts",
+    "samaria:status": "tsx scripts/samaria-status.ts"
   },
   "dependencies": {
     "nodemailer": "^7.0.13",
