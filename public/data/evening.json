@@ -1,7 +1,7 @@
 {
  "date": "2026-11-11",
- "generatedAt": "2026-11-10T15:53:52.992Z",
- "basedOn": "2026-11-10T15:53:50.045Z",
+ "generatedAt": "2026-11-10T17:01:36.132Z",
+ "basedOn": "2026-11-10T17:01:34.754Z",
  "property": {
   "id": "demo-alkyoni",
   "name": "Alkyoni Suites"
@@ -10,7 +10,7 @@
   "family": {
    "date": "2026-11-11",
    "profile": "family",
-   "generatedAt": "2026-11-10T15:53:52.992Z",
+   "generatedAt": "2026-11-10T17:01:36.132Z",
    "picks": [
     {
      "spotId": "old-town",
@@ -50,7 +50,7 @@
     "gust": 36
    },
    "rainProbMax": 0,
-   "rainProbMaxRegion": 5,
+   "rainProbMaxRegion": 8,
    "rainCoast": null,
    "coasts": {
     "ref-north": 1,
@@ -61,7 +61,7 @@
   "couple": {
    "date": "2026-11-11",
    "profile": "couple",
-   "generatedAt": "2026-11-10T15:53:52.992Z",
+   "generatedAt": "2026-11-10T17:01:36.132Z",
    "picks": [
     {
      "spotId": "old-town",
@@ -100,7 +100,7 @@
     "gust": 36
    },
    "rainProbMax": 0,
-   "rainProbMaxRegion": 5,
+   "rainProbMaxRegion": 8,
    "rainCoast": null,
    "coasts": {
     "ref-north": 1,
@@ -111,7 +111,7 @@
   "solo": {
    "date": "2026-11-11",
    "profile": "solo",
-   "generatedAt": "2026-11-10T15:53:52.992Z",
+   "generatedAt": "2026-11-10T17:01:36.132Z",
    "picks": [
     {
      "spotId": "old-town",
@@ -150,7 +150,7 @@
     "gust": 36
    },
    "rainProbMax": 0,
-   "rainProbMaxRegion": 5,
+   "rainProbMaxRegion": 8,
    "rainCoast": null,
    "coasts": {
     "ref-north": 1,
@@ -161,7 +161,7 @@
   "active": {
    "date": "2026-11-11",
    "profile": "active",
-   "generatedAt": "2026-11-10T15:53:52.992Z",
+   "generatedAt": "2026-11-10T17:01:36.132Z",
    "picks": [
     {
      "spotId": "imbros",
@@ -198,7 +198,7 @@
     "gust": 36
    },
    "rainProbMax": 0,
-   "rainProbMaxRegion": 5,
+   "rainProbMaxRegion": 8,
    "rainCoast": null,
    "coasts": {
     "ref-north": 1,
@@ -209,7 +209,7 @@
   "senior": {
    "date": "2026-11-11",
    "profile": "senior",
-   "generatedAt": "2026-11-10T15:53:52.992Z",
+   "generatedAt": "2026-11-10T17:01:36.132Z",
    "picks": [
     {
      "spotId": "old-town",
@@ -248,7 +248,7 @@
     "gust": 36
    },
    "rainProbMax": 0,
-   "rainProbMaxRegion": 5,
+   "rainProbMaxRegion": 8,
    "rainCoast": null,
    "coasts": {
     "ref-north": 1,
@@ -259,7 +259,7 @@
   "nocar": {
    "date": "2026-11-11",
    "profile": "nocar",
-   "generatedAt": "2026-11-10T15:53:52.992Z",
+   "generatedAt": "2026-11-10T17:01:36.132Z",
    "picks": [
     {
      "spotId": "old-town",
@@ -296,7 +296,7 @@
     "gust": 36
    },
    "rainProbMax": 0,
-   "rainProbMaxRegion": 5,
+   "rainProbMaxRegion": 8,
    "rainCoast": null,
    "coasts": {
     "ref-north": 1,
