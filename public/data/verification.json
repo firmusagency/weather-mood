@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-11-10T03:35:15.396Z",
+ "updatedAt": "2026-11-10T10:17:26.359Z",
  "station": {
   "id": "LGSA",
   "name": "Chania airport (Akrotiri)",
@@ -553,8 +553,8 @@
       "spotId": "falasarna",
       "verdict": "go",
       "window": {
-       "start": 14,
-       "end": 18
+       "start": 13,
+       "end": 17
       },
       "gustInWindow": false,
       "held": true
@@ -844,8 +844,8 @@
       "spotId": "elafonisi",
       "verdict": "caution",
       "window": {
-       "start": 15,
-       "end": 19
+       "start": 13,
+       "end": 17
       },
       "gustInWindow": false,
       "held": true
