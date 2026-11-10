@@ -1,3 +1,4 @@
+import { createECDH } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -36,12 +37,57 @@ export function cleanVapidKey(raw: string | undefined): string | undefined {
   return k || undefined;
 }
 
-/** Why a private key cannot be used, in words for the log (never the key itself); null when it looks right. */
-export function privateKeyProblem(raw: string | undefined): string | null {
-  const k = cleanVapidKey(raw);
-  if (!k) return 'secret VAPID_PRIVATE_KEY is empty';
-  if (!/^[A-Za-z0-9_-]+$/.test(k)) return 'secret VAPID_PRIVATE_KEY contains characters that are not base64 (is it the right value?)';
-  if (k.length !== 43) return `secret VAPID_PRIVATE_KEY has ${k.length} characters; a VAPID private key has 43 (the 87-character one is the PUBLIC key)`;
+const B64 = /^[A-Za-z0-9_-]+$/;
+const normalize = (t: string) => t.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+/**
+ * The private key out of whatever was pasted into the secret. People paste the generator's whole
+ * output ("Public Key: … Private Key: …"), a JSON object, or a line with a label: when the text
+ * holds exactly one 43-character base64 token, that token is the key.
+ */
+export function extractPrivateKey(raw: string | undefined): string | undefined {
+  const clean = cleanVapidKey(raw);
+  if (clean && B64.test(clean) && clean.length === 43) return clean;
+  const tokens = [...new Set((raw ?? '').match(/[A-Za-z0-9_+/-]{20,}={0,2}/g)?.map(normalize) ?? [])].filter((t) => t.length === 43);
+  return tokens.length === 1 ? tokens[0] : undefined;
+}
+
+/** The public key that belongs to a private key (uncompressed P-256 point, URL-safe base64). */
+export function publicKeyFor(privateKey: string): string | null {
+  try {
+    const ecdh = createECDH('prime256v1');
+    ecdh.setPrivateKey(Buffer.from(privateKey, 'base64url'));
+    return ecdh.getPublicKey().toString('base64url');
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Why the private key cannot be used, in words for the log; null when it is usable. Describes the
+ * shape of what is stored (lengths, kind of text), never the value.
+ */
+export function privateKeyProblem(raw: string | undefined, publicKey?: string): string | null {
+  if (!raw?.trim()) return 'secret VAPID_PRIVATE_KEY is empty';
+  const key = extractPrivateKey(raw);
+  if (!key) {
+    const clean = cleanVapidKey(raw) ?? '';
+    const tokens = (raw.match(/[A-Za-z0-9_+/-]{20,}={0,2}/g) ?? []).map((t) => normalize(t).length);
+    const shape =
+      raw.split('.').length === 3 && raw.trim().startsWith('ey')
+        ? 'it looks like a JWT (a Supabase or other API key), not a VAPID key'
+        : B64.test(clean) && clean.length === 87
+          ? 'it is 87 characters long: that is the PUBLIC key; the private key has 43'
+          : tokens.filter((n) => n === 43).length > 1
+            ? 'it holds more than one 43-character token, so the private key cannot be told apart'
+            : `it is ${raw.trim().length} characters long and holds base64 tokens of lengths [${tokens.join(', ') || 'none'}]; a VAPID private key is one token of 43`;
+    return `secret VAPID_PRIVATE_KEY is not a VAPID private key: ${shape}`;
+  }
+  const derived = publicKeyFor(key);
+  if (!derived) return 'secret VAPID_PRIVATE_KEY has the right length but is not a valid P-256 key';
+  if (publicKey && derived !== publicKey) {
+    return 'secret VAPID_PRIVATE_KEY is a valid key but does not belong to the public key the guest page uses (VITE_VAPID_PUBLIC_KEY in .env): the two were not generated together';
+  }
   return null;
 }
 
@@ -53,16 +99,16 @@ export function pushMissing(env = process.env): string[] {
   if (!env.SUPABASE_URL) missing.push('secret SUPABASE_URL');
   if (!env.SUPABASE_SERVICE_KEY) missing.push('secret SUPABASE_SERVICE_KEY');
   if (!publicKeyOf(env)) missing.push('variable VAPID_PUBLIC_KEY');
-  if (!env.VAPID_PRIVATE_KEY) missing.push('secret VAPID_PRIVATE_KEY');
-  else if (privateKeyProblem(env.VAPID_PRIVATE_KEY)) missing.push(privateKeyProblem(env.VAPID_PRIVATE_KEY)!);
+  const problem = privateKeyProblem(env.VAPID_PRIVATE_KEY, publicKeyOf(env));
+  if (problem) missing.push(problem);
   return missing;
 }
 
 export function pushEnv(env = process.env): PushEnv | null {
   const db = dbEnv(env);
   const publicKey = publicKeyOf(env);
-  const privateKey = cleanVapidKey(env.VAPID_PRIVATE_KEY);
-  if (!db || !publicKey || !privateKey || privateKeyProblem(privateKey)) return null;
+  const privateKey = extractPrivateKey(env.VAPID_PRIVATE_KEY);
+  if (!db || !publicKey || !privateKey || privateKeyProblem(env.VAPID_PRIVATE_KEY, publicKey)) return null;
   return { db, publicKey, privateKey, subject: env.VAPID_SUBJECT || 'mailto:hello@weathermood.gr' };
 }
 

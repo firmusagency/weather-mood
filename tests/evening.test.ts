@@ -126,18 +126,33 @@ describe('plan B comparison', () => {
 });
 
 describe('push key hygiene', () => {
-  it('repairs the usual paste damage and names what is wrong without printing the key', async () => {
-    const { cleanVapidKey, privateKeyProblem, pushEnv, pushMissing } = await import('../scripts/push');
-    const good = 'a'.repeat(20) + '-_' + 'B'.repeat(21); // 43 url-safe characters
-    expect(cleanVapidKey(` "${good}=" \n`)).toBe(good);
-    expect(cleanVapidKey(good.replace('-', '+').replace('_', '/'))).toBe(good);
-    expect(privateKeyProblem(good)).toBeNull();
-    expect(privateKeyProblem('B'.repeat(87))).toMatch(/87 characters.*PUBLIC key/);
-    expect(privateKeyProblem('abc$%{secret}')).toMatch(/not base64/);
-    const env = { SUPABASE_URL: 'https://x.supabase.co', SUPABASE_SERVICE_KEY: 'k', VAPID_PUBLIC_KEY: 'P'.repeat(87) };
-    // a malformed private key disables push (with a reason) instead of crashing the evening run
-    expect(pushEnv({ ...env, VAPID_PRIVATE_KEY: 'B'.repeat(87) })).toBeNull();
-    expect(pushMissing({ ...env, VAPID_PRIVATE_KEY: 'B'.repeat(87) }).join(' ')).not.toContain('BBBB');
-    expect(pushEnv({ ...env, VAPID_PRIVATE_KEY: `${good}=\n` })?.privateKey).toBe(good);
+  it('finds the key inside pasted text, checks it against the public key, and never prints it', async () => {
+    const webpush = (await import('web-push')).default;
+    const { cleanVapidKey, extractPrivateKey, privateKeyProblem, publicKeyFor, pushEnv, pushMissing } = await import('../scripts/push');
+    const pair = webpush.generateVAPIDKeys();
+    const other = webpush.generateVAPIDKeys();
+    expect(publicKeyFor(pair.privateKey)).toBe(pair.publicKey);
+
+    // paste damage: quotes, padding, newline
+    expect(cleanVapidKey(` "${pair.privateKey}=" \n`)).toBe(pair.privateKey);
+    // the generator's whole output, a JSON object, a labelled line
+    const whole = `=======================================\n\nPublic Key:\n${pair.publicKey}\n\nPrivate Key:\n${pair.privateKey}\n\n=======================================`;
+    expect(extractPrivateKey(whole)).toBe(pair.privateKey);
+    expect(extractPrivateKey(JSON.stringify(pair))).toBe(pair.privateKey);
+    expect(extractPrivateKey(`VAPID_PRIVATE_KEY=${pair.privateKey}`)).toBe(pair.privateKey);
+    expect(privateKeyProblem(whole, pair.publicKey)).toBeNull();
+
+    // what cannot be used, described by shape
+    expect(privateKeyProblem(pair.publicKey)).toMatch(/PUBLIC key/);
+    expect(privateKeyProblem('eyJhbGciOiJIUzI1NiJ9.eyJyb2xlIjoic2VydmljZV9yb2xlIn0.c2lnbmF0dXJlc2lnbmF0dXJl')).toMatch(/JWT/);
+    expect(privateKeyProblem('hello world')).toMatch(/not a VAPID private key/);
+    expect(privateKeyProblem(pair.privateKey, other.publicKey)).toMatch(/does not belong to the public key/);
+
+    const env = { SUPABASE_URL: 'https://x.supabase.co', SUPABASE_SERVICE_KEY: 'k', VAPID_PUBLIC_KEY: pair.publicKey };
+    expect(pushEnv({ ...env, VAPID_PRIVATE_KEY: whole })?.privateKey).toBe(pair.privateKey);
+    expect(pushEnv({ ...env, VAPID_PRIVATE_KEY: other.privateKey })).toBeNull();
+    const said = pushMissing({ ...env, VAPID_PRIVATE_KEY: other.privateKey }).join(' ');
+    expect(said).not.toContain(other.privateKey);
+    expect(said).not.toContain(pair.publicKey);
   });
 });
