@@ -49,7 +49,8 @@ function evalBeach(c: HourConditions, spot: Spot, p: Profile): HourEval {
       push(out, 'longSwell', -ramp(c.sea.period, 8, 12) * 8, { period: round(c.sea.period, 0), wave: round(eff, 1) });
     }
     if (spot.ripRisk && eff > 0.7) push(out, 'ripCurrents', -15, { wave: round(eff, 1) });
-    if (c.sea.sst != null) push(out, 'coldWater', -ramp(21 - c.sea.sst, 0, 4) * 10, { sst: round(c.sea.sst, 1) });
+    // water under 23° is fresh for most guests; under 18° the hard limit takes over
+    if (c.sea.sst != null) push(out, 'coldWater', -ramp(SWIM_COMFORT.sst - c.sea.sst, 0, 5) * 18, { sst: round(c.sea.sst, 1) });
   }
 
   const onshore = c.wind.speed * c.windExposure;
@@ -64,10 +65,14 @@ function evalBeach(c: HourConditions, spot: Spot, p: Profile): HourEval {
   push(out, c.gustyNow ? 'downslopeGusts' : 'gusts', -ramp(c.effectiveGust, 30, 70) * 28, { gust: Math.round(c.effectiveGust) });
   weatherBasics(c, out, 35, 35);
   if (c.apparent != null) {
-    push(out, 'cool', -ramp(22 - c.apparent, 0, 7) * 25, { apparent: Math.round(c.apparent) });
+    // a beach day wants 24° and up; at 21° it is a walk on the sand with a quick dip
+    push(out, 'cool', -ramp(SWIM_COMFORT.apparent - c.apparent, 0, 8) * 28, { apparent: Math.round(c.apparent) });
     if (p.heatSensitive && !spot.traits.shade) push(out, 'heat', -ramp(c.apparent, 32, 38) * 15, { apparent: Math.round(c.apparent) });
   }
-  if ((c.cloud ?? 0) > 85) push(out, 'cloudy', -6, { cloud: c.cloud ?? 0 });
+  // cloud takes the sun off the beach when it is not hot anyway; on a hot day it is a relief
+  const cloud = c.cloud ?? 0;
+  if (c.apparent != null && c.apparent < 26) push(out, 'cloudy', -ramp(cloud, 60, 100) * 8, { cloud });
+  else if (cloud > 85) push(out, 'cloudy', -6, { cloud });
   return finish(out);
 }
 
@@ -222,8 +227,10 @@ function unsuitable(spot: Spot, p: Profile, date: string, base: Base): Factor | 
   return undefined;
 }
 
-function traitBonus(spot: Spot, p: Profile): { bonus: number; traits: string[] } {
-  const t = spot.traits;
+function traitBonus(spot: Spot, p: Profile, month: number): { bonus: number; traits: string[] } {
+  // sunbeds, canteens and toilets on the beaches are a summer thing: do not promise them in November
+  const inSeason = month >= FACILITIES_SEASON.from && month <= FACILITIES_SEASON.to;
+  const t = (spot.type === 'beach' || spot.type === 'lake') && !inSeason ? { ...spot.traits, facilities: false } : spot.traits;
   const picks: [boolean | undefined, number, string][] = [];
   switch (p.id) {
     case 'family':
@@ -313,6 +320,12 @@ function mergeFactors(hours: HourEval[]): Factor[] {
  * on a day with real rain is a flash-flood and closure risk whatever the temperature. These cap the
  * verdict (and the score, so ranking follows) and add one explaining factor.
  */
+/** Below these the beach still is a "go", but it loses points to the town, the villages and the walks. */
+export const SWIM_COMFORT = { apparent: 24, sst: 23 };
+/** Months when organised beaches run their sunbeds, canteens and toilets. */
+export const FACILITIES_SEASON = { from: 5, to: 10 };
+/** Places that need daylight for the whole visit (a town is fine after dark, a museum has a roof). */
+const NEEDS_DAYLIGHT = (type: Spot['type']) => type !== 'town' && type !== 'museum';
 export const SWIM_LIMITS = { apparentCaution: 18, apparentAvoid: 15, sstCaution: 18, sstAvoid: 16 };
 export const RAIN_LIMITS = { ppCaution: 60, ppAvoid: 80, mmCaution: 1, mmAvoid: 3 };
 export const GORGE_RAIN = { ppCautionBelow: 20, mmCaution: 1, mmAvoid: 3 };
@@ -384,6 +397,8 @@ export function scoreSpot(spot: Spot, conditions: HourConditions[], profileId: P
   for (const start of starts) {
     const hs = Array.from({ length: len }, (_, i) => evals.get(start + i)).filter(Boolean) as HourEval[];
     if (hs.length < len) continue;
+    // no beach, gorge or ruin after sunset (in November the sun is down at 17:20)
+    if (NEEDS_DAYLIGHT(spot.type) && conditions.some((c) => c.hour >= start && c.hour < start + len && c.daylight === false)) continue;
     const mean = hs.reduce((s, h) => s + h.rankScore, 0) / hs.length;
     if (mean > best.mean) best = { start, mean };
   }
@@ -409,7 +424,7 @@ export function scoreSpot(spot: Spot, conditions: HourConditions[], profileId: P
   const [lo, hi, maxPen] = p.travel;
   const travelPen = ramp(travel, lo, hi) * maxPen;
   if (travelPen >= 0.5) fit.push(f(profileId === 'nocar' ? 'bus' : 'drive', -travelPen, { min: travel }));
-  const { bonus, traits } = traitBonus(spot, p);
+  const { bonus, traits } = traitBonus(spot, p, monthOf(date));
   if (bonus) fit.push(f('trait', bonus, { traits: traits.join(',') }));
   if (spot.appeal) fit.push(f('appeal', spot.appeal, { appeal: spot.appeal }));
   const pref = TYPE_PREF[profileId][spot.type] ?? 0;

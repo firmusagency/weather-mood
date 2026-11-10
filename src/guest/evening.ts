@@ -104,7 +104,9 @@ export function eveningMessage(input: EveningInput, property: { name: string; gu
   if (rec.avoid.length) {
     const list = rec.avoid.slice(0, 3).map((sc) => {
       const why = mainProblem(sc, lang);
-      return `${pick(spotById(sc.spotId)!.name, lang)}${why ? ` (${why.toLowerCase()})` : ''}`;
+      // the reason goes inside brackets: drop its own bracketed figures ("(~0.66 m)") so it reads as plain words
+      const plain = why?.replace(/\s*\([^)]*\)/g, '').trim();
+      return `${pick(spotById(sc.spotId)!.name, lang)}${plain ? ` (${plain.toLowerCase()})` : ''}`;
     });
     out.push('', t(T.avoid, lang, { list: list.join(', ') }));
   }

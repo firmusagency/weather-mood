@@ -20,6 +20,12 @@ export interface Scenario {
   precipByPoint?: Record<string, number>;
   /** Rain of the previous days at every gorge/hike point (mm). */
   recentRain?: { prevDayMm: number; threeDayMm?: number };
+  /** Sea surface temperature (default 25) and cloud cover % (default 10). */
+  sst?: number;
+  cloud?: number;
+  /** Local "HH:MM" sun times; without them no hour is marked as dark. */
+  sunrise?: string;
+  sunset?: string;
   date?: string;
 }
 
@@ -41,13 +47,15 @@ export function scenario(s: Scenario): Dataset {
         apparent: s.apparent ?? 28,
         precipProb: s.precipProbByPoint?.[p.id] ?? s.precipProb ?? 0,
         precip: s.precipByPoint?.[p.id] ?? s.precip ?? 0,
-        cloud: 10,
+        cloud: s.cloud ?? 10,
         uv: 8,
         code: 0,
         wind: s.windKmh,
         windDir: s.windDir,
         gust,
       })),
+      ...(s.sunrise ? { sunrise: `${date}T${s.sunrise}` } : {}),
+      ...(s.sunset ? { sunset: `${date}T${s.sunset}` } : {}),
     };
   }
   const marine: Dataset['marine'] = {};
@@ -61,7 +69,7 @@ export function scenario(s: Scenario): Dataset {
       swell: null,
       swellDir: null,
       swellPeriod: s.periodS ?? null,
-      sst: 25,
+      sst: s.sst ?? 25,
     }));
   }
   const waveModels: NonNullable<Dataset['waveModels']> = {};

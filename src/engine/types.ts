@@ -249,6 +249,8 @@ export interface HourConditions {
   thunder: boolean;
   /** Same for every hour of the day; carried here so the hard limits see it with the conditions. */
   recentRain?: RecentRain;
+  /** False when the hour is (mostly) before sunrise or ends after sunset; absent when the data has no sun times. */
+  daylight?: boolean;
   depSea?: { wave: number; wind: number; exposure: number };
 }
 

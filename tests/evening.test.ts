@@ -37,6 +37,10 @@ describe('evening message', () => {
     const { day, rec, syn } = plan({ windKmh: 30, windDir: 270, waveM: 1.3, waveDir: 270 });
     const text = eveningMessage({ rec, syn, scores: day.scores, conditions: day.conditions }, property, 'couple', 'en');
     expect(text).toContain('Better not tomorrow');
+    // reasons sit inside brackets as plain words: no nested brackets, no wave heights
+    const avoidLine = text.split('\n').find((l) => l.startsWith('Better not tomorrow'))!;
+    expect(avoidLine).not.toMatch(/\([^)]*\(/);
+    expect(avoidLine).not.toMatch(/\d m\b/);
     expect(weatherLine(syn, 'en')).toMatch(/wind from the W/);
   });
 });

@@ -64,6 +64,9 @@ decisions and conventions that are not obvious from the code.
 - Station gust calibration (`src/engine/stationcal.ts`, `docs/station-gusts-2026-11-10.md`) activates by itself at 30 days per
   station: expect Paleochora ~17 Nov and Falasarna ~20 Nov 2026 at about ×1.18. Check the dashboard panel then; nothing to do unless
   the factor looks wrong. Elafonisi and Kissamos stations read low and are never used to lower a forecast.
+- Season sense (2026-11-10): beaches lose points below feels-like 24° / water 23° (`SWIM_COMFORT`), outdoor windows end by
+  sunset, sunbeds/canteens are promised May–October only. These are score tunings, not hard limits; the owner has not
+  reviewed the numbers. Revisit in spring when beaches return to the top of the picks.
 - Push notifications have never been sent: the evening log said "push not configured". The log now names what is missing
   (`pushMissing`); read the next evening run and tell the owner which secret/variable to add (likely `VAPID_PRIVATE_KEY`).
 - Dropped for now (owner, 2026-11-09): tavern observer network (no incentive to offer) and the boat-company line

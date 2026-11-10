@@ -121,6 +121,11 @@ export function analyzeSpot(spot: Spot, data: Dataset): HourConditions[] {
   const marine = data.marine[spot.id];
   const dep = spot.dependsOnSea ? data.marine[depSeaId(spot.id)] : undefined;
   const out: HourConditions[] = [];
+  // "13:20" → 13.33; an hour counts as daylight when it starts no more than half an hour before
+  // sunrise and ends no more than a quarter of an hour after sunset
+  const clock = (iso?: string) => (iso && iso.length >= 16 ? Number(iso.slice(11, 13)) + Number(iso.slice(14, 16)) / 60 : null);
+  const sunrise = clock(land.sunrise);
+  const sunset = clock(land.sunset);
 
   land.atmos.forEach((a, k) => {
     const hour = hourOf(a.time);
@@ -164,6 +169,7 @@ export function analyzeSpot(spot: Spot, data: Dataset): HourConditions[] {
       uv: a.uv,
       thunder: a.code != null && THUNDER_CODES.has(a.code),
       ...(data.recentRain?.[spot.id] ? { recentRain: data.recentRain[spot.id] } : {}),
+      ...(sunrise != null && sunset != null ? { daylight: hour + 0.5 >= sunrise && hour + 1 <= sunset + 0.25 } : {}),
     };
 
     const m = marine?.find((x) => x.time === a.time);

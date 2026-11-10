@@ -1,4 +1,5 @@
 import { haversineKm } from '../engine/geo';
+import { spotById } from '../data/spots';
 import type { Factor, HourConditions, ProfileId, Spot, SpotScore } from '../engine/types';
 import type { Synopsis } from '../engine/synopsis';
 import type { GuestLang } from './property';
@@ -56,10 +57,14 @@ const POS: Partial<Record<Factor['key'], L>> = {
   },
 };
 
+/** The calm-sea line without the swimming promise, for cool days. */
+const SEA_CALM_COOL: L = { el: 'Ήρεμη θάλασσα', en: 'Calm sea', de: 'Ruhiges Meer', fr: 'Mer calme' };
+
 const TRAITS: Record<string, L> = {
   kidFriendly: { el: 'Ιδανικό για παιδιά', en: 'Great for kids', de: 'Ideal für Kinder', fr: 'Idéal pour les enfants' },
   shallow: { el: 'Ρηχά νερά', en: 'Shallow water', de: 'Flaches Wasser', fr: 'Eau peu profonde' },
   facilities: { el: 'Ξαπλώστρες, φαγητό, τουαλέτες', en: 'Sunbeds, food and toilets', de: 'Liegen, Essen und Toiletten', fr: 'Transats, restauration, toilettes' },
+  facilitiesPlain: { el: 'Φαγητό και τουαλέτες επί τόπου', en: 'Food and toilets on site', de: 'Essen und Toiletten vor Ort', fr: 'Restauration et toilettes sur place' },
   shade: { el: 'Υπάρχει σκιά', en: 'Shade available', de: 'Schatten vorhanden', fr: "De l'ombre sur place" },
   easyAccess: { el: 'Εύκολη πρόσβαση', en: 'Easy access', de: 'Leicht zugänglich', fr: 'Accès facile' },
   scenic: { el: 'Εντυπωσιακό τοπίο', en: 'Stunning scenery', de: 'Atemberaubende Landschaft', fr: 'Paysage spectaculaire' },
@@ -117,13 +122,13 @@ const WARN: Partial<Record<Factor['key'], L>> = {
     fr: 'Chaud (ressenti {temp}°C) : eau et ombre',
   },
   cool: {
-    el: 'Λίγο δροσερά για μπάνιο ({temp}°C)',
-    en: 'A bit cool for swimming ({temp}°C)',
-    de: 'Etwas kühl zum Baden ({temp}°C)',
-    fr: 'Un peu frais pour se baigner ({temp}°C)',
+    el: 'Δροσερά για μπάνιο ({temp}°C): για βόλτα στην άμμο και μια γρήγορη βουτιά',
+    en: 'Cool for swimming ({temp}°C): good for a walk on the sand and a quick dip',
+    de: 'Kühl zum Baden ({temp}°C): gut für einen Strandspaziergang und ein kurzes Bad',
+    fr: 'Frais pour la baignade ({temp}°C) : pour une promenade sur le sable et un bain rapide',
   },
   cold: { el: 'Κρύο (αίσθηση {temp}°C)', en: 'Chilly (feels like {temp}°C)', de: 'Kühl (gefühlt {temp}°C)', fr: 'Frais (ressenti {temp}°C)' },
-  coldWater: { el: 'Θάλασσα {sst}°C', en: 'Sea at {sst}°C', de: 'Wasser {sst}°C', fr: 'Mer à {sst}°C' },
+  coldWater: { el: 'Δροσερό νερό ({sst}°C)', en: 'Fresh water ({sst}°C)', de: 'Frisches Wasser ({sst}°C)', fr: 'Eau fraîche ({sst}°C)' },
   cloudy: { el: 'Αρκετή συννεφιά', en: 'Mostly cloudy', de: 'Überwiegend bewölkt', fr: 'Plutôt nuageux' },
   ripCurrents: {
     el: 'Με κύμα δημιουργούνται επικίνδυνα ρεύματα, προσέξτε τις σημαίες',
@@ -191,15 +196,18 @@ const WARN: Partial<Record<Factor['key'], L>> = {
 function candidates(sc: SpotScore, lang: GuestLang): { pos: GuestLine[]; warn?: GuestLine } {
   const pos: GuestLine[] = [];
   const all = [...sc.fit.filter((f) => f.key === 'opportunity'), ...sc.factors.filter((f) => f.impact > 0), ...sc.fit.filter((f) => f.key === 'goodForBadWeather')];
+  // "ideal for swimming" is a summer sentence: with cool air or fresh water the sea is just calm
+  const coolSwim = sc.factors.some((f) => (f.key === 'cool' || f.key === 'coldWater' || f.key === 'coolSwim' || f.key === 'coldSwim') && f.impact <= -4);
   for (const f of all) {
-    const tpl = POS[f.key];
+    const tpl = f.key === 'seaCalm' && coolSwim ? SEA_CALM_COOL : POS[f.key];
     if (!tpl) continue;
     pos.push({ kind: 'pos', text: t(tpl, lang, { dir: f.params.dir != null ? compassG(Number(f.params.dir), lang) : '', temp: f.params.apparent ?? '' }) });
   }
   const traits = String(sc.fit.find((f) => f.key === 'trait')?.params.traits ?? '')
     .split(',')
     .filter((x) => TRAITS[x]);
-  for (const tr of traits) pos.push({ kind: 'pos', text: TRAITS[tr][lang] });
+  const isBeach = spotById(sc.spotId)?.type === 'beach';
+  for (const tr of traits) pos.push({ kind: 'pos', text: TRAITS[tr === 'facilities' && !isBeach ? 'facilitiesPlain' : tr][lang] });
 
   const warnFactor = sc.factors.find((f) => f.impact <= -5 && WARN[f.key]);
   const p = warnFactor?.params;
