@@ -1,85 +1,55 @@
 {
- "updatedAt": "2026-11-09T10:11:45.694Z",
+ "updatedAt": "2026-11-10T03:35:15.398Z",
  "station": {
   "id": "LGSA",
   "name": "Chania airport (Akrotiri)",
   "lat": 35.5317,
   "lon": 24.1497
  },
- "days": 8,
+ "days": 9,
  "from": "2026-11-01",
- "to": "2026-11-08",
+ "to": "2026-11-09",
  "wind": {
-  "mae": 4.2,
-  "bias": -1,
+  "mae": 4.1,
+  "bias": -0.6,
   "afternoonBias": -0.6,
-  "dirMae": 16.1
+  "dirMae": 17.2
  },
  "temp": {
   "mae": 0.8,
-  "bias": 0.4
+  "bias": 0.3
  },
  "bfWithin1Rate": 1,
- "rainAgreeRate": 0.63,
+ "rainAgreeRate": 0.67,
  "gustMaeMax": 7.2,
  "perModel": [
   {
    "model": "ecmwf_ifs025",
    "mae": 3.9,
-   "days": 8
+   "days": 9
   },
   {
    "model": "icon_seamless",
-   "mae": 4.4,
-   "days": 8
+   "mae": 4.2,
+   "days": 9
   },
   {
    "model": "meteofrance_seamless",
-   "mae": 6.1,
-   "days": 8
+   "mae": 5.8,
+   "days": 9
   },
   {
    "model": "gfs_seamless",
    "mae": 7.2,
-   "days": 8
+   "days": 9
   },
   {
    "model": "ukmo_seamless",
-   "mae": 10.6,
-   "days": 8
+   "mae": 9.9,
+   "days": 9
   }
  ],
  "recent": [
-  {
-   "date": "2026-11-02",
-   "wind": {
-    "mae": 3.4,
-    "bias": -3,
-    "afternoonBias": -1.7,
-    "dirMae": null
-   },
-   "bf": {
-    "forecastMax": 2,
-    "observedMax": 3,
-    "within1": true
-   },
-   "temp": {
-    "mae": 1,
-    "bias": 0.7,
-    "forecastMax": 20.9,
-    "observedMax": 22
-   },
-   "rain": {
-    "forecastProbMax": 30,
-    "forecastSumMm": 0,
-    "observed": true,
-    "agree": false
-   },
-   "gust": {
-    "forecastMax": 16.2,
-    "observedMax": 16.7
-   }
-  },
   {
    "date": "2026-11-03",
    "wind": {
@@ -259,14 +229,44 @@
     "forecastMax": 33.1,
     "observedMax": 16.7
    }
+  },
+  {
+   "date": "2026-11-09",
+   "wind": {
+    "mae": 3.4,
+    "bias": 2.5,
+    "afternoonBias": -1,
+    "dirMae": 23.8
+   },
+   "bf": {
+    "forecastMax": 2,
+    "observedMax": 2,
+    "within1": true
+   },
+   "temp": {
+    "mae": 0.9,
+    "bias": -0.2,
+    "forecastMax": 16.7,
+    "observedMax": 17
+   },
+   "rain": {
+    "forecastProbMax": 0,
+    "forecastSumMm": 0,
+    "observed": false,
+    "agree": true
+   },
+   "gust": {
+    "forecastMax": 16.2,
+    "observedMax": 9.3
+   }
   }
  ],
  "recs": {
-  "days": 8,
-  "picks": 72,
-  "picksHeld": 72,
-  "avoids": 26,
-  "avoidsRight": 26,
+  "days": 9,
+  "picks": 81,
+  "picksHeld": 81,
+  "avoids": 27,
+  "avoidsRight": 27,
   "pickHeldRate": 1,
   "avoidRightRate": 1
  },
@@ -274,58 +274,19 @@
   {
    "id": "falasarna",
    "name": "Falasarna (NOA)",
-   "days": 8,
+   "days": 9,
    "from": "2026-11-01",
-   "to": "2026-11-08",
-   "gustMae": 6.9,
-   "gustWithin10Rate": 0.75,
+   "to": "2026-11-09",
+   "gustMae": 6.7,
+   "gustWithin10Rate": 0.78,
    "gustBfWithin1Rate": 1,
-   "avgWindMae": 5.7,
-   "dirWithin45Rate": 0.5,
+   "avgWindMae": 5.2,
+   "dirWithin45Rate": 0.56,
    "tempMaxMae": 0.8,
-   "rainAgreeRate": 0.75,
-   "picks": 8,
-   "picksHeld": 8,
+   "rainAgreeRate": 0.78,
+   "picks": 9,
+   "picksHeld": 9,
    "recent": [
-    {
-     "date": "2026-11-02",
-     "wind": {
-      "forecastAvg": 16.8,
-      "observedAvg": 11.3,
-      "forecastDir": 194,
-      "observedDir": 247.5,
-      "dirDiff": 54
-     },
-     "gust": {
-      "forecastMax": 41.4,
-      "forecastHour": 23,
-      "observedMax": 56.3,
-      "observedHour": 7,
-      "withinHours": 16
-     },
-     "temp": {
-      "forecastMax": 21.8,
-      "observedMax": 23.2,
-      "forecastMin": 18.7,
-      "observedMin": 15.7
-     },
-     "rain": {
-      "forecastSumMm": 0,
-      "forecastProbMax": 15,
-      "observed": true,
-      "agree": false
-     },
-     "pick": {
-      "spotId": "falasarna",
-      "verdict": "go",
-      "window": {
-       "start": 8,
-       "end": 12
-      },
-      "gustInWindow": false,
-      "held": true
-     }
-    },
     {
      "date": "2026-11-03",
      "wind": {
@@ -559,64 +520,64 @@
       "gustInWindow": false,
       "held": true
      }
+    },
+    {
+     "date": "2026-11-09",
+     "wind": {
+      "forecastAvg": 11.1,
+      "observedAvg": 10.5,
+      "forecastDir": 94,
+      "observedDir": 135,
+      "dirDiff": 41
+     },
+     "gust": {
+      "forecastMax": 35.3,
+      "forecastHour": 0,
+      "observedMax": 40.2,
+      "observedHour": 3,
+      "withinHours": 3
+     },
+     "temp": {
+      "forecastMax": 19.1,
+      "observedMax": 19.5,
+      "forecastMin": 13.9,
+      "observedMin": 13.4
+     },
+     "rain": {
+      "forecastSumMm": 0,
+      "forecastProbMax": 3,
+      "observed": false,
+      "agree": true
+     },
+     "pick": {
+      "spotId": "falasarna",
+      "verdict": "go",
+      "window": {
+       "start": 14,
+       "end": 18
+      },
+      "gustInWindow": false,
+      "held": true
+     }
     }
    ]
   },
   {
    "id": "elafonisi",
    "name": "Elafonisi (NOA)",
-   "days": 8,
+   "days": 9,
    "from": "2026-11-01",
-   "to": "2026-11-08",
-   "gustMae": 11.9,
-   "gustWithin10Rate": 0.63,
-   "gustBfWithin1Rate": 0.75,
-   "avgWindMae": 13.1,
-   "dirWithin45Rate": 0.88,
+   "to": "2026-11-09",
+   "gustMae": 11.2,
+   "gustWithin10Rate": 0.67,
+   "gustBfWithin1Rate": 0.78,
+   "avgWindMae": 12.3,
+   "dirWithin45Rate": 0.89,
    "tempMaxMae": 1.6,
-   "rainAgreeRate": 0.88,
-   "picks": 8,
-   "picksHeld": 7,
+   "rainAgreeRate": 0.89,
+   "picks": 9,
+   "picksHeld": 8,
    "recent": [
-    {
-     "date": "2026-11-02",
-     "wind": {
-      "forecastAvg": 15.1,
-      "observedAvg": 0.5,
-      "forecastDir": 134,
-      "observedDir": 112.5,
-      "dirDiff": 21
-     },
-     "gust": {
-      "forecastMax": 38.2,
-      "forecastHour": 16,
-      "observedMax": 43.5,
-      "observedHour": 18,
-      "withinHours": 2
-     },
-     "temp": {
-      "forecastMax": 19.5,
-      "observedMax": 22.3,
-      "forecastMin": 18.8,
-      "observedMin": 16.8
-     },
-     "rain": {
-      "forecastSumMm": 7,
-      "forecastProbMax": 95,
-      "observed": true,
-      "agree": true
-     },
-     "pick": {
-      "spotId": "elafonisi",
-      "verdict": "avoid",
-      "window": {
-       "start": 9,
-       "end": 13
-      },
-      "gustInWindow": false,
-      "held": true
-     }
-    },
     {
      "date": "2026-11-03",
      "wind": {
@@ -850,64 +811,64 @@
       "gustInWindow": false,
       "held": true
      }
+    },
+    {
+     "date": "2026-11-09",
+     "wind": {
+      "forecastAvg": 8.6,
+      "observedAvg": 2.7,
+      "forecastDir": 105,
+      "observedDir": 112.5,
+      "dirDiff": 8
+     },
+     "gust": {
+      "forecastMax": 20.2,
+      "forecastHour": 14,
+      "observedMax": 25.7,
+      "observedHour": 12,
+      "withinHours": 2
+     },
+     "temp": {
+      "forecastMax": 18.7,
+      "observedMax": 20.1,
+      "forecastMin": 15.6,
+      "observedMin": 10.9
+     },
+     "rain": {
+      "forecastSumMm": 0,
+      "forecastProbMax": 0,
+      "observed": false,
+      "agree": true
+     },
+     "pick": {
+      "spotId": "elafonisi",
+      "verdict": "caution",
+      "window": {
+       "start": 15,
+       "end": 19
+      },
+      "gustInWindow": false,
+      "held": true
+     }
     }
    ]
   },
   {
    "id": "paleochora",
    "name": "Paleochora (NOA)",
-   "days": 8,
+   "days": 9,
    "from": "2026-11-01",
-   "to": "2026-11-08",
-   "gustMae": 8.9,
-   "gustWithin10Rate": 0.63,
-   "gustBfWithin1Rate": 0.88,
-   "avgWindMae": 4.1,
-   "dirWithin45Rate": 0.75,
+   "to": "2026-11-09",
+   "gustMae": 10.3,
+   "gustWithin10Rate": 0.56,
+   "gustBfWithin1Rate": 0.78,
+   "avgWindMae": 3.8,
+   "dirWithin45Rate": 0.78,
    "tempMaxMae": 2.1,
    "rainAgreeRate": 1,
-   "picks": 8,
-   "picksHeld": 6,
+   "picks": 9,
+   "picksHeld": 7,
    "recent": [
-    {
-     "date": "2026-11-02",
-     "wind": {
-      "forecastAvg": 10.6,
-      "observedAvg": 10.3,
-      "forecastDir": 138,
-      "observedDir": 135,
-      "dirDiff": 3
-     },
-     "gust": {
-      "forecastMax": 33.8,
-      "forecastHour": 16,
-      "observedMax": 64.4,
-      "observedHour": 7,
-      "withinHours": 9
-     },
-     "temp": {
-      "forecastMax": 18.7,
-      "observedMax": 22.4,
-      "forecastMin": 17.4,
-      "observedMin": 16.6
-     },
-     "rain": {
-      "forecastSumMm": 37.3,
-      "forecastProbMax": 98,
-      "observed": true,
-      "agree": true
-     },
-     "pick": {
-      "spotId": "paleochora-sandy",
-      "verdict": "avoid",
-      "window": {
-       "start": 8,
-       "end": 12
-      },
-      "gustInWindow": false,
-      "held": true
-     }
-    },
     {
      "date": "2026-11-03",
      "wind": {
@@ -1141,64 +1102,64 @@
       "gustInWindow": true,
       "held": false
      }
+    },
+    {
+     "date": "2026-11-09",
+     "wind": {
+      "forecastAvg": 7.1,
+      "observedAvg": 8.8,
+      "forecastDir": 17,
+      "observedDir": 22.5,
+      "dirDiff": 5
+     },
+     "gust": {
+      "forecastMax": 22,
+      "forecastHour": 0,
+      "observedMax": 43.5,
+      "observedHour": 0,
+      "withinHours": 0
+     },
+     "temp": {
+      "forecastMax": 18.4,
+      "observedMax": 20.1,
+      "forecastMin": 13.2,
+      "observedMin": 13.3
+     },
+     "rain": {
+      "forecastSumMm": 0,
+      "forecastProbMax": 0,
+      "observed": false,
+      "agree": true
+     },
+     "pick": {
+      "spotId": "paleochora-sandy",
+      "verdict": "caution",
+      "window": {
+       "start": 13,
+       "end": 17
+      },
+      "gustInWindow": false,
+      "held": true
+     }
     }
    ]
   },
   {
    "id": "kissamos",
    "name": "Kissamos (NOA)",
-   "days": 8,
+   "days": 9,
    "from": "2026-11-01",
-   "to": "2026-11-08",
-   "gustMae": 13.1,
-   "gustWithin10Rate": 0.38,
-   "gustBfWithin1Rate": 0.63,
-   "avgWindMae": 12.3,
-   "dirWithin45Rate": 0.75,
+   "to": "2026-11-09",
+   "gustMae": 13,
+   "gustWithin10Rate": 0.33,
+   "gustBfWithin1Rate": 0.67,
+   "avgWindMae": 11.7,
+   "dirWithin45Rate": 0.67,
    "tempMaxMae": 1.3,
-   "rainAgreeRate": 0.63,
-   "picks": 8,
-   "picksHeld": 6,
+   "rainAgreeRate": 0.67,
+   "picks": 9,
+   "picksHeld": 7,
    "recent": [
-    {
-     "date": "2026-11-02",
-     "wind": {
-      "forecastAvg": 14.2,
-      "observedAvg": 6.6,
-      "forecastDir": 194,
-      "observedDir": 225,
-      "dirDiff": 31
-     },
-     "gust": {
-      "forecastMax": 41.4,
-      "forecastHour": 23,
-      "observedMax": 40.2,
-      "observedHour": 14,
-      "withinHours": 9
-     },
-     "temp": {
-      "forecastMax": 21.6,
-      "observedMax": 23.4,
-      "forecastMin": 17,
-      "observedMin": 14.6
-     },
-     "rain": {
-      "forecastSumMm": 0,
-      "forecastProbMax": 15,
-      "observed": true,
-      "agree": false
-     },
-     "pick": {
-      "spotId": "balos",
-      "verdict": "go",
-      "window": {
-       "start": 8,
-       "end": 12
-      },
-      "gustInWindow": false,
-      "held": true
-     }
-    },
     {
      "date": "2026-11-03",
      "wind": {
@@ -1428,6 +1389,45 @@
       "window": {
        "start": 15,
        "end": 19
+      },
+      "gustInWindow": false,
+      "held": true
+     }
+    },
+    {
+     "date": "2026-11-09",
+     "wind": {
+      "forecastAvg": 11.3,
+      "observedAvg": 4.1,
+      "forecastDir": 96,
+      "observedDir": 157.5,
+      "dirDiff": 61
+     },
+     "gust": {
+      "forecastMax": 34.6,
+      "forecastHour": 0,
+      "observedMax": 22.5,
+      "observedHour": 4,
+      "withinHours": 4
+     },
+     "temp": {
+      "forecastMax": 18.6,
+      "observedMax": 20.1,
+      "forecastMin": 11.5,
+      "observedMin": 8.7
+     },
+     "rain": {
+      "forecastSumMm": 0,
+      "forecastProbMax": 3,
+      "observed": false,
+      "agree": true
+     },
+     "pick": {
+      "spotId": "balos",
+      "verdict": "go",
+      "window": {
+       "start": 13,
+       "end": 17
       },
       "gustInWindow": false,
       "held": true
