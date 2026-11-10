@@ -83,13 +83,18 @@ async function main() {
   }
   const push = pushEnv();
   if (report.changed && push) {
-    const r = await sendPush(push, pack.property.id, (sub) => {
-      const lang = (GUEST_LANGS as readonly string[]).includes(sub.lang ?? '') ? (sub.lang as GuestLang) : 'en';
-      const profile = (sub.profile && report.byProfile[sub.profile as ProfileId] ? sub.profile : 'couple') as ProfileId;
-      const msg = report.byProfile[profile]?.messages?.[lang];
-      return msg ? { title: `${pack.property.name} · Plan B`, body: notificationFromMessage(msg), url: DEMO_PROPERTY.guestUrl, tag: `planb-${date}` } : null;
-    });
-    console.log(`push: ${r.sent} sent, ${r.failed} failed, ${r.removed} removed`);
+    // as in the evening script: a notification problem must not lose the plan-B files
+    try {
+      const r = await sendPush(push, pack.property.id, (sub) => {
+        const lang = (GUEST_LANGS as readonly string[]).includes(sub.lang ?? '') ? (sub.lang as GuestLang) : 'en';
+        const profile = (sub.profile && report.byProfile[sub.profile as ProfileId] ? sub.profile : 'couple') as ProfileId;
+        const msg = report.byProfile[profile]?.messages?.[lang];
+        return msg ? { title: `${pack.property.name} · Plan B`, body: notificationFromMessage(msg), url: DEMO_PROPERTY.guestUrl, tag: `planb-${date}` } : null;
+      });
+      console.log(`push: ${r.sent} sent, ${r.failed} failed, ${r.removed} removed`);
+    } catch (e) {
+      console.error(`push FAILED, plan B still published: ${(e as Error).message}`);
+    }
   }
 
   const mail = mailEnv();
@@ -98,8 +103,12 @@ async function main() {
       .filter(([, r]) => r.messages)
       .map(([profile, r]) => `=== ${PROFILES.find((p) => p.id === profile)?.name.el} ===\n${r.messages!.el}\n`)
       .join('\n');
-    await sendMail(mail, `Weather Mood · Plan B για σήμερα ${date}`, `Ο καιρός άλλαξε σε σχέση με το βραδινό μήνυμα. Έτοιμα κείμενα:\n\n${body}`);
-    console.log(`emailed plan B to ${mail.to}`);
+    try {
+      await sendMail(mail, `Weather Mood · Plan B για σήμερα ${date}`, `Ο καιρός άλλαξε σε σχέση με το βραδινό μήνυμα. Έτοιμα κείμενα:\n\n${body}`);
+      console.log(`emailed plan B to ${mail.to}`);
+    } catch (e) {
+      console.error(`email FAILED, plan B still published: ${(e as Error).message}`);
+    }
   } else if (report.changed) {
     console.log('plan B needed, SMTP not configured: file written only');
   }

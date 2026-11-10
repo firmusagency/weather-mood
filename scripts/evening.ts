@@ -74,13 +74,18 @@ async function main() {
 
   const push = pushEnv();
   if (push) {
-    const r = await sendPush(push, pack.property.id, (sub) => {
-      const lang = (GUEST_LANGS as readonly string[]).includes(sub.lang ?? '') ? (sub.lang as GuestLang) : 'en';
-      const profile = (sub.profile && pack.messages[sub.profile as ProfileId] ? sub.profile : 'couple') as ProfileId;
-      const msg = pack.messages[profile]?.[lang];
-      return msg ? { title: `${pack.property.name} · ${lang === 'el' ? 'Αύριο' : lang === 'de' ? 'Morgen' : lang === 'fr' ? 'Demain' : 'Tomorrow'}`, body: notificationFromMessage(msg), url: DEMO_PROPERTY.guestUrl, tag: `evening-${date}` } : null;
-    });
-    console.log(`push: ${r.sent} sent, ${r.failed} failed, ${r.removed} removed`);
+    // notifications are a courtesy: whatever goes wrong here, the message files must still be committed
+    try {
+      const r = await sendPush(push, pack.property.id, (sub) => {
+        const lang = (GUEST_LANGS as readonly string[]).includes(sub.lang ?? '') ? (sub.lang as GuestLang) : 'en';
+        const profile = (sub.profile && pack.messages[sub.profile as ProfileId] ? sub.profile : 'couple') as ProfileId;
+        const msg = pack.messages[profile]?.[lang];
+        return msg ? { title: `${pack.property.name} · ${lang === 'el' ? 'Αύριο' : lang === 'de' ? 'Morgen' : lang === 'fr' ? 'Demain' : 'Tomorrow'}`, body: notificationFromMessage(msg), url: DEMO_PROPERTY.guestUrl, tag: `evening-${date}` } : null;
+      });
+      console.log(`push: ${r.sent} sent, ${r.failed} failed, ${r.removed} removed`);
+    } catch (e) {
+      console.error(`push FAILED, message still published: ${(e as Error).message}`);
+    }
   } else {
     console.log(`push NOT sent, missing: ${pushMissing().join(', ')}`);
   }
@@ -88,8 +93,12 @@ async function main() {
   const mail = mailEnv();
   if (mail) {
     const body = PROFILES.map((p) => `=== ${p.name.el} ===\n${pack.messages[p.id]?.el}\n`).join('\n');
-    await sendMail(mail, `Weather Mood · Βραδινό μήνυμα για ${date}`, `Έτοιμα κείμενα για αποστολή στους επισκέπτες (αντιγραφή/επικόλληση σε WhatsApp ή email).\n\n${body}`);
-    console.log(`emailed reception digest to ${mail.to}`);
+    try {
+      await sendMail(mail, `Weather Mood · Βραδινό μήνυμα για ${date}`, `Έτοιμα κείμενα για αποστολή στους επισκέπτες (αντιγραφή/επικόλληση σε WhatsApp ή email).\n\n${body}`);
+      console.log(`emailed reception digest to ${mail.to}`);
+    } catch (e) {
+      console.error(`email FAILED, message still published: ${(e as Error).message}`);
+    }
   } else {
     console.log('SMTP not configured: files written, no email sent');
   }

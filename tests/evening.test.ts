@@ -124,3 +124,20 @@ describe('plan B comparison', () => {
     expect(diff.significant).toBe(false);
   });
 });
+
+describe('push key hygiene', () => {
+  it('repairs the usual paste damage and names what is wrong without printing the key', async () => {
+    const { cleanVapidKey, privateKeyProblem, pushEnv, pushMissing } = await import('../scripts/push');
+    const good = 'a'.repeat(20) + '-_' + 'B'.repeat(21); // 43 url-safe characters
+    expect(cleanVapidKey(` "${good}=" \n`)).toBe(good);
+    expect(cleanVapidKey(good.replace('-', '+').replace('_', '/'))).toBe(good);
+    expect(privateKeyProblem(good)).toBeNull();
+    expect(privateKeyProblem('B'.repeat(87))).toMatch(/87 characters.*PUBLIC key/);
+    expect(privateKeyProblem('abc$%{secret}')).toMatch(/not base64/);
+    const env = { SUPABASE_URL: 'https://x.supabase.co', SUPABASE_SERVICE_KEY: 'k', VAPID_PUBLIC_KEY: 'P'.repeat(87) };
+    // a malformed private key disables push (with a reason) instead of crashing the evening run
+    expect(pushEnv({ ...env, VAPID_PRIVATE_KEY: 'B'.repeat(87) })).toBeNull();
+    expect(pushMissing({ ...env, VAPID_PRIVATE_KEY: 'B'.repeat(87) }).join(' ')).not.toContain('BBBB');
+    expect(pushEnv({ ...env, VAPID_PRIVATE_KEY: `${good}=\n` })?.privateKey).toBe(good);
+  });
+});

@@ -27,7 +27,25 @@ function publicKeyFromDotEnv(): string | undefined {
   }
 }
 
-const publicKeyOf = (env: NodeJS.ProcessEnv) => env.VAPID_PUBLIC_KEY || env.VITE_VAPID_PUBLIC_KEY || publicKeyFromDotEnv();
+/**
+ * A VAPID key as web-push wants it: URL-safe base64 without padding. Secrets pasted into a settings
+ * page often carry quotes, spaces, a trailing newline, "=" padding or the standard +/ alphabet.
+ */
+export function cleanVapidKey(raw: string | undefined): string | undefined {
+  const k = raw?.trim().replace(/^["']|["']$/g, '').replace(/\s+/g, '').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  return k || undefined;
+}
+
+/** Why a private key cannot be used, in words for the log (never the key itself); null when it looks right. */
+export function privateKeyProblem(raw: string | undefined): string | null {
+  const k = cleanVapidKey(raw);
+  if (!k) return 'secret VAPID_PRIVATE_KEY is empty';
+  if (!/^[A-Za-z0-9_-]+$/.test(k)) return 'secret VAPID_PRIVATE_KEY contains characters that are not base64 (is it the right value?)';
+  if (k.length !== 43) return `secret VAPID_PRIVATE_KEY has ${k.length} characters; a VAPID private key has 43 (the 87-character one is the PUBLIC key)`;
+  return null;
+}
+
+const publicKeyOf = (env: NodeJS.ProcessEnv) => cleanVapidKey(env.VAPID_PUBLIC_KEY || env.VITE_VAPID_PUBLIC_KEY || publicKeyFromDotEnv());
 
 /** Names (never values) of the settings push still needs; empty when it can send. */
 export function pushMissing(env = process.env): string[] {
@@ -36,14 +54,15 @@ export function pushMissing(env = process.env): string[] {
   if (!env.SUPABASE_SERVICE_KEY) missing.push('secret SUPABASE_SERVICE_KEY');
   if (!publicKeyOf(env)) missing.push('variable VAPID_PUBLIC_KEY');
   if (!env.VAPID_PRIVATE_KEY) missing.push('secret VAPID_PRIVATE_KEY');
+  else if (privateKeyProblem(env.VAPID_PRIVATE_KEY)) missing.push(privateKeyProblem(env.VAPID_PRIVATE_KEY)!);
   return missing;
 }
 
 export function pushEnv(env = process.env): PushEnv | null {
   const db = dbEnv(env);
   const publicKey = publicKeyOf(env);
-  const privateKey = env.VAPID_PRIVATE_KEY;
-  if (!db || !publicKey || !privateKey) return null;
+  const privateKey = cleanVapidKey(env.VAPID_PRIVATE_KEY);
+  if (!db || !publicKey || !privateKey || privateKeyProblem(privateKey)) return null;
   return { db, publicKey, privateKey, subject: env.VAPID_SUBJECT || 'mailto:hello@weathermood.gr' };
 }
 
