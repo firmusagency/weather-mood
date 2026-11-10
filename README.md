@@ -68,7 +68,8 @@
 τελευταίο πλάνο, και **ειδοποιήσεις push** για το βραδινό μήνυμα και το πρωινό Plan B (δωρεάν, χωρίς WhatsApp Business).
 Ο επισκέπτης πατάει «Ναι, ειδοποιήστε με»· η συνδρομή αποθηκεύεται στον πίνακα `push_subscriptions` (μόνο εισαγωγή με το δημόσιο κλειδί,
 `supabase/migrations/0002_push_subscriptions.sql`) και τα Actions στέλνουν με [web-push](https://github.com/web-push-libs/web-push).
-Ρύθμιση: `VITE_VAPID_PUBLIC_KEY` στο `.env` (δημόσιο), secret `VAPID_PRIVATE_KEY` και variable `VAPID_PUBLIC_KEY` στο repo, προαιρετικά
+Ρύθμιση: `VITE_VAPID_PUBLIC_KEY` στο `.env` (δημόσιο· το διαβάζουν και τα scripts, δεν χρειάζεται variable στο repo), secret `VAPID_PRIVATE_KEY` στο repo
+(μόνο οι 43 χαρακτήρες του ιδιωτικού κλειδιού· το log του βραδινού γράφει τι δεν πάει καλά αν η τιμή είναι λάθος), προαιρετικά
 `VAPID_SUBJECT` (mailto:). Δημιουργία ζεύγους: `npx web-push generate-vapid-keys`.
 
 Τα σημεία βρίσκονται στο `src/data/spots.ts`. **Είναι αρχική καταγραφή** (`verified: false`) και χρειάζονται επιτόπιο έλεγχο.

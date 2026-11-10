@@ -91,22 +91,24 @@ export function privateKeyProblem(raw: string | undefined, publicKey?: string): 
   return null;
 }
 
-const publicKeyOf = (env: NodeJS.ProcessEnv) => cleanVapidKey(env.VAPID_PUBLIC_KEY || env.VITE_VAPID_PUBLIC_KEY || publicKeyFromDotEnv());
+// The key in .env is the one the guest page subscribes with, so it is the truth; the repository
+// variable is only a fallback (a stale variable must not make every notification fail).
+const publicKeyOf = (env: NodeJS.ProcessEnv, pageKey = publicKeyFromDotEnv()) => cleanVapidKey(pageKey || env.VAPID_PUBLIC_KEY || env.VITE_VAPID_PUBLIC_KEY);
 
 /** Names (never values) of the settings push still needs; empty when it can send. */
-export function pushMissing(env = process.env): string[] {
+export function pushMissing(env = process.env, pageKey = publicKeyFromDotEnv()): string[] {
   const missing: string[] = [];
   if (!env.SUPABASE_URL) missing.push('secret SUPABASE_URL');
   if (!env.SUPABASE_SERVICE_KEY) missing.push('secret SUPABASE_SERVICE_KEY');
-  if (!publicKeyOf(env)) missing.push('variable VAPID_PUBLIC_KEY');
-  const problem = privateKeyProblem(env.VAPID_PRIVATE_KEY, publicKeyOf(env));
+  if (!publicKeyOf(env, pageKey)) missing.push('VITE_VAPID_PUBLIC_KEY in .env');
+  const problem = privateKeyProblem(env.VAPID_PRIVATE_KEY, publicKeyOf(env, pageKey));
   if (problem) missing.push(problem);
   return missing;
 }
 
-export function pushEnv(env = process.env): PushEnv | null {
+export function pushEnv(env = process.env, pageKey = publicKeyFromDotEnv()): PushEnv | null {
   const db = dbEnv(env);
-  const publicKey = publicKeyOf(env);
+  const publicKey = publicKeyOf(env, pageKey);
   const privateKey = extractPrivateKey(env.VAPID_PRIVATE_KEY);
   if (!db || !publicKey || !privateKey || privateKeyProblem(env.VAPID_PRIVATE_KEY, publicKey)) return null;
   return { db, publicKey, privateKey, subject: env.VAPID_SUBJECT || 'mailto:hello@weathermood.gr' };

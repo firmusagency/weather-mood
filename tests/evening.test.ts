@@ -149,9 +149,11 @@ describe('push key hygiene', () => {
     expect(privateKeyProblem(pair.privateKey, other.publicKey)).toMatch(/does not belong to the public key/);
 
     const env = { SUPABASE_URL: 'https://x.supabase.co', SUPABASE_SERVICE_KEY: 'k', VAPID_PUBLIC_KEY: pair.publicKey };
-    expect(pushEnv({ ...env, VAPID_PRIVATE_KEY: whole })?.privateKey).toBe(pair.privateKey);
-    expect(pushEnv({ ...env, VAPID_PRIVATE_KEY: other.privateKey })).toBeNull();
-    const said = pushMissing({ ...env, VAPID_PRIVATE_KEY: other.privateKey }).join(' ');
+    expect(pushEnv({ ...env, VAPID_PRIVATE_KEY: whole }, '')?.privateKey).toBe(pair.privateKey);
+    expect(pushEnv({ ...env, VAPID_PRIVATE_KEY: other.privateKey }, '')).toBeNull();
+    // the key the page uses (.env) wins over a stale repository variable
+    expect(pushEnv({ ...env, VAPID_PUBLIC_KEY: other.publicKey, VAPID_PRIVATE_KEY: pair.privateKey }, pair.publicKey)?.publicKey).toBe(pair.publicKey);
+    const said = pushMissing({ ...env, VAPID_PRIVATE_KEY: other.privateKey }, '').join(' ');
     expect(said).not.toContain(other.privateKey);
     expect(said).not.toContain(pair.publicKey);
   });
