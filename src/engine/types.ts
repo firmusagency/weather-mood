@@ -40,6 +40,8 @@ export interface Spot {
   seaPoint?: { lat: number; lon: number };
   /** Multiplier for how much offshore waves reach the shore (lagoons < 1, funnelling inlets > 1). */
   waveFactor?: number;
+  /** Multiplier on the forecast gust, from the coastal stations (engine/stationcal.ts); absent = 1. */
+  gustFactor?: number;
   /** Fetch length (km) for locally generated wind waves when the wind is onshore. */
   localFetchKm?: number;
   /** Strong waves create dangerous currents here. */

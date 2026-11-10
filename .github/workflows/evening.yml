@@ -19,16 +19,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # GitHub runs this cron 3–5 h late; the on-time run comes from the Supabase scheduler
-      # (supabase/migrations/0003_scheduler.sql). When that run already wrote tomorrow's message,
-      # the late fallback must not regenerate it and push/email the guests a second time.
-      - name: Skip the late fallback when tomorrow's message exists
+      # GitHub runs this cron hours late (seen: 8 h, i.e. 01:50 Athens the next day); the on-time run
+      # comes from the Supabase scheduler (supabase/migrations/0003_scheduler.sql). The fallback may
+      # only run when no evening message was made in the last 20 hours AND it is still evening in
+      # Athens. Judging by "tomorrow's file" is wrong after midnight: tomorrow has moved on by then.
+      - name: Skip the late fallback unless an evening message is really missing
         id: guard
         if: github.event_name == 'schedule'
         run: |
-          tomorrow=$(TZ=Europe/Athens date -d tomorrow +%F)
-          if [ -f "data/messages/$tomorrow.json" ]; then
-            echo "evening message for $tomorrow already exists; skipping the fallback run"
+          hour=$(TZ=Europe/Athens date +%-H)
+          made=$(jq -r '.generatedAt // empty' public/data/evening.json 2>/dev/null || true)
+          age=999999
+          if [ -n "$made" ]; then age=$(( $(date +%s) - $(date -d "$made" +%s) )); fi
+          if [ "$age" -lt 72000 ]; then
+            echo "an evening message was made ${age}s ago; skipping the fallback run"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          elif [ "$hour" -lt 15 ] || [ "$hour" -gt 21 ]; then
+            echo "it is ${hour}:00 in Athens, not evening; skipping the fallback run"
             echo "skip=true" >> "$GITHUB_OUTPUT"
           fi
       - uses: actions/setup-node@v4

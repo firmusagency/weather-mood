@@ -127,7 +127,9 @@ export function analyzeSpot(spot: Spot, data: Dataset): HourConditions[] {
     if (hour < FIRST_HOUR || hour > LAST_HOUR) return;
     // wind from the sea-side point when the snapshot has it (older snapshots fall back to the land cell)
     const windPoint = data.land[seaWindId(spot.id)] ? seaWindId(spot.id) : spot.id;
-    const wind = blendWind(windConsensus(data, windPoint, k), windConsensus(data, spot.id, k));
+    const blended = blendWind(windConsensus(data, windPoint, k), windConsensus(data, spot.id, k));
+    // stations nearby measured gusts consistently above the forecast: scale the gust, not the mean wind
+    const wind = spot.gustFactor && spot.gustFactor !== 1 ? { ...blended, gust: blended.gust * spot.gustFactor } : blended;
     const shelteredNow = inAnySector(wind.dir, spot.shelteredFrom);
     // Downslope gusts on the lee side depend on the wind crossing the mountains, so we look at the
     // open-sea wind north of the island rather than the (often weak) model wind at the spot itself.

@@ -12,9 +12,9 @@ import { Method } from './Method';
 import { Overview } from './Overview';
 import { Recommendations } from './Recommendations';
 import { SpotDetail } from './SpotDetail';
-import { EMBEDDED, datasetsFromSnapshot, fetchLive, loadCalibration, loadClosures, loadFeedback, loadSnapshot, loadVerification, readPref, writePref } from './data';
-import { applyClosures, type Closures } from '../engine/closures';
-import { applyCalibration, type Calibration, type FeedbackSummary } from '../engine/feedback';
+import { EMBEDDED, datasetsFromSnapshot, fetchLive, loadAdjustments, loadFeedback, loadSnapshot, loadVerification, readPref, writePref } from './data';
+import { adjustSpots, NO_ADJUSTMENTS, type Adjustments } from '../engine/adjust';
+import type { FeedbackSummary } from '../engine/feedback';
 import { loadPlanB, loadWeekly, type PlanBReport } from './data';
 import type { WeeklyReport } from '../engine/weekly';
 import type { VerificationSummary } from '../engine/verify';
@@ -73,19 +73,17 @@ export function App() {
   const [verification, setVerification] = useState<VerificationSummary | null>(null);
   const [feedback, setFeedback] = useState<FeedbackSummary | null>(null);
   const [weekly, setWeekly] = useState<WeeklyReport | null>(null);
-  const [calibration, setCalibration] = useState<Calibration | null>(null);
-  const [closures, setClosures] = useState<Closures | null>(null);
+  const [adjust, setAdjust] = useState<Adjustments>(NO_ADJUSTMENTS);
   const [planB, setPlanB] = useState<PlanBReport | null>(null);
   useEffect(() => {
     loadPlanB().then(setPlanB);
     loadVerification().then(setVerification);
     loadFeedback().then(setFeedback);
     loadWeekly().then(setWeekly);
-    loadCalibration().then(setCalibration);
-    loadClosures().then(setClosures);
+    loadAdjustments().then(setAdjust);
   }, []);
-  // Spot geometry with the guest-feedback wave corrections and the official closures folded in (no-ops without data).
-  const spots = useMemo(() => applyClosures(applyCalibration(SPOTS, calibration), closures), [calibration, closures]);
+  // Spot list with the guest-feedback wave factors, station gust factors and official closures folded in (no-ops without data).
+  const spots = useMemo(() => adjustSpots(SPOTS, adjust), [adjust]);
   const s = strings(lang);
   const today = athensDate(0);
 
@@ -269,7 +267,7 @@ export function App() {
               />
             )}
             {tab === 'method' && <Method spots={spots} lang={lang} types={s.types} verification={verification} feedback={feedback}
-          weekly={weekly} calibration={calibration} />}
+          weekly={weekly} calibration={adjust.calibration} stationCal={adjust.stations} />}
           </>
         )}
       </main>

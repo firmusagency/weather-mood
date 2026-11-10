@@ -1,4 +1,5 @@
 import type { Lang, Sector, Spot } from '../engine/types';
+import type { StationCalibration } from '../engine/stationcal';
 import type { VerificationSummary } from '../engine/verify';
 import type { WeeklyReport } from '../engine/weekly';
 import type { Calibration, FeedbackSummary, FeedbackTag } from '../engine/feedback';
@@ -172,6 +173,57 @@ function Accuracy({ v, lang }: { v: VerificationSummary | null; lang: Lang }) {
           <StationsTable stations={v.stations ?? []} lang={lang} />
         </>
       )}
+    </article>
+  );
+}
+
+const STATION_STATUS: Record<StationCalibration['stations'][number]['status'], { el: string; en: string }> = {
+  applied: { el: 'εφαρμόζεται', en: 'applied' },
+  collecting: { el: 'μαζεύει δεδομένα', en: 'collecting data' },
+  'reads-low': { el: 'ο σταθμός διαβάζει χαμηλά: δεν χρησιμοποιείται', en: 'station reads low: not used' },
+  'no-bias': { el: 'η πρόγνωση συμφωνεί: καμία διόρθωση', en: 'forecast agrees: no correction' },
+  inconsistent: { el: 'ασταθές μοτίβο: καμία διόρθωση', en: 'pattern not consistent: no correction' },
+};
+
+/** Gust correction per coastal station: what the engine applies on top of the models, and why not elsewhere. */
+export function StationCalPanel({ cal, lang }: { cal: StationCalibration | null; lang: Lang }) {
+  if (!cal?.stations.length) return null;
+  const el = lang === 'el';
+  return (
+    <article className="panel">
+      <h3 className="panel-title">{el ? 'Διόρθωση ριπών από τους σταθμούς' : 'Gust correction from the stations'}</h3>
+      <p className="hint">
+        {el
+          ? `Όταν ένας σταθμός μετρά επί ${cal.minDays} ημέρες ριπές σταθερά δυνατότερες από την πρόγνωση, οι ριπές στα κοντινά σημεία αυξάνονται ανάλογα (έως +25%). Ποτέ προς τα κάτω: ένας σταθμός που διαβάζει χαμηλά είναι συνήθως προφυλαγμένος.`
+          : `When a station measures, over ${cal.minDays} days, gusts consistently stronger than the forecast, gusts at the nearby spots are raised accordingly (up to +25%). Never downward: a station that reads low is usually sheltered.`}
+      </p>
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th>{el ? 'Σταθμός' : 'Station'}</th>
+            <th>{el ? 'Ημέρες' : 'Days'}</th>
+            <th>{el ? 'Μέτρηση / πρόγνωση' : 'Measured / forecast'}</th>
+            <th>{el ? 'Πάνω από την πρόγνωση' : 'Above forecast'}</th>
+            <th>{el ? 'Κατάσταση' : 'Status'}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {cal.stations.map((st) => (
+            <tr key={st.station}>
+              <td>{st.name}</td>
+              <td className="num">
+                {st.days}/{cal.minDays}
+              </td>
+              <td className="num">{st.medianRatio == null ? '–' : `×${st.medianRatio}`}</td>
+              <td className="num">{st.underShare == null ? '–' : `${Math.round(st.underShare * 100)}%`}</td>
+              <td>
+                {STATION_STATUS[st.status][lang]}
+                {st.status === 'applied' ? ` ×${st.gustFactor}` : ''}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </article>
   );
 }
@@ -392,6 +444,7 @@ export function Method({
   feedback,
   calibration,
   weekly = null,
+  stationCal = null,
 }: {
   spots: Spot[];
   lang: Lang;
@@ -400,6 +453,7 @@ export function Method({
   feedback: FeedbackSummary | null;
   calibration: Calibration | null;
   weekly?: WeeklyReport | null;
+  stationCal?: StationCalibration | null;
 }) {
   const t = TXT[lang];
   return (
@@ -408,6 +462,7 @@ export function Method({
         {t.title}
       </h2>
       <Accuracy v={verification} lang={lang} />
+      <StationCalPanel cal={stationCal} lang={lang} />
       <p className="hint">
         <a href="accuracy.html" target="_blank" rel="noreferrer">
           {lang === 'el' ? 'Δημόσια σελίδα ακρίβειας για ξενοδόχους →' : 'Public accuracy page for hoteliers →'}

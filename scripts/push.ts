@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import webpush from 'web-push';
 import { dbEnv, deleteRow, fetchAll, patchRow, type DbEnv } from './db';
 
@@ -14,9 +17,31 @@ export interface PushEnv {
   subject: string;
 }
 
+/** The public key is not a secret and is committed in .env for the page build; the scripts may read it from there. */
+function publicKeyFromDotEnv(): string | undefined {
+  try {
+    const file = join(dirname(fileURLToPath(import.meta.url)), '..', '.env');
+    return readFileSync(file, 'utf8').match(/^VITE_VAPID_PUBLIC_KEY=(.+)$/m)?.[1]?.trim() || undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+const publicKeyOf = (env: NodeJS.ProcessEnv) => env.VAPID_PUBLIC_KEY || env.VITE_VAPID_PUBLIC_KEY || publicKeyFromDotEnv();
+
+/** Names (never values) of the settings push still needs; empty when it can send. */
+export function pushMissing(env = process.env): string[] {
+  const missing: string[] = [];
+  if (!env.SUPABASE_URL) missing.push('secret SUPABASE_URL');
+  if (!env.SUPABASE_SERVICE_KEY) missing.push('secret SUPABASE_SERVICE_KEY');
+  if (!publicKeyOf(env)) missing.push('variable VAPID_PUBLIC_KEY');
+  if (!env.VAPID_PRIVATE_KEY) missing.push('secret VAPID_PRIVATE_KEY');
+  return missing;
+}
+
 export function pushEnv(env = process.env): PushEnv | null {
   const db = dbEnv(env);
-  const publicKey = env.VAPID_PUBLIC_KEY || env.VITE_VAPID_PUBLIC_KEY;
+  const publicKey = publicKeyOf(env);
   const privateKey = env.VAPID_PRIVATE_KEY;
   if (!db || !publicKey || !privateKey) return null;
   return { db, publicKey, privateKey, subject: env.VAPID_SUBJECT || 'mailto:hello@weathermood.gr' };

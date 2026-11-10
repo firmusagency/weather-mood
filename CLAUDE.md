@@ -44,13 +44,14 @@ decisions and conventions that are not obvious from the code.
   that are published as Claude artifacts; they are static snapshots, the live site is the source of truth.
 - GitHub runs `schedule:` crons 4–6 h late here. The on-time runs are dispatched by Supabase pg_cron
   (`supabase/migrations/0003_scheduler.sql`, schema `ops`, Athens-time check); the GitHub crons are a late fallback and the
-  evening/morning workflows skip the fallback when the day's output exists. Needs the vault secret `github_dispatch_token`
+  evening/morning/weekly workflows skip it unless the output is really missing and the Athens hour still makes sense
+  (the first guard compared file dates and let a fallback through at 01:50; never judge by "tomorrow" in a late job). Needs the vault secret `github_dispatch_token`
   (fine-grained PAT, Actions: write, no expiry; in place since 2026-11-07); `select * from ops.dispatch_status` shows what happened.
 - Open-Meteo is not reachable from the cloud sandbox: data comes from the GitHub Actions; trigger `snapshot.yml` to
   refresh and pull the result.
 - The owner reads Greek; reply in Greek, keep code and commit messages in English.
 
-## Open next steps (as of 2026-11-01)
+## Open next steps (as of 2026-11-10)
 
 - `AFTER_RAIN` thresholds (gorges after rain) stay as set: public closure notices show OFYPEKA shuts Samaria on a same-day
   forecast of ~8–10 mm (we are stricter) and keeps it shut for inspections after heavy rain (see
@@ -60,6 +61,10 @@ decisions and conventions that are not obvious from the code.
 - Rain calibration (`docs/rain-calibration-2026-11-01.md`): re-run `npm run rain:calibration` at ~30 days; the proposal is
   caution ≥ 40% / 0.5 mm for the sea. Per-model rain is in the snapshot and the verification rows since 2026-11-08, so the
   per-model table in that script fills up from the 2026-11-09 verification on.
-- Per-spot wind/wave corrections once ~30 days of station data exist (Elafonisi station reads low; weigh it less).
+- Station gust calibration (`src/engine/stationcal.ts`, `docs/station-gusts-2026-11-10.md`) activates by itself at 30 days per
+  station: expect Paleochora ~17 Nov and Falasarna ~20 Nov 2026 at about ×1.18. Check the dashboard panel then; nothing to do unless
+  the factor looks wrong. Elafonisi and Kissamos stations read low and are never used to lower a forecast.
+- Push notifications have never been sent: the evening log said "push not configured". The log now names what is missing
+  (`pushMissing`); read the next evening run and tell the owner which secret/variable to add (likely `VAPID_PRIVATE_KEY`).
 - Dropped for now (owner, 2026-11-09): tavern observer network (no incentive to offer) and the boat-company line
   (Cretan Daily Cruises publishes no cancellations; only by phone 28220 22888). Revisit when there is a pilot hotel.

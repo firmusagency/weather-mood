@@ -18,12 +18,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # the on-time run is dispatched by Supabase; the late GitHub cron must not email the report twice
+      - name: Skip the late fallback when this week's report exists
+        id: guard
+        if: github.event_name == 'schedule'
+        run: |
+          made=$(jq -r '.generatedAt // empty' public/data/weekly.json 2>/dev/null || true)
+          if [ -n "$made" ] && [ $(( $(date +%s) - $(date -d "$made" +%s) )) -lt 432000 ]; then
+            echo "weekly report made at $made; skipping the fallback run"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/setup-node@v4
+        if: steps.guard.outputs.skip != 'true'
         with:
           node-version: 22
           cache: npm
       - run: npm ci
+        if: steps.guard.outputs.skip != 'true'
       - run: npm run weekly
+        if: steps.guard.outputs.skip != 'true'
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
@@ -36,6 +49,7 @@ jobs:
           OWNER_EMAIL: ${{ secrets.OWNER_EMAIL }}
           VITE_DASHBOARD_URL: ${{ vars.VITE_DASHBOARD_URL || 'https://firmusagency.github.io/weather-mood/' }}
       - name: Commit report
+        if: steps.guard.outputs.skip != 'true'
         run: |
           git config user.name "weather-mood-bot"
           git config user.email "weather-mood-bot@users.noreply.github.com"

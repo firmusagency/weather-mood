@@ -12,11 +12,11 @@ import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SPOTS as BASE_SPOTS } from '../src/data/spots';
-import { applyClosures } from '../src/engine/closures';
-import { readClosures } from './samaria-status';
+import { adjustSpots } from '../src/engine/adjust';
+import { readAdjustments } from './adjustments';
 
-// spots with the official closures folded in (the park's word beats the forecast)
-const SPOTS = applyClosures(BASE_SPOTS, readClosures());
+// the same corrections the pages apply: guest-feedback waves, station gusts, official closures
+const SPOTS = adjustSpots(BASE_SPOTS, readAdjustments());
 import { REF_POINTS } from '../src/data/region';
 import { PROFILES } from '../src/data/profiles';
 import { athensDate } from '../src/engine/dates';
@@ -28,7 +28,7 @@ import type { ProfileId } from '../src/engine/types';
 import { eveningMessage } from '../src/guest/evening';
 import { DEMO_PROPERTY, GUEST_LANGS, type GuestLang } from '../src/guest/property';
 import { mailEnv, sendMail } from './mail';
-import { notificationFromMessage, pushEnv, sendPush } from './push';
+import { notificationFromMessage, pushEnv, pushMissing, sendPush } from './push';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -82,7 +82,7 @@ async function main() {
     });
     console.log(`push: ${r.sent} sent, ${r.failed} failed, ${r.removed} removed`);
   } else {
-    console.log('push not configured (VAPID_PRIVATE_KEY / SUPABASE_*): skipped');
+    console.log(`push NOT sent, missing: ${pushMissing().join(', ')}`);
   }
 
   const mail = mailEnv();

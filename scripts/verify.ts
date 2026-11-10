@@ -19,6 +19,7 @@ import { STATION, summarize, verifyDay, type VerificationRow, type VerificationS
 import { NOA_STATIONS, noaUrl, parseNoaaMonthly, verifyDaily, type DailyVerificationRow } from '../src/engine/noa';
 import { recheckRecommendations } from '../src/engine/recheck';
 import { SPOTS } from '../src/data/spots';
+import { buildStationCalibration } from '../src/engine/stationcal';
 import { BASES } from '../src/data/region';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -214,6 +215,10 @@ async function main() {
   }
   writeSummary(rows, stationRows);
   writeMonthlyArchive(rows, stationRows, date.slice(0, 7));
+  // gust correction per station (applies itself once a station has a month of consistent data)
+  const cal = buildStationCalibration(stationRows);
+  writeFileSync(join(root, 'public/data/station-calibration.json'), JSON.stringify(cal, null, 1));
+  for (const st of cal.stations) console.log(`  station calibration ${st.station}: ${st.days}/${cal.minDays} days, ratio ${st.medianRatio ?? '-'}, ${st.status}${st.status === 'applied' ? ` ×${st.gustFactor} → ${st.spots.join(', ')}` : ''}`);
 }
 
 main().catch((e) => {

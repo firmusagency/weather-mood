@@ -9,8 +9,7 @@ import { ReceptionView } from './ReceptionView';
 import { QrCard } from './QrCard';
 import { logVisit } from './feedback';
 import { SPOTS } from '../data/spots';
-import { applyCalibration } from '../engine/feedback';
-import { applyClosures } from '../engine/closures';
+import { adjustSpots } from '../engine/adjust';
 import { athensDate } from '../engine/dates';
 import { currentProperty, GUEST_LANGS, type GuestLang } from './property';
 import { defaultDate, useDatasets, useDayPlan } from './useGuestData';
@@ -28,11 +27,11 @@ export function GuestApp() {
   const [lang, setLang] = useState<GuestLang>(() => readPref('g-lang', GUEST_LANGS, detectLang()));
   const [profile, setProfile] = useState<ProfileId>(() => readPref('g-profile', PROFILE_IDS, 'couple'));
   const [view, setView] = useState<View>(initialView);
-  const { datasets, outlook, generatedAt, status, dates, calibration, closures } = useDatasets();
+  const { datasets, outlook, generatedAt, status, dates, adjust } = useDatasets();
   const [date, setDate] = useState('');
   const effectiveDate = date || defaultDate(dates);
   const data = datasets[effectiveDate];
-  const plan = useDayPlan(data, profile, property.base, calibration, closures);
+  const plan = useDayPlan(data, profile, property.base, adjust);
   const d = g(lang);
 
   useEffect(() => writePref('g-lang', lang), [lang]);
@@ -98,11 +97,10 @@ export function GuestApp() {
           updatedAt={generatedAt}
           datasets={datasets}
           outlook={outlook}
-          calibration={calibration}
-          closures={closures}
+          adjust={adjust}
         />
       )}
-      {view === 'lobby' && lobbyData && <LobbyView data={lobbyData} property={property} spots={applyClosures(applyCalibration(SPOTS, calibration), closures)} />}
+      {view === 'lobby' && lobbyData && <LobbyView data={lobbyData} property={property} spots={adjustSpots(SPOTS, adjust)} />}
       {view === 'qr' && <QrCard property={property} lang={lang} />}
       {view === 'reception' && (
         <ReceptionView

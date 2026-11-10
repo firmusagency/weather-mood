@@ -20,13 +20,15 @@ export interface NoaStation {
   lon: number;
   /** The spot whose recommendation this station can judge. */
   spotId: string;
+  /** Spots close enough to share the station's gust correction (default: spotId only). */
+  covers?: string[];
 }
 
 export const NOA_STATIONS: NoaStation[] = [
   { id: 'falasarna', name: 'Falasarna (NOA)', lat: 35.5, lon: 23.6, spotId: 'falasarna' },
-  { id: 'elafonisi', name: 'Elafonisi (NOA)', lat: 35.2, lon: 23.5, spotId: 'elafonisi' },
-  { id: 'paleochora', name: 'Paleochora (NOA)', lat: 35.2, lon: 23.7, spotId: 'paleochora-sandy' },
-  { id: 'kissamos', name: 'Kissamos (NOA)', lat: 35.5, lon: 23.7, spotId: 'balos' },
+  { id: 'elafonisi', name: 'Elafonisi (NOA)', lat: 35.2, lon: 23.5, spotId: 'elafonisi', covers: ['elafonisi', 'kedrodasos'] },
+  { id: 'paleochora', name: 'Paleochora (NOA)', lat: 35.2, lon: 23.7, spotId: 'paleochora-sandy', covers: ['paleochora-sandy', 'paleochora-pebble'] },
+  { id: 'kissamos', name: 'Kissamos (NOA)', lat: 35.5, lon: 23.7, spotId: 'balos', covers: ['balos', 'gramvousa-boat'] },
 ];
 
 export const noaUrl = (id: string, previousMonth = false) => `https://penteli.meteo.gr/stations/${id}/${previousMonth ? 'NOAAPRMO' : 'NOAAMO'}.TXT`;

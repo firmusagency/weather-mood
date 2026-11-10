@@ -26,8 +26,12 @@ jobs:
         if: github.event_name == 'schedule'
         run: |
           today=$(TZ=Europe/Athens date +%F)
+          hour=$(TZ=Europe/Athens date +%-H)
           if [ "$(jq -r .date public/data/plan-b.json 2>/dev/null)" = "$today" ]; then
             echo "plan-B check for $today already done; skipping the fallback run"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          elif [ "$hour" -lt 4 ] || [ "$hour" -ge 12 ]; then
+            echo "it is ${hour}:00 in Athens, too late for a morning note; skipping the fallback run"
             echo "skip=true" >> "$GITHUB_OUTPUT"
           fi
       - uses: actions/setup-node@v4
