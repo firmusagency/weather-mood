@@ -71,7 +71,7 @@ decisions and conventions that are not obvious from the code.
   it). The public key is derived from it, in the deploy (`scripts/vapid-public.ts` → page build) and in the sending scripts,
   so the pair cannot drift; `.env` holds only a fallback. Browsers that opted in under an older key renew themselves when
   the page loads (or through the same button). Push and email run inside try/catch: they can never again stop the message
-  from being committed (that happened once, 2026-11-10 17:40). Not yet seen: a log line "push: 1 sent".
+  from being committed (that happened once, 2026-11-10 17:40). First delivery confirmed on 2026-11-11 17:50 ("push: 1 sent", the owner's iPhone).
   On iPhone web push exists only for the page installed on the Home Screen: in a Safari tab the box now shows the three
   install steps (the owner had tapped the WhatsApp fallback there without knowing). A failed subscribe shows its reason.
 - Dropped for now (owner, 2026-11-09): tavern observer network (no incentive to offer) and the boat-company line
