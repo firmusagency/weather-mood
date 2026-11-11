@@ -148,13 +148,14 @@ describe('push key hygiene', () => {
     expect(privateKeyProblem('hello world')).toMatch(/not a VAPID private key/);
     expect(privateKeyProblem(pair.privateKey, other.publicKey)).toMatch(/does not belong to the public key/);
 
-    const env = { SUPABASE_URL: 'https://x.supabase.co', SUPABASE_SERVICE_KEY: 'k', VAPID_PUBLIC_KEY: pair.publicKey };
+    const env = { SUPABASE_URL: 'https://x.supabase.co', SUPABASE_SERVICE_KEY: 'k' };
     expect(pushEnv({ ...env, VAPID_PRIVATE_KEY: whole }, '')?.privateKey).toBe(pair.privateKey);
-    expect(pushEnv({ ...env, VAPID_PRIVATE_KEY: other.privateKey }, '')).toBeNull();
-    // the key the page uses (.env) wins over a stale repository variable
-    expect(pushEnv({ ...env, VAPID_PUBLIC_KEY: other.publicKey, VAPID_PRIVATE_KEY: pair.privateKey }, pair.publicKey)?.publicKey).toBe(pair.publicKey);
-    const said = pushMissing({ ...env, VAPID_PRIVATE_KEY: other.privateKey }, '').join(' ');
-    expect(said).not.toContain(other.privateKey);
+    // the public key is derived from the private one: a stale variable or .env value cannot break the pair
+    const cfg = pushEnv({ ...env, VAPID_PUBLIC_KEY: other.publicKey, VAPID_PRIVATE_KEY: pair.privateKey }, other.publicKey);
+    expect(cfg?.publicKey).toBe(pair.publicKey);
+    expect(pushMissing({ ...env, VAPID_PRIVATE_KEY: pair.privateKey })).toEqual([]);
+    const said = pushMissing({ ...env, VAPID_PRIVATE_KEY: pair.publicKey }).join(' ');
+    expect(said).toMatch(/PUBLIC key/);
     expect(said).not.toContain(pair.publicKey);
   });
 });

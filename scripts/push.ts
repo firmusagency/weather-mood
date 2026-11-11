@@ -91,17 +91,20 @@ export function privateKeyProblem(raw: string | undefined, publicKey?: string): 
   return null;
 }
 
-// The key in .env is the one the guest page subscribes with, so it is the truth; the repository
-// variable is only a fallback (a stale variable must not make every notification fail).
-const publicKeyOf = (env: NodeJS.ProcessEnv, pageKey = publicKeyFromDotEnv()) => cleanVapidKey(pageKey || env.VAPID_PUBLIC_KEY || env.VITE_VAPID_PUBLIC_KEY);
+// The public key is a function of the private one, so it is derived, never configured: the deploy
+// workflow builds the page with the same derived key (scripts/vapid-public.ts), and the two cannot
+// drift apart. The key in .env and the repository variable are only fallbacks for a missing secret.
+const publicKeyOf = (env: NodeJS.ProcessEnv, pageKey = publicKeyFromDotEnv()) => {
+  const priv = extractPrivateKey(env.VAPID_PRIVATE_KEY);
+  return (priv && publicKeyFor(priv)) || cleanVapidKey(pageKey || env.VAPID_PUBLIC_KEY || env.VITE_VAPID_PUBLIC_KEY);
+};
 
 /** Names (never values) of the settings push still needs; empty when it can send. */
-export function pushMissing(env = process.env, pageKey = publicKeyFromDotEnv()): string[] {
+export function pushMissing(env = process.env): string[] {
   const missing: string[] = [];
   if (!env.SUPABASE_URL) missing.push('secret SUPABASE_URL');
   if (!env.SUPABASE_SERVICE_KEY) missing.push('secret SUPABASE_SERVICE_KEY');
-  if (!publicKeyOf(env, pageKey)) missing.push('VITE_VAPID_PUBLIC_KEY in .env');
-  const problem = privateKeyProblem(env.VAPID_PRIVATE_KEY, publicKeyOf(env, pageKey));
+  const problem = privateKeyProblem(env.VAPID_PRIVATE_KEY);
   if (problem) missing.push(problem);
   return missing;
 }
@@ -110,7 +113,7 @@ export function pushEnv(env = process.env, pageKey = publicKeyFromDotEnv()): Pus
   const db = dbEnv(env);
   const publicKey = publicKeyOf(env, pageKey);
   const privateKey = extractPrivateKey(env.VAPID_PRIVATE_KEY);
-  if (!db || !publicKey || !privateKey || privateKeyProblem(env.VAPID_PRIVATE_KEY, publicKey)) return null;
+  if (!db || !publicKey || !privateKey || privateKeyProblem(env.VAPID_PRIVATE_KEY)) return null;
   return { db, publicKey, privateKey, subject: env.VAPID_SUBJECT || 'mailto:hello@weathermood.gr' };
 }
 

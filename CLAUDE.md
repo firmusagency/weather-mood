@@ -67,11 +67,10 @@ decisions and conventions that are not obvious from the code.
 - Season sense (2026-11-10): beaches lose points below feels-like 24° / water 23° (`SWIM_COMFORT`), outdoor windows end by
   sunset, sunbeds/canteens are promised May–October only. These are score tunings, not hard limits; the owner has not
   reviewed the numbers. Revisit in spring when beaches return to the top of the picks.
-- Push notifications have never been sent: the GitHub secret `VAPID_PRIVATE_KEY` held 107 characters of something that is
-  not a VAPID key. A new pair was generated on 2026-11-10: the public key is in `.env` (the page re-subscribes browsers that
-  opted in under the old key), the private key was handed to the owner in a file to paste into the secret. Until they do,
-  the evening log says why push is off (`pushMissing` describes the stored value by shape and checks that the private key
-  belongs to the public one). Push and email run inside try/catch: they can never again stop the message from being
-  committed (that happened once, 2026-11-10 17:40). After the owner confirms, check the next evening log for "push: 1 sent".
+- Push: the only setting is the secret `VAPID_PRIVATE_KEY` (the owner generated their own key on 2026-11-11; nobody else has
+  it). The public key is derived from it, in the deploy (`scripts/vapid-public.ts` → page build) and in the sending scripts,
+  so the pair cannot drift; `.env` holds only a fallback. Browsers that opted in under an older key renew themselves when
+  the page loads (or through the same button). Push and email run inside try/catch: they can never again stop the message
+  from being committed (that happened once, 2026-11-10 17:40). Not yet seen: a log line "push: 1 sent".
 - Dropped for now (owner, 2026-11-09): tavern observer network (no incentive to offer) and the boat-company line
   (Cretan Daily Cruises publishes no cancellations; only by phone 28220 22888). Revisit when there is a pilot hotel.

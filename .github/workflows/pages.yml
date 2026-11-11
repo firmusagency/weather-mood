@@ -38,6 +38,20 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # The page must subscribe browsers with the public half of the key the evening script signs with.
+      # It is derived from the secret here (only the public key leaves this step), so there is one
+      # setting to maintain; without a usable secret the page keeps the key committed in .env.
+      - name: Public push key from the private one
+        env:
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+        run: |
+          key=$(npx tsx scripts/vapid-public.ts || true)
+          if [ -n "$key" ]; then
+            echo "VITE_VAPID_PUBLIC_KEY=$key" >> "$GITHUB_ENV"
+            echo "push public key derived from the secret (${#key} characters)"
+          else
+            echo "no usable VAPID_PRIVATE_KEY secret: the page keeps the key in .env"
+          fi
       - run: npm run build
         env:
           VITE_BASE: /weather-mood/
