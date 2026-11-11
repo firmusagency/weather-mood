@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { ProfileId } from '../engine/types';
 import { g } from './i18n';
 import type { GuestLang, Property } from './property';
-import { enablePush, pushNeedsRenewal, pushState, pushSupported, type PushState } from './push';
+import { enablePush, iosNeedsInstall, lastPushError, pushNeedsRenewal, pushState, pushSupported, type PushState } from './push';
 import { askEveningText, whatsappTo } from './evening';
 
 /** Evening-message opt-in: push notification where the browser allows it, WhatsApp otherwise. */
@@ -10,6 +10,7 @@ export function PushBox({ property, lang, profile }: { property: Property; lang:
   const d = g(lang);
   const [state, setState] = useState<PushState>(() => pushState());
   const [busy, setBusy] = useState(false);
+  const [failed, setFailed] = useState('');
   const standalone = typeof window !== 'undefined' && window.matchMedia?.('(display-mode: standalone)').matches;
 
   // the server key was replaced since this browser opted in: renew quietly (permission is already granted);
@@ -36,14 +37,40 @@ export function PushBox({ property, lang, profile }: { property: Property; lang:
             disabled={busy}
             onClick={async () => {
               setBusy(true);
-              setState(await enablePush(property.id, lang, profile));
+              const next = await enablePush(property.id, lang, profile);
+              setState(next);
+              setFailed(next === 'off' ? lastPushError : '');
               setBusy(false);
             }}
           >
             {d.push.btn}
           </button>
         )}
+        {failed && (
+          <p className="g-fb-intro" role="status">
+            {d.push.failed.replace('{why}', failed)}
+          </p>
+        )}
         {!standalone && <p className="g-fb-intro">{d.push.install}</p>}
+      </div>
+    );
+  }
+  // iPhone in Safari: say how to get notifications instead of silently offering only WhatsApp
+  if (iosNeedsInstall()) {
+    return (
+      <div className="g-evening">
+        <p>{d.push.title}</p>
+        <p className="g-fb-intro">{d.push.ios}</p>
+        <ol className="g-ios-steps">
+          {d.push.iosSteps.map((step) => (
+            <li key={step}>{step}</li>
+          ))}
+        </ol>
+        {property.whatsapp && (
+          <a className="g-btn g-btn-wa" href={whatsappTo(property.whatsapp, askEveningText(lang))} target="_blank" rel="noreferrer">
+            {d.fb.eveningBtn}
+          </a>
+        )}
       </div>
     );
   }

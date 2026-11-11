@@ -123,6 +123,11 @@ export type PushDict = {
   on: string;
   denied: string;
   install: string;
+  /** iPhone/iPad in Safari: notifications exist only for the page installed on the Home Screen. */
+  ios: string;
+  iosSteps: [string, string, string];
+  /** The browser refused to subscribe; {why} is its own short reason. */
+  failed: string;
 };
 
 const EL: Dict = {
@@ -257,6 +262,9 @@ const EL: Dict = {
     on: 'Ενεργό: θα σας ειδοποιούμε κάθε απόγευμα, και το πρωί αν αλλάξει ο καιρός.',
     denied: 'Οι ειδοποιήσεις είναι κλειστές στον browser σας. Μπορείτε να τις ανοίξετε από τις ρυθμίσεις.',
     install: 'Προσθέστε τη σελίδα στην αρχική οθόνη για να την έχετε πάντα πρόχειρη.',
+    ios: 'Στο iPhone οι ειδοποιήσεις δουλεύουν μόνο όταν η σελίδα μπει στην οθόνη Αφετηρίας:',
+    iosSteps: ['Πατήστε το κουμπί «Κοινή χρήση» του Safari (τετράγωνο με βέλος προς τα πάνω).', 'Διαλέξτε «Προσθήκη στην οθόνη Αφετηρίας».', 'Ανοίξτε την εφαρμογή από το νέο εικονίδιο και πατήστε «Ναι, ειδοποιήστε με».'],
+    failed: 'Δεν ενεργοποιήθηκαν οι ειδοποιήσεις ({why}). Δοκιμάστε ξανά.',
   },
   compass: ['Β', 'ΒΑ', 'Α', 'ΝΑ', 'Ν', 'ΝΔ', 'Δ', 'ΒΔ'],
 };
@@ -393,6 +401,9 @@ const EN: Dict = {
     on: 'On: we will notify you every afternoon, and in the morning if the weather changes.',
     denied: 'Notifications are blocked in your browser. You can allow them in its settings.',
     install: 'Add this page to your home screen to keep it handy.',
+    ios: 'On iPhone, notifications only work once the page is on your Home Screen:',
+    iosSteps: ['Tap Safari’s Share button (the square with an arrow pointing up).', 'Choose “Add to Home Screen”.', 'Open the app from its new icon and tap “Yes, notify me”.'],
+    failed: 'Notifications could not be turned on ({why}). Please try again.',
   },
   compass: ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'],
 };
@@ -529,6 +540,9 @@ const DE: Dict = {
     on: 'Aktiv: Wir melden uns jeden Nachmittag, und morgens, falls sich das Wetter ändert.',
     denied: 'Benachrichtigungen sind in Ihrem Browser blockiert. Sie können sie in den Einstellungen erlauben.',
     install: 'Fügen Sie die Seite zum Startbildschirm hinzu, um sie griffbereit zu haben.',
+    ios: 'Auf dem iPhone funktionieren Benachrichtigungen nur, wenn die Seite auf dem Home-Bildschirm liegt:',
+    iosSteps: ['Tippen Sie in Safari auf „Teilen“ (Quadrat mit Pfeil nach oben).', 'Wählen Sie „Zum Home-Bildschirm“.', 'Öffnen Sie die App über das neue Symbol und tippen Sie auf „Ja, benachrichtigen“.'],
+    failed: 'Benachrichtigungen konnten nicht aktiviert werden ({why}). Bitte erneut versuchen.',
   },
   compass: ['N', 'NO', 'O', 'SO', 'S', 'SW', 'W', 'NW'],
 };
@@ -665,6 +679,9 @@ const FR: Dict = {
     on: 'Activé : nous vous préviendrons chaque après-midi, et le matin si la météo change.',
     denied: 'Les notifications sont bloquées dans votre navigateur. Vous pouvez les autoriser dans ses réglages.',
     install: 'Ajoutez cette page à votre écran d’accueil pour l’avoir toujours sous la main.',
+    ios: 'Sur iPhone, les notifications ne fonctionnent que si la page est sur l’écran d’accueil :',
+    iosSteps: ['Touchez le bouton « Partager » de Safari (carré avec une flèche vers le haut).', 'Choisissez « Sur l’écran d’accueil ».', 'Ouvrez l’app depuis sa nouvelle icône et touchez « Oui, prévenez-moi ».'],
+    failed: 'Les notifications n’ont pas pu être activées ({why}). Réessayez.',
   },
   compass: ['N', 'NE', 'E', 'SE', 'S', 'SO', 'O', 'NO'],
 };

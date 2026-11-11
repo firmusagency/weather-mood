@@ -12,6 +12,20 @@ export const VAPID_PUBLIC_KEY = viteEnv.VITE_VAPID_PUBLIC_KEY ?? '';
 
 export type PushState = 'unsupported' | 'off' | 'on' | 'denied';
 
+/** Why the last attempt to subscribe failed ('' when it did not). */
+export let lastPushError = '';
+
+/**
+ * iPhone or iPad showing the page in a browser tab: Apple delivers web push only to a page installed
+ * on the Home Screen, so PushManager does not exist here and the guest needs to be told how to get it.
+ */
+export function iosNeedsInstall(): boolean {
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') return false;
+  const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const standalone = window.matchMedia?.('(display-mode: standalone)').matches || (navigator as unknown as { standalone?: boolean }).standalone === true;
+  return ios && !standalone && !('PushManager' in window) && !!VAPID_PUBLIC_KEY && feedbackEnabled();
+}
+
 export function pushSupported(): boolean {
   return typeof window !== 'undefined' && 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window && !!VAPID_PUBLIC_KEY && feedbackEnabled();
 }
@@ -60,7 +74,7 @@ export async function enablePush(propertyId: string, lang: string, profile: Prof
     const key = keyBytes(VAPID_PUBLIC_KEY);
     let existing = await reg.pushManager.getSubscription();
     // a subscription bound to a replaced server key is dead weight: drop it and subscribe again
-    if (existing && !sameKey(existing.options.applicationServerKey, key)) {
+    if (existing && !sameKey(existing.options?.applicationServerKey, key)) {
       await existing.unsubscribe();
       existing = null;
     }
@@ -71,11 +85,17 @@ export async function enablePush(propertyId: string, lang: string, profile: Prof
       headers: { 'content-type': 'application/json', apikey: FEEDBACK_API.key, authorization: `Bearer ${FEEDBACK_API.key}`, prefer: 'return=minimal' },
       body: JSON.stringify({ property_id: propertyId, endpoint: sub.endpoint, p256dh: j.keys?.p256dh, auth: j.keys?.auth, lang, profile, client_id: clientId(), app_version: APP_VERSION }),
     });
-    if (!res.ok && res.status !== 409) return 'off';
+    if (!res.ok && res.status !== 409) {
+      lastPushError = `HTTP ${res.status}`;
+      return 'off';
+    }
     localStorage.setItem('wm:push', 'on');
     localStorage.setItem(KEY_USED, VAPID_PUBLIC_KEY);
+    lastPushError = '';
     return 'on';
-  } catch {
+  } catch (e) {
+    // the browser's own short reason (NotAllowedError, InvalidStateError…), shown to the guest so a failure is not silent
+    lastPushError = (e as Error)?.name || 'error';
     return 'off';
   }
 }
