@@ -99,3 +99,23 @@ describe('patience with the weather provider', () => {
     expect(down.calls).toBe(3);
   });
 });
+
+describe('outlook carry-over', () => {
+  it('keeps a recent outlook and drops an old or missing one', async () => {
+    const { mkdtempSync, writeFileSync } = await import('node:fs');
+    const { tmpdir } = await import('node:os');
+    const { join } = await import('node:path');
+    const { previousOutlook } = await import('../scripts/fetch-snapshot');
+    const dir = mkdtempSync(join(tmpdir(), 'wm-'));
+    const now = Date.parse('2026-11-12T16:00:00Z');
+    const file = (outlook: unknown) => {
+      const f = join(dir, `${Math.random()}.json`);
+      writeFileSync(f, JSON.stringify({ generatedAt: '2026-11-12T10:00:00Z', days: {}, ...(outlook ? { outlook } : {}) }));
+      return f;
+    };
+    expect(previousOutlook(file({ fetchedAt: '2026-11-12T10:00:00Z', date: '2026-11-12' }), 30, now)?.fetchedAt).toBe('2026-11-12T10:00:00Z');
+    expect(previousOutlook(file({ fetchedAt: '2026-11-10T10:00:00Z', date: '2026-11-10' }), 30, now)).toBeUndefined();
+    expect(previousOutlook(file(null), 30, now)).toBeUndefined();
+    expect(previousOutlook(join(dir, 'missing.json'), 30, now)).toBeUndefined();
+  });
+});

@@ -239,7 +239,8 @@ export interface FetchOptions {
 
 /** Open-Meteo's free limit is per minute: after a 429 the only useful wait is a full minute. */
 export const RATE_LIMIT_WAIT_MS = 62_000;
-const RETRY_WAITS_MS = [3_000, 12_000, 30_000];
+// short first waits: a connect timeout is usually one dead server behind the round-robin DNS, and the next try lands elsewhere
+const RETRY_WAITS_MS = [2_000, 4_000, 8_000, 15_000, 30_000];
 const realSleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
 /**
