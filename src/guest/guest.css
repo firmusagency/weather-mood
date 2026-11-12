@@ -1404,3 +1404,14 @@ body[data-view='lobby'],
 .g-ios-steps li + li {
   margin-top: 4px;
 }
+
+.g-push-stop {
+  background: none;
+  border: 0;
+  padding: 4px 0;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.75;
+}

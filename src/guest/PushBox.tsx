@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { ProfileId } from '../engine/types';
 import { g } from './i18n';
 import type { GuestLang, Property } from './property';
-import { enablePush, iosNeedsInstall, lastPushError, pushNeedsRenewal, pushState, pushSupported, type PushState } from './push';
+import { disablePush, enablePush, iosNeedsInstall, lastPushError, pushNeedsRenewal, pushState, pushSupported, type PushState } from './push';
 import { askEveningText, whatsappTo } from './evening';
 
 /** Evening-message opt-in: push notification where the browser allows it, WhatsApp otherwise. */
@@ -44,6 +44,20 @@ export function PushBox({ property, lang, profile }: { property: Property; lang:
             }}
           >
             {d.push.btn}
+          </button>
+        )}
+        {state === 'on' && (
+          <button
+            type="button"
+            className="g-link g-push-stop"
+            disabled={busy}
+            onClick={async () => {
+              setBusy(true);
+              setState(await disablePush());
+              setBusy(false);
+            }}
+          >
+            {d.push.stop}
           </button>
         )}
         {failed && (

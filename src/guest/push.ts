@@ -53,6 +53,23 @@ export function pushNeedsRenewal(): boolean {
   }
 }
 
+/** Turns notifications off on this device. The stored subscription dies with it and is removed at the next send. */
+export async function disablePush(): Promise<PushState> {
+  try {
+    const reg = await navigator.serviceWorker.ready;
+    await (await reg.pushManager.getSubscription())?.unsubscribe();
+  } catch {
+    /* nothing to unsubscribe from */
+  }
+  try {
+    localStorage.removeItem('wm:push');
+    localStorage.removeItem(KEY_USED);
+  } catch {
+    /* private mode */
+  }
+  return pushState();
+}
+
 function sameKey(a: ArrayBuffer | null | undefined, b: Uint8Array): boolean {
   if (!a) return false;
   const x = new Uint8Array(a);

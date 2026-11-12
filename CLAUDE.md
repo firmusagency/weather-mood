@@ -51,6 +51,9 @@ decisions and conventions that are not obvious from the code.
   `only_if_missing=true` (`supabase/migrations/0004_second_chance.sql`, applied 2026-11-12); the workflow guard makes it a
   ten-second no-op when the first run produced its output. A failed forecast fetch no longer fails those workflows: they
   use the last snapshot (≤ 20 h). Applying a migration through the Supabase tool needs the owner's approval click.
+- Plan B: the check runs at 05:50, the guests' notification at 08:30 (owner's decision, 2026-11-12; `planb-send.yml`,
+  `supabase/migrations/0005_planb_send.sql`). Guests can stop notifications from the page (`disablePush`); the dead
+  subscription is removed at the next send.
 - Health check (`src/engine/health.ts`, `npm run health`): runs at the end of every evening and morning workflow and is strict
   in the scheduler's second-chance run, so a missing evening message turns that run red (GitHub emails the owner). When you
   add a recurring output, add its check there: three things broke silently for days before this existed.

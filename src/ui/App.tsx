@@ -44,6 +44,13 @@ function PlanBBanner({ report, profileId, lang }: { report: PlanBReport; profile
         {s.planBTitle}
       </h2>
       <p className="hint">{s.planBHint}</p>
+      <p className="hint">
+        {report.pushedAt
+          ? `${lang === 'el' ? 'Η ειδοποίηση στάλθηκε στους επισκέπτες στις' : 'The guests were notified at'} ${new Intl.DateTimeFormat('el-GR', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Athens' }).format(new Date(report.pushedAt))}.`
+          : lang === 'el'
+            ? 'Η ειδοποίηση προς τους επισκέπτες φεύγει στις 08:30, για να μην τους ξυπνήσει.'
+            : 'The guests’ notification goes out at 08:30, so it does not wake them.'}
+      </p>
       {text && (
         <>
           <textarea className="message-text" readOnly value={text} rows={Math.min(12, text.split('\n').length + 1)} />

@@ -1,0 +1,47 @@
+name: Plan-B notification
+
+# 08:30 Athens: tell the guests about the plan B the 05:50 check found. The check runs early so the
+# reception sees the change on the dashboard; the notification waits until people are awake.
+# Dispatched by the Supabase scheduler (supabase/migrations/0005_planb_send.sql); the script itself
+# refuses to send outside 07:30–11:00, twice, or when the weather did not change.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: snapshot-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run morning-check -- --send
+        env:
+          VITE_GUEST_URL: ${{ vars.VITE_GUEST_URL || 'https://firmusagency.github.io/weather-mood/guest.html' }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          VAPID_PUBLIC_KEY: ${{ vars.VAPID_PUBLIC_KEY }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}
+          VAPID_SUBJECT: ${{ vars.VAPID_SUBJECT }}
+      - run: npm run health
+      - name: Commit
+        run: |
+          git config user.name "weather-mood-bot"
+          git config user.email "weather-mood-bot@users.noreply.github.com"
+          git add public/data/plan-b.json public/data/delivery.json public/data/health.json
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "data: plan-B notification $(date -u +%Y-%m-%d)"
+            git pull --rebase -X theirs origin "${GITHUB_REF_NAME}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi

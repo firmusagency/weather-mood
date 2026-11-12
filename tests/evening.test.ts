@@ -159,3 +159,21 @@ describe('push key hygiene', () => {
     expect(said).not.toContain(pair.publicKey);
   });
 });
+
+describe('plan-B notification at 08:30', () => {
+  const report = (over: Record<string, unknown> = {}) => ({ date: '2026-11-13', checkedAt: '2026-11-13T03:50:00Z', eveningGeneratedAt: '2026-11-12T15:41:00Z', changed: true, byProfile: {}, ...over }) as never;
+  const at = (athens: string) => new Date(`2026-11-13T${athens}:00+02:00`);
+
+  it('goes out once, in the morning, only when the weather changed', async () => {
+    const { shouldSendPlanB } = await import('../scripts/morning-check');
+    expect(shouldSendPlanB(report(), at('08:30')).send).toBe(true);
+    // not at the hour of the check, and not when a delayed job arrives at noon
+    expect(shouldSendPlanB(report(), at('05:50')).send).toBe(false);
+    expect(shouldSendPlanB(report(), at('12:20')).send).toBe(false);
+    expect(shouldSendPlanB(report({ changed: false }), at('08:30')).why).toMatch(/did not change/);
+    expect(shouldSendPlanB(report({ pushedAt: '2026-11-13T06:30:05Z' }), at('08:31')).why).toMatch(/already sent/);
+    // yesterday's report is not today's news
+    expect(shouldSendPlanB(report({ date: '2026-11-12' }), at('08:30')).why).toMatch(/not today/);
+    expect(shouldSendPlanB(null, at('08:30')).send).toBe(false);
+  });
+});

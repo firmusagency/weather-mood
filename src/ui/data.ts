@@ -45,6 +45,7 @@ export interface PlanBReport {
   eveningGeneratedAt: string | null;
   changed: boolean;
   byProfile: Partial<Record<ProfileId, { diff: PlanDiff; messages: Record<string, string> | null }>>;
+  pushedAt?: string;
 }
 
 async function loadJson<T>(name: 'verification' | 'feedback' | 'calibration' | 'plan-b' | 'weekly' | 'closures' | 'station-calibration' | 'health'): Promise<T | null> {

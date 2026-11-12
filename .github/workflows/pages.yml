@@ -15,7 +15,7 @@ on:
       - '.env'
       - '.github/workflows/pages.yml'
   workflow_run:
-    workflows: ['Weather snapshot', 'Evening message', 'Morning plan-B check', 'Feedback export', 'Forecast verification', 'Spot photos', 'Weekly report']
+    workflows: ['Weather snapshot', 'Evening message', 'Morning plan-B check', 'Plan-B notification', 'Feedback export', 'Forecast verification', 'Spot photos', 'Weekly report']
     types: [completed]
   workflow_dispatch:
 
