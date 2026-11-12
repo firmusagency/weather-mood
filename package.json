@@ -6,7 +6,7 @@
   "description": "Weather-aware day-trip recommendations for hotels and tourism businesses (MVP: Chania, Crete)",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "node scripts/manifests.mjs && tsc --noEmit && vite build",
     "build:single": "vite build --mode single",
     "preview": "vite preview",
     "test": "vitest run",
@@ -25,7 +25,8 @@
     "weekly": "tsx scripts/weekly-report.ts",
     "rain:calibration": "tsx scripts/rain-calibration.ts",
     "samaria:status": "tsx scripts/samaria-status.ts",
-    "health": "tsx scripts/health.ts"
+    "health": "tsx scripts/health.ts",
+    "manifests": "node scripts/manifests.mjs"
   },
   "dependencies": {
     "nodemailer": "^7.0.13",

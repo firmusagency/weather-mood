@@ -25,8 +25,8 @@ import { analyzeDay, recommend } from '../src/engine/recommend';
 import { buildSynopsis } from '../src/engine/synopsis';
 import type { ProfileId } from '../src/engine/types';
 import { planBMessage } from '../src/guest/evening';
-import { DEMO_PROPERTY, GUEST_LANGS, type GuestLang } from '../src/guest/property';
-import type { EveningPack } from './evening';
+import { DEMO_PROPERTY, GUEST_LANGS, PROPERTIES, propertyById, type GuestLang, type Property } from '../src/guest/property';
+import { eveningParts, type EveningPack } from './evening';
 import { athensClock, type Delivery } from '../src/engine/health';
 import { mailEnv, sendMail } from './mail';
 import { notificationFromMessage, pushEnv, pushMissing, sendPush } from './push';
@@ -38,15 +38,29 @@ export interface PlanBReport {
   checkedAt: string;
   eveningGeneratedAt: string | null;
   changed: boolean;
-  byProfile: Partial<Record<ProfileId, { diff: PlanDiff; messages: Record<GuestLang, string> | null }>>;
+  byProfile: PlanBByProfile;
   /** When the guests' notification went out (08:30 run); absent until then. */
   pushedAt?: string;
+  /** The first (default) property, which the top level describes; absent in reports written before Nov 2026. */
+  property?: { id: string; name: string };
+  /** The other properties, each compared with its own evening message. */
+  others?: Record<string, PlanBPart>;
 }
+
+export type PlanBByProfile = Partial<Record<ProfileId, { diff: PlanDiff; messages: Record<GuestLang, string> | null }>>;
+export interface PlanBPart {
+  property: { id: string; name: string };
+  changed: boolean;
+  byProfile: PlanBByProfile;
+}
+
+/** Every property's verdict, the default one first. */
+export const planBParts = (r: PlanBReport): PlanBPart[] => [{ property: r.property ?? { id: DEMO_PROPERTY.id, name: DEMO_PROPERTY.name }, changed: r.changed, byProfile: r.byProfile }, ...Object.values(r.others ?? {})];
 
 export function buildPlanB(pack: EveningPack, raw: RawBundle, property = DEMO_PROPERTY, now = new Date()): PlanBReport {
   const data = datasetFromRaw(raw, 'snapshot');
   const syn = buildSynopsis(data, REF_POINTS);
-  const report: PlanBReport = { date: pack.date, checkedAt: now.toISOString(), eveningGeneratedAt: pack.generatedAt, changed: false, byProfile: {} };
+  const report: PlanBReport = { date: pack.date, checkedAt: now.toISOString(), eveningGeneratedAt: pack.generatedAt, changed: false, byProfile: {}, property: { id: property.id, name: property.name } };
   for (const p of PROFILES) {
     const before = pack.plans[p.id];
     if (!before) continue;
@@ -64,6 +78,18 @@ export function buildPlanB(pack: EveningPack, raw: RawBundle, property = DEMO_PR
   return report;
 }
 
+/** The check for every property in the evening pack: the default at the top level, the rest under `others`. */
+export function buildPlanBAll(pack: EveningPack, raw: RawBundle, properties: Property[] = PROPERTIES, now = new Date()): PlanBReport {
+  const report = buildPlanB(pack, raw, properties[0], now);
+  for (const part of eveningParts(pack).slice(1)) {
+    const property = propertyById(part.property.id, properties);
+    if (!property) continue; // a property removed since last night
+    const r = buildPlanB({ ...pack, ...part }, raw, property, now);
+    (report.others ??= {})[property.id] = { property: part.property, changed: r.changed, byProfile: r.byProfile };
+  }
+  return report;
+}
+
 /** Athens hours between which the plan-B notification may go out (a delayed job must not send it at noon or at night). */
 export const SEND_WINDOW = { from: 7.5, to: 11, label: '08:30' };
 
@@ -71,7 +97,7 @@ export const SEND_WINDOW = { from: 7.5, to: 11, label: '08:30' };
 export function shouldSendPlanB(report: PlanBReport | null, now = new Date()): { send: boolean; why: string } {
   if (!report) return { send: false, why: 'there is no plan-B report' };
   if (report.date !== athensDate(0, now)) return { send: false, why: `the last check is for ${report.date}, not today` };
-  if (!report.changed) return { send: false, why: 'the weather did not change: nothing to tell the guests' };
+  if (!planBParts(report).some((p) => p.changed)) return { send: false, why: 'the weather did not change: nothing to tell the guests' };
   if (report.pushedAt) return { send: false, why: `already sent at ${report.pushedAt}` };
   const clock = athensClock(now);
   if (clock < SEND_WINDOW.from || clock >= SEND_WINDOW.to) return { send: false, why: `it is ${clock.toFixed(1)} h in Athens, outside ${SEND_WINDOW.from}–${SEND_WINDOW.to}` };
@@ -89,12 +115,20 @@ async function sendPlanB() {
   const push = pushEnv();
   if (push) {
     try {
-      const r = await sendPush(push, DEMO_PROPERTY.id, (sub) => {
-        const lang = (GUEST_LANGS as readonly string[]).includes(sub.lang ?? '') ? (sub.lang as GuestLang) : 'en';
-        const profile = (sub.profile && report.byProfile[sub.profile as ProfileId] ? sub.profile : 'couple') as ProfileId;
-        const msg = report.byProfile[profile]?.messages?.[lang];
-        return msg ? { title: `${DEMO_PROPERTY.name} · Plan B`, body: notificationFromMessage(msg), url: DEMO_PROPERTY.guestUrl, tag: `planb-${report.date}` } : null;
-      });
+      const r = { sent: 0, failed: 0, removed: 0 };
+      for (const part of planBParts(report).filter((p) => p.changed)) {
+        const property = propertyById(part.property.id);
+        if (!property) continue;
+        const one = await sendPush(push, property.id, (sub) => {
+          const lang = (GUEST_LANGS as readonly string[]).includes(sub.lang ?? '') ? (sub.lang as GuestLang) : 'en';
+          const profile = (sub.profile && part.byProfile[sub.profile as ProfileId] ? sub.profile : 'couple') as ProfileId;
+          const msg = part.byProfile[profile]?.messages?.[lang];
+          return msg ? { title: `${property.name} · Plan B`, body: notificationFromMessage(msg), url: property.guestUrl, tag: `planb-${report.date}` } : null;
+        });
+        r.sent += one.sent;
+        r.failed += one.failed;
+        r.removed += one.removed;
+      }
       console.log(`push: ${r.sent} sent, ${r.failed} failed, ${r.removed} removed`);
       delivery.push = { state: 'sent', ...r };
       // marked as sent even with zero subscribers, so a re-run does not try again
@@ -131,16 +165,18 @@ async function main() {
     console.warn('no forecast newer than the evening message (the fetch failed?): plan B not checked');
     return;
   }
-  const report = buildPlanB(pack, raw);
+  const report = buildPlanBAll(pack, raw);
   writeFileSync(out, JSON.stringify(report, null, 1));
-  appendFileSync(join(root, 'data/plan-b-log.jsonl'), JSON.stringify({ date: report.date, checkedAt: report.checkedAt, changed: report.changed }) + '\n');
+  const others = Object.fromEntries(Object.entries(report.others ?? {}).map(([id, p]) => [id, p.changed]));
+  appendFileSync(join(root, 'data/plan-b-log.jsonl'), JSON.stringify({ date: report.date, checkedAt: report.checkedAt, changed: report.changed, ...(Object.keys(others).length ? { properties: others } : {}) }) + '\n');
+  for (const part of planBParts(report).slice(1)) console.log(`${part.property.name}: ${part.changed ? 'CHANGED' : 'same'}`);
 
   for (const [profile, r] of Object.entries(report.byProfile)) {
     console.log(`${profile}: ${r.diff.significant ? 'CHANGED' : 'same'} ${r.diff.changes.map((c) => c.kind).join(',') || '-'}`);
   }
   // Guests are not woken at 05:50: the check is early so the reception sees the change on the dashboard,
   // and the notification goes out with the 08:30 run (`--send`, see sendPlanB below).
-  if (report.changed) console.log(`plan B needed: the guests' notification goes out at ${SEND_WINDOW.label}`);
+  if (planBParts(report).some((p) => p.changed)) console.log(`plan B needed: the guests' notification goes out at ${SEND_WINDOW.label}`);
 
   const mail = mailEnv();
   if (report.changed && mail) {
@@ -156,6 +192,22 @@ async function main() {
     }
   } else if (report.changed) {
     console.log('plan B needed, SMTP not configured: file written only');
+  }
+  if (mail) {
+    for (const part of planBParts(report).slice(1).filter((p) => p.changed)) {
+      const to = propertyById(part.property.id)?.email;
+      if (!to) continue;
+      const body = Object.entries(part.byProfile)
+        .filter(([, r]) => r.messages)
+        .map(([profile, r]) => `=== ${PROFILES.find((p) => p.id === profile)?.name.el} ===\n${r.messages!.el}\n`)
+        .join('\n');
+      try {
+        await sendMail({ ...mail, to }, `Weather Mood · Plan B για σήμερα ${date} · ${part.property.name}`, `Ο καιρός άλλαξε σε σχέση με το βραδινό μήνυμα. Έτοιμα κείμενα:\n\n${body}`);
+        console.log(`emailed plan B to ${to}`);
+      } catch (e) {
+        console.error(`email FAILED for ${part.property.name}: ${(e as Error).message}`);
+      }
+    }
   }
 }
 

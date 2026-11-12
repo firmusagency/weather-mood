@@ -24,7 +24,9 @@ decisions and conventions that are not obvious from the code.
 - Engine: `src/engine/` (analysis → scoring → recommend; synopsis; stay planner; verification; feedback calibration).
 - Guest page: `src/guest/` (phone, lobby, reception form, QR card, stay planner, push). Dashboard: `src/ui/`.
   Public accuracy page: `src/accuracy/`.
-- Per-property configuration: `src/data/properties.json` (name, brand, logo, favourites, tips). Spots: `src/data/spots.ts`
+- Per-property configuration: `src/data/properties.json` (name, brand, logo, favourites, tips). The first entry is the default
+  property and owns the top level of `evening.json` / `plan-b.json` / `weekly.json`; further entries get their own picks,
+  messages, push audience, weekly report and install manifest under `others` (README «Πολλά καταλύματα»). Still one demo entry. Spots: `src/data/spots.ts`
   (all `verified: false` until the owner checks them on site; the owner will do this later).
 - Data that accumulates (the moat): `data/archive/` (one next-day forecast per day), `data/verification/`,
   `data/messages/`, `data/feedback/`, `data/reports/`. Never delete or rewrite these.

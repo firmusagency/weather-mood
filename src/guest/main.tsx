@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { GuestApp } from './GuestApp';
 import { EMBEDDED } from '../ui/data';
+import { currentProperty, isDefaultProperty } from './property';
 import './guest.css';
 
 createRoot(document.getElementById('root')!).render(
@@ -23,12 +24,14 @@ if (!EMBEDDED && typeof document !== 'undefined') {
     for (const [k, v] of Object.entries(extra)) el.setAttribute(k, v);
     document.head.appendChild(el);
   };
-  link('manifest', `${base}manifest.webmanifest`);
+  // every property but the default installs with its own manifest, whose start_url carries its id
+  const property = currentProperty();
+  link('manifest', isDefaultProperty(property) ? `${base}manifest.webmanifest` : `${base}manifests/${encodeURIComponent(property.id)}.webmanifest`);
   link('apple-touch-icon', `${base}icons/apple-touch-icon.png`);
   link('icon', `${base}icons/icon-192.png`, { type: 'image/png' });
   const theme = document.createElement('meta');
   theme.name = 'theme-color';
-  theme.content = '#2a6f97';
+  theme.content = property.brand || '#2a6f97';
   document.head.appendChild(theme);
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {

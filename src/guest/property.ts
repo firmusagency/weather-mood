@@ -48,27 +48,59 @@ function envVar(name: string): string | undefined {
   return typeof process !== 'undefined' ? process.env?.[name] : undefined;
 }
 
-type StoredProperty = Omit<Property, 'guestUrl'> & { guestUrl?: string };
+export type StoredProperty = Omit<Property, 'guestUrl'> & { guestUrl?: string };
 const STORED = propertiesJson as StoredProperty[];
 
 const DEFAULT_GUEST_URL = 'https://firmusagency.github.io/weather-mood/guest.html';
 
-function withEnv(p: StoredProperty): Property {
-  const guestUrl = envVar('VITE_GUEST_URL') || p.guestUrl || DEFAULT_GUEST_URL;
-  return { ...p, guestUrl, whatsapp: envVar('VITE_RECEPTION_WHATSAPP') || p.whatsapp || undefined, email: envVar('OWNER_EMAIL') || p.email };
+/** The link a property hands to its guests: every property but the first carries its id (`?p=<id>`). */
+export function guestUrlFor(baseUrl: string, id: string, isDefault: boolean): string {
+  if (isDefault || /[?&]p=/.test(baseUrl)) return baseUrl;
+  return `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}p=${encodeURIComponent(id)}`;
 }
 
-export const PROPERTIES: Property[] = STORED.map(withEnv);
+/**
+ * Stored properties with the environment folded in. The first one is the default: it owns the bare
+ * guest link and the environment's WhatsApp number and email; the others use their own settings.
+ */
+export function resolveProperties(stored: StoredProperty[], env: (name: string) => string | undefined = envVar): Property[] {
+  return stored.map((p, i) => {
+    const first = i === 0;
+    const guestUrl = guestUrlFor(p.guestUrl || env('VITE_GUEST_URL') || DEFAULT_GUEST_URL, p.id, first);
+    return { ...p, guestUrl, whatsapp: p.whatsapp || (first ? env('VITE_RECEPTION_WHATSAPP') : undefined) || undefined, email: p.email || (first ? env('OWNER_EMAIL') : undefined) };
+  });
+}
 
-/** The property this build / page is for: `?p=<id>` in the URL, else VITE_PROPERTY_ID, else the first (demo) one. */
+export const PROPERTIES: Property[] = resolveProperties(STORED);
+export const propertyById = (id: string | null | undefined, all: Property[] = PROPERTIES) => all.find((p) => p.id === id);
+
+const REMEMBER_KEY = 'wm:property';
+
+/** Which property a page is for: the link wins, then what this browser opened before, then the build's default. */
+export function resolvePropertyId(src: { query?: string | null; stored?: string | null; env?: string | null }, all: Property[] = PROPERTIES): string {
+  for (const id of [src.query, src.stored, src.env]) if (id && all.some((p) => p.id === id)) return id;
+  return all[0].id;
+}
+
+/**
+ * The property this page is for: `?p=<id>` in the URL, else the one this browser opened last (a guest
+ * who scanned the hotel's QR and comes back through a bookmark), else VITE_PROPERTY_ID, else the first.
+ */
 export function currentProperty(): Property {
-  let id = envVar('VITE_PROPERTY_ID');
-  if (typeof location !== 'undefined') {
-    const q = new URLSearchParams(location.search).get('p');
-    if (q) id = q;
+  let query: string | null = null;
+  let stored: string | null = null;
+  if (typeof location !== 'undefined') query = new URLSearchParams(location.search).get('p');
+  try {
+    if (typeof localStorage !== 'undefined') {
+      if (query && PROPERTIES.some((p) => p.id === query)) localStorage.setItem(REMEMBER_KEY, query);
+      stored = localStorage.getItem(REMEMBER_KEY);
+    }
+  } catch {
+    /* private mode */
   }
-  return PROPERTIES.find((p) => p.id === id) ?? PROPERTIES[0];
+  return propertyById(resolvePropertyId({ query, stored, env: envVar('VITE_PROPERTY_ID') }))!;
 }
 
-/** Fictional demo property — replaced by the customer's own details in production. */
+/** The first (default) property; a fictional demo one until the first customer's details replace it. */
 export const DEMO_PROPERTY: Property = PROPERTIES[0];
+export const isDefaultProperty = (p: Property) => p.id === PROPERTIES[0].id;

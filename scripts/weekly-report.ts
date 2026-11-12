@@ -19,10 +19,10 @@ import type { FeedbackTag } from '../src/engine/feedback';
 import { shift } from '../src/engine/stay';
 import type { VerificationSummary } from '../src/engine/verify';
 import { buildWeeklyReport, lastWeek, type WeeklyInputs, type WeeklyReport } from '../src/engine/weekly';
-import { DEMO_PROPERTY } from '../src/guest/property';
+import { DEMO_PROPERTY, PROPERTIES, type Property } from '../src/guest/property';
 import { dbEnv, fetchAll } from './db';
 import { mailEnv, sendMail } from './mail';
-import type { EveningPack } from './evening';
+import { eveningPartFor, type EveningPack } from './evening';
 import type { PlanBReport } from './morning-check';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -69,7 +69,7 @@ export function reportText(r: WeeklyReport): string {
   return lines.join('\n');
 }
 
-function picksFromMessages(weekStart: string, weekEnd: string): Record<string, string[]> {
+function picksFromMessages(weekStart: string, weekEnd: string, propertyId: string): Record<string, string[]> {
   const dir = join(root, 'data/messages');
   const out: Record<string, string[]> = {};
   if (!existsSync(dir)) return out;
@@ -78,7 +78,10 @@ function picksFromMessages(weekStart: string, weekEnd: string): Record<string, s
     if (date < weekStart || date > weekEnd) continue;
     try {
       const pack = JSON.parse(readFileSync(join(dir, f), 'utf8')) as EveningPack;
-      out[date] = ['couple', 'family'].flatMap((p) => pack.plans[p as 'couple' | 'family']?.picks.map((x) => x.spotId) ?? []);
+      // packs archived before multi-property have only the default part
+      const part = eveningPartFor(pack, propertyId) ?? (propertyId === DEMO_PROPERTY.id ? pack : undefined);
+      if (!part) continue;
+      out[date] = ['couple', 'family'].flatMap((p) => part.plans[p as 'couple' | 'family']?.picks.map((x) => x.spotId) ?? []);
     } catch {
       /* skip unreadable */
     }
@@ -86,7 +89,8 @@ function picksFromMessages(weekStart: string, weekEnd: string): Record<string, s
   return out;
 }
 
-function planBDays(weekStart: string, weekEnd: string): number {
+function planBDays(weekStart: string, weekEnd: string, propertyId: string): number {
+  const isDefault = propertyId === DEMO_PROPERTY.id;
   // only the latest report is kept in public/data; the archive of plan-B verdicts lives in the git history,
   // so we count from the log the morning check appends when present
   const log = join(root, 'data/plan-b-log.jsonl');
@@ -94,13 +98,14 @@ function planBDays(weekStart: string, weekEnd: string): number {
     const latest = join(root, 'public/data/plan-b.json');
     if (!existsSync(latest)) return 0;
     const r = JSON.parse(readFileSync(latest, 'utf8')) as PlanBReport;
-    return r.changed && r.date >= weekStart && r.date <= weekEnd ? 1 : 0;
+    const changed = isDefault ? r.changed : !!r.others?.[propertyId]?.changed;
+    return changed && r.date >= weekStart && r.date <= weekEnd ? 1 : 0;
   }
   return readFileSync(log, 'utf8')
     .split('\n')
     .filter(Boolean)
-    .map((l) => JSON.parse(l) as { date: string; changed: boolean })
-    .filter((r) => r.changed && r.date >= weekStart && r.date <= weekEnd).length;
+    .map((l) => JSON.parse(l) as { date: string; changed: boolean; properties?: Record<string, boolean> })
+    .filter((r) => (isDefault ? r.changed : !!r.properties?.[propertyId]) && r.date >= weekStart && r.date <= weekEnd).length;
 }
 
 async function main() {
@@ -108,30 +113,7 @@ async function main() {
   const { weekStart, weekEnd } = arg && /^\d{4}-\d{2}-\d{2}$/.test(arg) ? { weekStart: arg, weekEnd: shift(arg, 6) } : lastWeek(athensDate(0));
   const prevStart = shift(weekStart, -7);
   const db = dbEnv();
-  type Visit = WeeklyInputs['visits'][number];
-  type Vote = WeeklyInputs['feedback'][number];
-  let visits: Visit[] = [];
-  let prevVisits = 0;
-  let feedback: Vote[] = [];
-  let prevFeedback = 0;
-  let pushSubscribers: number | null = null;
-  if (db) {
-    const pid = encodeURIComponent(DEMO_PROPERTY.id);
-    const [v, pv, f, pf, subs] = await Promise.all([
-      fetchAll<Visit>(db, 'visits', `select=created_at,view,lang,profile,client_id&property_id=eq.${pid}&client_id=not.like.test-*&created_at=gte.${weekStart}T00:00:00Z&created_at=lt.${shift(weekEnd, 1)}T00:00:00Z`),
-      fetchAll<Visit>(db, 'visits', `select=created_at&property_id=eq.${pid}&client_id=not.like.test-*&created_at=gte.${prevStart}T00:00:00Z&created_at=lt.${weekStart}T00:00:00Z`),
-      fetchAll<Vote>(db, 'feedback', `select=visit_date,spot_id,verdict,tag,source&property_id=eq.${pid}&client_id=not.like.test-*&visit_date=gte.${weekStart}&visit_date=lte.${weekEnd}`),
-      fetchAll<Vote>(db, 'feedback', `select=visit_date&property_id=eq.${pid}&client_id=not.like.test-*&visit_date=gte.${prevStart}&visit_date=lt.${weekStart}`),
-      fetchAll<{ id: string }>(db, 'push_subscriptions', `select=id&property_id=eq.${pid}`).catch(() => null),
-    ]);
-    visits = v;
-    prevVisits = pv.length;
-    feedback = f;
-    prevFeedback = pf.length;
-    pushSubscribers = subs ? subs.length : null;
-  } else {
-    console.log('SUPABASE_URL / SUPABASE_SERVICE_KEY not set: usage and votes left empty');
-  }
+  if (!db) console.log('SUPABASE_URL / SUPABASE_SERVICE_KEY not set: usage and votes left empty');
 
   let accuracy: WeeklyReport['accuracy'] = null;
   const vfile = join(root, 'public/data/verification.json');
@@ -140,36 +122,76 @@ async function main() {
     accuracy = { days: v.days, bfWithin1Rate: v.bfWithin1Rate, windMae: v.wind.mae, picksHeld: v.recs?.picksHeld ?? 0, picks: v.recs?.picks ?? 0, stationDays: (v.stations ?? []).reduce((s, x) => s + x.days, 0) };
   }
 
-  const report = buildWeeklyReport({
-    property: { id: DEMO_PROPERTY.id, name: DEMO_PROPERTY.name },
-    weekStart,
-    weekEnd,
-    visits,
-    prevVisits,
-    feedback: feedback.map((f) => ({ ...f, tag: (f.tag ?? null) as FeedbackTag | null })),
-    prevFeedback,
-    picksByDate: picksFromMessages(weekStart, weekEnd),
-    planBDays: planBDays(weekStart, weekEnd),
-    pushSubscribers,
-    accuracy,
-  });
-  const text = reportText(report);
-
-  writeFileSync(join(root, 'public/data/weekly.json'), JSON.stringify(report, null, 1));
-  const archive = join(root, `data/reports/weekly-${weekStart}.md`);
-  mkdirSync(dirname(archive), { recursive: true });
-  writeFileSync(archive, text + '\n');
-  console.log(text);
+  type Visit = WeeklyInputs['visits'][number];
+  type Vote = WeeklyInputs['feedback'][number];
+  /** One property's week: its own visits, votes, subscribers, picks and plan-B days; the accuracy is shared. */
+  async function reportFor(property: Property): Promise<WeeklyReport> {
+    let visits: Visit[] = [];
+    let prevVisits = 0;
+    let feedback: Vote[] = [];
+    let prevFeedback = 0;
+    let pushSubscribers: number | null = null;
+    if (db) {
+      const pid = encodeURIComponent(property.id);
+      const [v, pv, f, pf, subs] = await Promise.all([
+        fetchAll<Visit>(db, 'visits', `select=created_at,view,lang,profile,client_id&property_id=eq.${pid}&client_id=not.like.test-*&created_at=gte.${weekStart}T00:00:00Z&created_at=lt.${shift(weekEnd, 1)}T00:00:00Z`),
+        fetchAll<Visit>(db, 'visits', `select=created_at&property_id=eq.${pid}&client_id=not.like.test-*&created_at=gte.${prevStart}T00:00:00Z&created_at=lt.${weekStart}T00:00:00Z`),
+        fetchAll<Vote>(db, 'feedback', `select=visit_date,spot_id,verdict,tag,source&property_id=eq.${pid}&client_id=not.like.test-*&visit_date=gte.${weekStart}&visit_date=lte.${weekEnd}`),
+        fetchAll<Vote>(db, 'feedback', `select=visit_date&property_id=eq.${pid}&client_id=not.like.test-*&visit_date=gte.${prevStart}&visit_date=lt.${weekStart}`),
+        fetchAll<{ id: string }>(db, 'push_subscriptions', `select=id&property_id=eq.${pid}`).catch(() => null),
+      ]);
+      visits = v;
+      prevVisits = pv.length;
+      feedback = f;
+      prevFeedback = pf.length;
+      pushSubscribers = subs ? subs.length : null;
+    }
+    return buildWeeklyReport({
+      property: { id: property.id, name: property.name },
+      weekStart,
+      weekEnd,
+      visits,
+      prevVisits,
+      feedback: feedback.map((f) => ({ ...f, tag: (f.tag ?? null) as FeedbackTag | null })),
+      prevFeedback,
+      picksByDate: picksFromMessages(weekStart, weekEnd, property.id),
+      planBDays: planBDays(weekStart, weekEnd, property.id),
+      pushSubscribers,
+      accuracy,
+    });
+  }
 
   const mail = mailEnv();
-  const to = process.env.OWNER_EMAIL || DEMO_PROPERTY.email || mail?.to;
-  if (mail && to) {
-    await sendMail({ ...mail, to }, `Weather Mood · Εβδομαδιαία αναφορά ${weekStart} – ${weekEnd}`, text);
-    console.log(`emailed weekly report to ${to}`);
-  } else {
-    console.log('SMTP not configured: files written, no email sent');
+  const reports: { property: Property; report: WeeklyReport }[] = [];
+  for (const property of PROPERTIES) reports.push({ property, report: await reportFor(property) });
+
+  // public/data/weekly.json: the default property at the top level (as always), the others under `others`
+  const [first, ...rest] = reports;
+  const file: WeeklyFile = { ...first.report, ...(rest.length ? { others: Object.fromEntries(rest.map((r) => [r.property.id, r.report])) } : {}) };
+  writeFileSync(join(root, 'public/data/weekly.json'), JSON.stringify(file, null, 1));
+  mkdirSync(join(root, 'data/reports'), { recursive: true });
+
+  for (const [i, { property, report }] of reports.entries()) {
+    const text = reportText(report);
+    // the default property keeps the historical file name; the others carry their id
+    writeFileSync(join(root, `data/reports/weekly-${weekStart}${i === 0 ? '' : `--${property.id}`}.md`), text + '\n');
+    console.log(text);
+    const to = i === 0 ? process.env.OWNER_EMAIL || property.email || mail?.to : property.email;
+    if (mail && to) {
+      try {
+        await sendMail({ ...mail, to }, `Weather Mood · Εβδομαδιαία αναφορά ${weekStart} – ${weekEnd}${i === 0 ? '' : ` · ${property.name}`}`, text);
+        console.log(`emailed weekly report to ${to}`);
+      } catch (e) {
+        console.error(`email FAILED for ${property.name}: ${(e as Error).message}`);
+      }
+    } else if (i === 0) {
+      console.log('SMTP not configured: files written, no email sent');
+    }
   }
 }
+
+/** What public/data/weekly.json holds: the default property's report, plus the others by id. */
+export type WeeklyFile = WeeklyReport & { others?: Record<string, WeeklyReport> };
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {
   main().catch((e) => {

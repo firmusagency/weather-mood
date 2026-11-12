@@ -15,7 +15,8 @@ import { SpotDetail } from './SpotDetail';
 import { EMBEDDED, datasetsFromSnapshot, fetchLive, loadAdjustments, loadFeedback, loadSnapshot, loadVerification, readPref, writePref } from './data';
 import { adjustSpots, NO_ADJUSTMENTS, type Adjustments } from '../engine/adjust';
 import type { FeedbackSummary } from '../engine/feedback';
-import { loadHealth, loadPlanB, loadWeekly, type PlanBReport } from './data';
+import { loadHealth, loadPlanB, loadWeekly, planBFor, type PlanBReport } from './data';
+import { currentProperty, isDefaultProperty } from '../guest/property';
 import type { Health } from '../engine/health';
 import { HealthBanner } from './Method';
 import type { WeeklyReport } from '../engine/weekly';
@@ -27,7 +28,11 @@ const TABS = ['recs', 'overview', 'analysis', 'method'] as const;
 type Tab = (typeof TABS)[number];
 const LANGS = ['el', 'en'] as const;
 const PROFILE_IDS = PROFILES.map((p) => p.id);
-const BASE_IDS = BASES.map((b) => b.id);
+/** The property this dashboard is opened for (`?p=<id>`): its own door is the first base to compute from. */
+const PROPERTY = currentProperty();
+const OPENED_FOR_PROPERTY = typeof location !== 'undefined' && new URLSearchParams(location.search).has('p');
+const ALL_BASES = [PROPERTY.base, ...BASES.filter((b) => b.id !== PROPERTY.base.id)];
+const BASE_IDS = ALL_BASES.map((b) => b.id);
 
 function initialTab(): Tab {
   const h = typeof location !== 'undefined' ? location.hash.slice(1) : '';
@@ -71,7 +76,8 @@ function PlanBBanner({ report, profileId, lang }: { report: PlanBReport; profile
 export function App() {
   const [lang, setLang] = useState<Lang>(() => readPref('lang', LANGS, 'el'));
   const [profileId, setProfileId] = useState<ProfileId>(() => readPref('profile', PROFILE_IDS, 'couple'));
-  const [baseId, setBaseId] = useState(() => readPref('base', BASE_IDS, 'chania'));
+  // a hotel's own link starts from the hotel; otherwise the last choice, as before
+  const [baseId, setBaseId] = useState(() => (OPENED_FOR_PROPERTY ? PROPERTY.base.id : readPref('base', BASE_IDS, 'chania')));
   const [tab, setTab] = useState<Tab>(initialTab);
   const [datasets, setDatasets] = useState<Record<string, Dataset>>({});
   const [generatedAt, setGeneratedAt] = useState<string>('');
@@ -126,7 +132,10 @@ export function App() {
   }, [lang]);
 
   const data = datasets[date];
-  const base = BASES.find((b) => b.id === baseId) ?? BASES[0];
+  // this property's own verdict and weekly report (the files carry the default property at the top level)
+  const propertyPlanB = planB ? planBFor(planB, PROPERTY.id, isDefaultProperty(PROPERTY)) : null;
+  const propertyWeekly = weekly && !isDefaultProperty(PROPERTY) ? ((weekly as WeeklyReport & { others?: Record<string, WeeklyReport> }).others?.[PROPERTY.id] ?? null) : weekly;
+  const base = ALL_BASES.find((b) => b.id === baseId) ?? BASES[0];
   const dates = Object.keys(datasets).sort();
 
   const analysis = useMemo(() => {
@@ -234,7 +243,7 @@ export function App() {
           <label className="field" htmlFor="base">
             <span className="field-label">{s.base}</span>
             <select id="base" value={baseId} onChange={(e) => setBaseId(e.target.value)}>
-              {BASES.map((b) => (
+              {ALL_BASES.map((b) => (
                 <option key={b.id} value={b.id}>
                   {b.name[lang]}
                 </option>
@@ -257,8 +266,8 @@ export function App() {
         {status === 'loading' && <p className="hint">{s.loading}</p>}
         {status === 'error' && <p className="callout callout-warn">{s.loadFailed}</p>}
         <HealthBanner health={health} lang={lang} />
-        {planB && planB.date === today && planB.changed && (
-          <PlanBBanner report={planB} profileId={profileId} lang={lang} />
+        {propertyPlanB && propertyPlanB.date === today && propertyPlanB.changed && (
+          <PlanBBanner report={propertyPlanB} profileId={profileId} lang={lang} />
         )}
         {analysis && data && (
           <>
@@ -276,10 +285,11 @@ export function App() {
                 scores={analysis.scores}
                 conditions={analysis.conditions}
                 isTomorrow={date === athensDate(1)}
+                property={PROPERTY}
               />
             )}
             {tab === 'method' && <Method spots={spots} lang={lang} types={s.types} verification={verification} feedback={feedback}
-          weekly={weekly} calibration={adjust.calibration} stationCal={adjust.stations} health={health} />}
+          weekly={propertyWeekly} calibration={adjust.calibration} stationCal={adjust.stations} health={health} />}
           </>
         )}
       </main>

@@ -26,7 +26,7 @@ import { analyzeDay, recommend } from '../src/engine/recommend';
 import { buildSynopsis } from '../src/engine/synopsis';
 import type { ProfileId } from '../src/engine/types';
 import { eveningMessage } from '../src/guest/evening';
-import { DEMO_PROPERTY, GUEST_LANGS, type GuestLang } from '../src/guest/property';
+import { DEMO_PROPERTY, GUEST_LANGS, PROPERTIES, propertyById, type GuestLang, type Property } from '../src/guest/property';
 import type { Delivery } from '../src/engine/health';
 import { mailEnv, sendMail } from './mail';
 import { notificationFromMessage, pushEnv, pushMissing, sendPush } from './push';
@@ -36,14 +36,24 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 /** Oldest forecast an evening message or a plan-B check may be built on. */
 export const MAX_FORECAST_AGE_H = 20;
 
-export interface EveningPack {
-  date: string;
-  generatedAt: string;
-  basedOn: string;
+/** What one property gets: its own picks (travel times start at its door) and its own texts. */
+export interface EveningPart {
   property: { id: string; name: string };
   plans: Partial<Record<ProfileId, PlanSnapshot>>;
   messages: Partial<Record<ProfileId, Record<GuestLang, string>>>;
 }
+
+/** The top level is the first (default) property, as it always was; the others sit in `others`. */
+export interface EveningPack extends EveningPart {
+  date: string;
+  generatedAt: string;
+  basedOn: string;
+  others?: Record<string, EveningPart>;
+}
+
+/** Every property's part of a pack, the default one first. */
+export const eveningParts = (pack: EveningPack): EveningPart[] => [{ property: pack.property, plans: pack.plans, messages: pack.messages }, ...Object.values(pack.others ?? {})];
+export const eveningPartFor = (pack: EveningPack, propertyId: string) => eveningParts(pack).find((p) => p.property.id === propertyId);
 
 export function buildEveningPack(raw: RawBundle, date: string, basedOn: string, property = DEMO_PROPERTY, now = new Date()): EveningPack {
   const data = datasetFromRaw(raw, 'snapshot');
@@ -60,6 +70,20 @@ export function buildEveningPack(raw: RawBundle, date: string, basedOn: string, 
   return pack;
 }
 
+/** One pack for all properties: the first at the top level, the rest under `others`. */
+export function buildEveningAll(raw: RawBundle, date: string, basedOn: string, properties: Property[] = PROPERTIES, now = new Date()): EveningPack {
+  const [first, ...rest] = properties;
+  const pack = buildEveningPack(raw, date, basedOn, first, now);
+  if (rest.length) {
+    pack.others = {};
+    for (const p of rest) {
+      const { property, plans, messages } = buildEveningPack(raw, date, basedOn, p, now);
+      pack.others[p.id] = { property, plans, messages };
+    }
+  }
+  return pack;
+}
+
 async function main() {
   const date = process.argv[2] && /^\d{4}-\d{2}-\d{2}$/.test(process.argv[2]) ? process.argv[2] : athensDate(1);
   const snap = JSON.parse(readFileSync(join(root, 'public/data/snapshot-latest.json'), 'utf8')) as { generatedAt: string; days: Record<string, RawBundle> };
@@ -69,14 +93,14 @@ async function main() {
   const ageH = (Date.now() - Date.parse(snap.generatedAt)) / 3_600_000;
   console.log(`using the forecast fetched ${ageH.toFixed(1)} h ago (${snap.generatedAt})`);
   if (ageH > MAX_FORECAST_AGE_H) throw new Error(`the newest forecast is ${ageH.toFixed(0)} h old (limit ${MAX_FORECAST_AGE_H} h): no message is better than a stale one`);
-  const pack = buildEveningPack(raw, date, snap.generatedAt);
+  const pack = buildEveningAll(raw, date, snap.generatedAt);
 
   const latest = join(root, 'public/data/evening.json');
   writeFileSync(latest, JSON.stringify(pack, null, 1));
   const archive = join(root, `data/messages/${date}.json`);
   mkdirSync(dirname(archive), { recursive: true });
   writeFileSync(archive, JSON.stringify(pack, null, 1));
-  console.log(`evening pack for ${date} from snapshot ${pack.basedOn}: ${Object.keys(pack.messages).length} profiles × ${GUEST_LANGS.length} languages`);
+  console.log(`evening pack for ${date} from snapshot ${pack.basedOn}: ${eveningParts(pack).length} propert${eveningParts(pack).length === 1 ? 'y' : 'ies'} × ${Object.keys(pack.messages).length} profiles × ${GUEST_LANGS.length} languages`);
   console.log('---');
   console.log(pack.messages.couple?.el);
 
@@ -85,12 +109,22 @@ async function main() {
   if (push) {
     // notifications are a courtesy: whatever goes wrong here, the message files must still be committed
     try {
-      const r = await sendPush(push, pack.property.id, (sub) => {
-        const lang = (GUEST_LANGS as readonly string[]).includes(sub.lang ?? '') ? (sub.lang as GuestLang) : 'en';
-        const profile = (sub.profile && pack.messages[sub.profile as ProfileId] ? sub.profile : 'couple') as ProfileId;
-        const msg = pack.messages[profile]?.[lang];
-        return msg ? { title: `${pack.property.name} · ${lang === 'el' ? 'Αύριο' : lang === 'de' ? 'Morgen' : lang === 'fr' ? 'Demain' : 'Tomorrow'}`, body: notificationFromMessage(msg), url: DEMO_PROPERTY.guestUrl, tag: `evening-${date}` } : null;
-      });
+      // each property's subscribers get that property's picks and a link back to its own page
+      const total = { sent: 0, failed: 0, removed: 0 };
+      for (const part of eveningParts(pack)) {
+        const property = propertyById(part.property.id);
+        if (!property) continue;
+        const r = await sendPush(push, property.id, (sub) => {
+          const lang = (GUEST_LANGS as readonly string[]).includes(sub.lang ?? '') ? (sub.lang as GuestLang) : 'en';
+          const profile = (sub.profile && part.messages[sub.profile as ProfileId] ? sub.profile : 'couple') as ProfileId;
+          const msg = part.messages[profile]?.[lang];
+          return msg ? { title: `${property.name} · ${lang === 'el' ? 'Αύριο' : lang === 'de' ? 'Morgen' : lang === 'fr' ? 'Demain' : 'Tomorrow'}`, body: notificationFromMessage(msg), url: property.guestUrl, tag: `evening-${date}` } : null;
+        });
+        total.sent += r.sent;
+        total.failed += r.failed;
+        total.removed += r.removed;
+      }
+      const r = total;
       console.log(`push: ${r.sent} sent, ${r.failed} failed, ${r.removed} removed`);
       delivery.push = { state: 'sent', ...r };
     } catch (e) {
@@ -107,6 +141,14 @@ async function main() {
     try {
       await sendMail(mail, `Weather Mood · Βραδινό μήνυμα για ${date}`, `Έτοιμα κείμενα για αποστολή στους επισκέπτες (αντιγραφή/επικόλληση σε WhatsApp ή email).\n\n${body}`);
       console.log(`emailed reception digest to ${mail.to}`);
+      // the other properties' receptions get their own texts at their own address
+      for (const part of eveningParts(pack).slice(1)) {
+        const to = propertyById(part.property.id)?.email;
+        if (!to) continue;
+        const own = PROFILES.map((p) => `=== ${p.name.el} ===\n${part.messages[p.id]?.el}\n`).join('\n');
+        await sendMail({ ...mail, to }, `Weather Mood · Βραδινό μήνυμα για ${date} · ${part.property.name}`, `Έτοιμα κείμενα για αποστολή στους επισκέπτες (αντιγραφή/επικόλληση σε WhatsApp ή email).\n\n${own}`);
+        console.log(`emailed ${part.property.name} at ${to}`);
+      }
       delivery.email = { state: 'sent' };
     } catch (e) {
       delivery.email = { state: 'failed', reason: (e as Error).message };

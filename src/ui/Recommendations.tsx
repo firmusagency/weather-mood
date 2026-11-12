@@ -7,7 +7,7 @@ import { ScoreBar } from './charts';
 import { pad } from './AnalysisTable';
 import { factorText, longDate, strings, takeawayText } from './i18n';
 import { eveningMessage, mailtoUrl, whatsappTo } from '../guest/evening';
-import { DEMO_PROPERTY, GUEST_LANGS, LANG_NAMES_SHORT, type GuestLang } from '../guest/property';
+import { DEMO_PROPERTY, GUEST_LANGS, LANG_NAMES_SHORT, type GuestLang, type Property } from '../guest/property';
 import type { HourConditions, ProfileId } from '../engine/types';
 import { SpotPhoto } from './Photo';
 
@@ -46,11 +46,11 @@ function buildMessage(rec: Recommendation, syn: Synopsis, spots: Map<string, Spo
   return lines.join('\n');
 }
 
-function EveningPanel({ rec, syn, scores, conditions, profileId, lang, isTomorrow }: { rec: Recommendation; syn: Synopsis; scores: Record<string, SpotScore>; conditions: Record<string, HourConditions[]>; profileId: ProfileId; lang: Lang; isTomorrow: boolean }) {
+function EveningPanel({ rec, syn, scores, conditions, profileId, lang, isTomorrow, property }: { rec: Recommendation; syn: Synopsis; scores: Record<string, SpotScore>; conditions: Record<string, HourConditions[]>; profileId: ProfileId; lang: Lang; isTomorrow: boolean; property: Property }) {
   const s = strings(lang);
   const [glang, setGlang] = useState<GuestLang>(lang);
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle');
-  const text = eveningMessage({ rec, syn, scores, conditions }, DEMO_PROPERTY, profileId, glang);
+  const text = eveningMessage({ rec, syn, scores, conditions }, property, profileId, glang);
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(text);
@@ -86,7 +86,7 @@ function EveningPanel({ rec, syn, scores, conditions, profileId, lang, isTomorro
         <a className="btn" href={whatsappTo(undefined, text)} target="_blank" rel="noreferrer">
           {s.sendWhatsapp}
         </a>
-        <a className="btn" href={mailtoUrl(`${DEMO_PROPERTY.name} · ${longDate(syn.date, lang)}`, text)}>
+        <a className="btn" href={mailtoUrl(`${property.name} · ${longDate(syn.date, lang)}`, text)}>
           {s.sendEmail}
         </a>
       </div>
@@ -138,6 +138,7 @@ export function Recommendations({
   scores,
   conditions,
   isTomorrow,
+  property = DEMO_PROPERTY,
 }: {
   rec: Recommendation;
   syn: Synopsis;
@@ -149,6 +150,7 @@ export function Recommendations({
   scores: Record<string, SpotScore>;
   conditions: Record<string, HourConditions[]>;
   isTomorrow: boolean;
+  property?: Property;
 }) {
   const s = strings(lang);
   const byId = new Map(spots.map((x) => [x.id, x]));
@@ -235,7 +237,7 @@ export function Recommendations({
         </>
       )}
 
-      <EveningPanel rec={rec} syn={syn} scores={scores} conditions={conditions} profileId={profile.id} lang={lang} isTomorrow={isTomorrow} />
+      <EveningPanel rec={rec} syn={syn} scores={scores} conditions={conditions} profileId={profile.id} lang={lang} isTomorrow={isTomorrow} property={property} />
 
       <section className="panel message" aria-labelledby="msg-title">
         <div className="message-head">

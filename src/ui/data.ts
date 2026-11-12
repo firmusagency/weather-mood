@@ -44,8 +44,17 @@ export interface PlanBReport {
   checkedAt: string;
   eveningGeneratedAt: string | null;
   changed: boolean;
-  byProfile: Partial<Record<ProfileId, { diff: PlanDiff; messages: Record<string, string> | null }>>;
+  byProfile: PlanBByProfile;
   pushedAt?: string;
+  property?: { id: string; name: string };
+  others?: Record<string, { property: { id: string; name: string }; changed: boolean; byProfile: PlanBByProfile }>;
+}
+export type PlanBByProfile = Partial<Record<ProfileId, { diff: PlanDiff; messages: Record<string, string> | null }>>;
+/** The plan-B verdict for one property: the top level is the default property, the others sit in `others`. */
+export function planBFor(report: PlanBReport, propertyId: string, isDefault: boolean): PlanBReport | null {
+  if (isDefault || report.property?.id === propertyId) return report;
+  const part = report.others?.[propertyId];
+  return part ? { ...report, changed: part.changed, byProfile: part.byProfile, property: part.property } : null;
 }
 
 async function loadJson<T>(name: 'verification' | 'feedback' | 'calibration' | 'plan-b' | 'weekly' | 'closures' | 'station-calibration' | 'health'): Promise<T | null> {
