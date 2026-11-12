@@ -1,5 +1,6 @@
 import type { Lang, Sector, Spot } from '../engine/types';
 import type { StationCalibration } from '../engine/stationcal';
+import type { Health } from '../engine/health';
 import type { VerificationSummary } from '../engine/verify';
 import type { WeeklyReport } from '../engine/weekly';
 import type { Calibration, FeedbackSummary, FeedbackTag } from '../engine/feedback';
@@ -173,6 +174,55 @@ function Accuracy({ v, lang }: { v: VerificationSummary | null; lang: Lang }) {
           <StationsTable stations={v.stations ?? []} lang={lang} />
         </>
       )}
+    </article>
+  );
+}
+
+/** The check itself can die: a report older than this is a problem of its own. */
+const HEALTH_STALE_H = 16;
+const healthAgeH = (h: Health) => (Date.now() - Date.parse(h.checkedAt)) / 3_600_000;
+
+/** Top-of-page alarm for staff: only errors, or a health check that stopped running. */
+export function HealthBanner({ health, lang }: { health: Health | null; lang: Lang }) {
+  if (!health) return null;
+  const el = lang === 'el';
+  const stale = healthAgeH(health) > HEALTH_STALE_H;
+  const errors = health.items.filter((i) => i.level === 'error');
+  if (!stale && !errors.length) return null;
+  return (
+    <section className="callout callout-warn" role="alert">
+      <strong>{el ? 'Κάτι δεν λειτουργεί σωστά' : 'Something is not working'}</strong>
+      <ul>
+        {stale && <li>{el ? `Ο έλεγχος υγείας δεν έχει τρέξει εδώ και ${Math.round(healthAgeH(health))} ώρες: οι αυτοματισμοί ίσως έχουν σταματήσει.` : `The health check has not run for ${Math.round(healthAgeH(health))} hours: the automation may have stopped.`}</li>}
+        {errors.map((i) => (
+          <li key={i.id}>{i[lang]}</li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+/** Every check with its state, for the Method tab. */
+export function HealthPanel({ health, lang }: { health: Health | null; lang: Lang }) {
+  if (!health) return null;
+  const el = lang === 'el';
+  const mark = { ok: '✓', warn: '!', error: '✗' } as const;
+  const when = new Intl.DateTimeFormat(el ? 'el-GR' : 'en-GB', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Athens' }).format(new Date(health.checkedAt));
+  return (
+    <article className="panel">
+      <h3 className="panel-title">{el ? 'Κατάσταση συστήματος' : 'System status'}</h3>
+      <p className="hint">
+        {el
+          ? `Τελευταίος έλεγχος ${when}. Γίνεται μετά από κάθε βραδινό και πρωινό· αν κάτι σημαντικό λείπει, η εκτέλεση κοκκινίζει και το GitHub ειδοποιεί.`
+          : `Last check ${when}. It runs after every evening and morning job; when something important is missing the run turns red and GitHub notifies.`}
+      </p>
+      <ul className="health-list">
+        {health.items.map((i) => (
+          <li key={i.id} className={`health-${i.level}`}>
+            <span aria-hidden="true">{mark[i.level]}</span> {i[lang]}
+          </li>
+        ))}
+      </ul>
     </article>
   );
 }
@@ -445,6 +495,7 @@ export function Method({
   calibration,
   weekly = null,
   stationCal = null,
+  health = null,
 }: {
   spots: Spot[];
   lang: Lang;
@@ -454,6 +505,7 @@ export function Method({
   calibration: Calibration | null;
   weekly?: WeeklyReport | null;
   stationCal?: StationCalibration | null;
+  health?: Health | null;
 }) {
   const t = TXT[lang];
   return (
@@ -461,6 +513,7 @@ export function Method({
       <h2 id="m-title" className="section-title">
         {t.title}
       </h2>
+      <HealthPanel health={health} lang={lang} />
       <Accuracy v={verification} lang={lang} />
       <StationCalPanel cal={stationCal} lang={lang} />
       <p className="hint">

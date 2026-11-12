@@ -15,7 +15,9 @@ import { SpotDetail } from './SpotDetail';
 import { EMBEDDED, datasetsFromSnapshot, fetchLive, loadAdjustments, loadFeedback, loadSnapshot, loadVerification, readPref, writePref } from './data';
 import { adjustSpots, NO_ADJUSTMENTS, type Adjustments } from '../engine/adjust';
 import type { FeedbackSummary } from '../engine/feedback';
-import { loadPlanB, loadWeekly, type PlanBReport } from './data';
+import { loadHealth, loadPlanB, loadWeekly, type PlanBReport } from './data';
+import type { Health } from '../engine/health';
+import { HealthBanner } from './Method';
 import type { WeeklyReport } from '../engine/weekly';
 import type { VerificationSummary } from '../engine/verify';
 import { relativeDayLabel, strings } from './i18n';
@@ -75,8 +77,10 @@ export function App() {
   const [weekly, setWeekly] = useState<WeeklyReport | null>(null);
   const [adjust, setAdjust] = useState<Adjustments>(NO_ADJUSTMENTS);
   const [planB, setPlanB] = useState<PlanBReport | null>(null);
+  const [health, setHealth] = useState<Health | null>(null);
   useEffect(() => {
     loadPlanB().then(setPlanB);
+    loadHealth().then(setHealth);
     loadVerification().then(setVerification);
     loadFeedback().then(setFeedback);
     loadWeekly().then(setWeekly);
@@ -245,6 +249,7 @@ export function App() {
         {live === 'failed' && <p className="callout callout-warn">{s.liveFailed}</p>}
         {status === 'loading' && <p className="hint">{s.loading}</p>}
         {status === 'error' && <p className="callout callout-warn">{s.loadFailed}</p>}
+        <HealthBanner health={health} lang={lang} />
         {planB && planB.date === today && planB.changed && (
           <PlanBBanner report={planB} profileId={profileId} lang={lang} />
         )}
@@ -267,7 +272,7 @@ export function App() {
               />
             )}
             {tab === 'method' && <Method spots={spots} lang={lang} types={s.types} verification={verification} feedback={feedback}
-          weekly={weekly} calibration={adjust.calibration} stationCal={adjust.stations} />}
+          weekly={weekly} calibration={adjust.calibration} stationCal={adjust.stations} health={health} />}
           </>
         )}
       </main>

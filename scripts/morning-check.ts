@@ -27,8 +27,9 @@ import type { ProfileId } from '../src/engine/types';
 import { planBMessage } from '../src/guest/evening';
 import { DEMO_PROPERTY, GUEST_LANGS, type GuestLang } from '../src/guest/property';
 import type { EveningPack } from './evening';
+import type { Delivery } from '../src/engine/health';
 import { mailEnv, sendMail } from './mail';
-import { notificationFromMessage, pushEnv, sendPush } from './push';
+import { notificationFromMessage, pushEnv, pushMissing, sendPush } from './push';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -89,6 +90,7 @@ async function main() {
   for (const [profile, r] of Object.entries(report.byProfile)) {
     console.log(`${profile}: ${r.diff.significant ? 'CHANGED' : 'same'} ${r.diff.changes.map((c) => c.kind).join(',') || '-'}`);
   }
+  const delivery: Delivery = { kind: 'planB', date, at: new Date().toISOString(), push: { state: 'off', reason: pushMissing().join('; ') || 'not configured' }, email: { state: 'off', reason: 'SMTP not configured' } };
   const push = pushEnv();
   if (report.changed && push) {
     // as in the evening script: a notification problem must not lose the plan-B files
@@ -100,7 +102,9 @@ async function main() {
         return msg ? { title: `${pack.property.name} · Plan B`, body: notificationFromMessage(msg), url: DEMO_PROPERTY.guestUrl, tag: `planb-${date}` } : null;
       });
       console.log(`push: ${r.sent} sent, ${r.failed} failed, ${r.removed} removed`);
+      delivery.push = { state: 'sent', ...r };
     } catch (e) {
+      delivery.push = { state: 'failed', reason: (e as Error).message };
       console.error(`push FAILED, plan B still published: ${(e as Error).message}`);
     }
   }
@@ -114,12 +118,16 @@ async function main() {
     try {
       await sendMail(mail, `Weather Mood · Plan B για σήμερα ${date}`, `Ο καιρός άλλαξε σε σχέση με το βραδινό μήνυμα. Έτοιμα κείμενα:\n\n${body}`);
       console.log(`emailed plan B to ${mail.to}`);
+      delivery.email = { state: 'sent' };
     } catch (e) {
+      delivery.email = { state: 'failed', reason: (e as Error).message };
       console.error(`email FAILED, plan B still published: ${(e as Error).message}`);
     }
   } else if (report.changed) {
     console.log('plan B needed, SMTP not configured: file written only');
   }
+  // a plan B that went out (or should have) replaces the evening's delivery report
+  if (report.changed) writeFileSync(join(root, 'public/data/delivery.json'), JSON.stringify(delivery, null, 1));
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {

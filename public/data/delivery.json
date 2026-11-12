@@ -1,0 +1,15 @@
+{
+ "kind": "evening",
+ "date": "2026-11-13",
+ "at": "2026-11-12T15:56:35.000Z",
+ "push": {
+  "state": "sent",
+  "sent": 1,
+  "failed": 0,
+  "removed": 1
+ },
+ "email": {
+  "state": "off",
+  "reason": "SMTP not configured"
+ }
+}

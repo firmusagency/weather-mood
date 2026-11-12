@@ -36,6 +36,7 @@ import type { PlanDiff } from '../engine/planchange';
 import type { Closures } from '../engine/closures';
 import type { Adjustments } from '../engine/adjust';
 import type { StationCalibration } from '../engine/stationcal';
+import type { Health } from '../engine/health';
 import type { ProfileId } from '../engine/types';
 
 export interface PlanBReport {
@@ -46,7 +47,7 @@ export interface PlanBReport {
   byProfile: Partial<Record<ProfileId, { diff: PlanDiff; messages: Record<string, string> | null }>>;
 }
 
-async function loadJson<T>(name: 'verification' | 'feedback' | 'calibration' | 'plan-b' | 'weekly' | 'closures' | 'station-calibration'): Promise<T | null> {
+async function loadJson<T>(name: 'verification' | 'feedback' | 'calibration' | 'plan-b' | 'weekly' | 'closures' | 'station-calibration' | 'health'): Promise<T | null> {
   try {
     if (EMBEDDED) {
       // static import paths so the bundler can inline them
@@ -63,7 +64,9 @@ async function loadJson<T>(name: 'verification' | 'feedback' | 'calibration' | '
                   ? await import('../../public/data/closures.json')
                   : name === 'station-calibration'
                     ? await import('../../public/data/station-calibration.json')
-                    : await import('../../public/data/calibration.json');
+                    : name === 'health'
+                      ? await import('../../public/data/health.json')
+                      : await import('../../public/data/calibration.json');
       return (mod.default ?? mod) as unknown as T;
     }
     const res = await fetch(`${import.meta.env.BASE_URL}data/${name}.json`, { cache: 'no-cache' });
@@ -80,6 +83,7 @@ export const loadPlanB = () => loadJson<PlanBReport>('plan-b');
 export const loadWeekly = () => loadJson<WeeklyReport>('weekly');
 export const loadClosures = () => loadJson<Closures>('closures');
 export const loadStationCalibration = () => loadJson<StationCalibration>('station-calibration');
+export const loadHealth = () => loadJson<Health>('health');
 /** Everything that adjusts the spot list, in one call (see engine/adjust.ts). */
 export async function loadAdjustments(): Promise<Adjustments> {
   const [calibration, stations, closures] = await Promise.all([loadCalibration(), loadStationCalibration(), loadClosures()]);

@@ -1,0 +1,56 @@
+{
+ "checkedAt": "2026-11-12T19:17:44.460Z",
+ "ok": true,
+ "errors": 0,
+ "warnings": 0,
+ "items": [
+  {
+   "id": "snapshot",
+   "level": "ok",
+   "el": "Πρόγνωση 3.2 ωρών.",
+   "en": "Forecast 3.2 h old."
+  },
+  {
+   "id": "days",
+   "level": "ok",
+   "el": "Μέρες με πλήρη πρόγνωση: 3.",
+   "en": "Days with a full forecast: 3."
+  },
+  {
+   "id": "outlook",
+   "level": "ok",
+   "el": "7ήμερη πρόγνωση διαθέσιμη.",
+   "en": "7-day outlook available."
+  },
+  {
+   "id": "evening",
+   "level": "ok",
+   "el": "Βραδινό μήνυμα για 2026-11-13.",
+   "en": "Evening message for 2026-11-13."
+  },
+  {
+   "id": "planB",
+   "level": "ok",
+   "el": "Πρωινός έλεγχος Plan B έγινε.",
+   "en": "Morning plan-B check done."
+  },
+  {
+   "id": "verification",
+   "level": "ok",
+   "el": "Επαλήθευση ως 2026-11-11.",
+   "en": "Verification up to 2026-11-11."
+  },
+  {
+   "id": "push",
+   "level": "ok",
+   "el": "Ειδοποιήσεις: 1 στάλθηκαν (2026-11-13).",
+   "en": "Notifications: 1 sent (2026-11-13)."
+  },
+  {
+   "id": "closures",
+   "level": "ok",
+   "el": "Επίσημα κλεισίματα ελεγμένα.",
+   "en": "Official closures checked."
+  }
+ ]
+}

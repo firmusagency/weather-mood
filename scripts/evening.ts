@@ -27,6 +27,7 @@ import { buildSynopsis } from '../src/engine/synopsis';
 import type { ProfileId } from '../src/engine/types';
 import { eveningMessage } from '../src/guest/evening';
 import { DEMO_PROPERTY, GUEST_LANGS, type GuestLang } from '../src/guest/property';
+import type { Delivery } from '../src/engine/health';
 import { mailEnv, sendMail } from './mail';
 import { notificationFromMessage, pushEnv, pushMissing, sendPush } from './push';
 
@@ -79,6 +80,7 @@ async function main() {
   console.log('---');
   console.log(pack.messages.couple?.el);
 
+  const delivery: Delivery = { kind: 'evening', date, at: new Date().toISOString(), push: { state: 'off', reason: pushMissing().join('; ') || 'not configured' }, email: { state: 'off', reason: 'SMTP not configured' } };
   const push = pushEnv();
   if (push) {
     // notifications are a courtesy: whatever goes wrong here, the message files must still be committed
@@ -90,7 +92,9 @@ async function main() {
         return msg ? { title: `${pack.property.name} · ${lang === 'el' ? 'Αύριο' : lang === 'de' ? 'Morgen' : lang === 'fr' ? 'Demain' : 'Tomorrow'}`, body: notificationFromMessage(msg), url: DEMO_PROPERTY.guestUrl, tag: `evening-${date}` } : null;
       });
       console.log(`push: ${r.sent} sent, ${r.failed} failed, ${r.removed} removed`);
+      delivery.push = { state: 'sent', ...r };
     } catch (e) {
+      delivery.push = { state: 'failed', reason: (e as Error).message };
       console.error(`push FAILED, message still published: ${(e as Error).message}`);
     }
   } else {
@@ -103,12 +107,16 @@ async function main() {
     try {
       await sendMail(mail, `Weather Mood · Βραδινό μήνυμα για ${date}`, `Έτοιμα κείμενα για αποστολή στους επισκέπτες (αντιγραφή/επικόλληση σε WhatsApp ή email).\n\n${body}`);
       console.log(`emailed reception digest to ${mail.to}`);
+      delivery.email = { state: 'sent' };
     } catch (e) {
+      delivery.email = { state: 'failed', reason: (e as Error).message };
       console.error(`email FAILED, message still published: ${(e as Error).message}`);
     }
   } else {
     console.log('SMTP not configured: files written, no email sent');
   }
+  // what happened to the notifications, for the health check (names and counts only)
+  writeFileSync(join(root, 'public/data/delivery.json'), JSON.stringify(delivery, null, 1));
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]) {

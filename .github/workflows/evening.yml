@@ -43,13 +43,12 @@ jobs:
             echo "it is ${hour}:00 in Athens, not evening; skipping the fallback run"
             echo "skip=true" >> "$GITHUB_OUTPUT"
           fi
+      # node and the dependencies are needed even when the guard skips the work: the health check always runs
       - uses: actions/setup-node@v4
-        if: steps.guard.outputs.skip != 'true'
         with:
           node-version: 22
           cache: npm
       - run: npm ci
-        if: steps.guard.outputs.skip != 'true'
       # A fresh forecast when the provider answers (the script retries); when it does not, the
       # message is still built from the last snapshot in the repository, which is a few hours old.
       - name: Fresh forecast (the last snapshot is used if this fails)
@@ -91,3 +90,19 @@ jobs:
             git pull --rebase -X theirs origin "${GITHUB_REF_NAME}"
             git push origin "HEAD:${GITHUB_REF_NAME}"
           fi
+      # The alarm. Every run records the state of the data files; the scheduler's second-chance run
+      # (only_if_missing) is strict: an error turns it red and GitHub notifies the owner.
+      - name: Health check
+        if: always()
+        run: |
+          set +e
+          npm run health -- ${{ inputs.only_if_missing == 'true' && '--strict' || '' }}
+          code=$?
+          git config user.name "weather-mood-bot"
+          git config user.email "weather-mood-bot@users.noreply.github.com"
+          git add public/data/health.json
+          if ! git diff --cached --quiet; then
+            git commit -m "data: health check $(date -u +%Y-%m-%dT%H:%MZ)"
+            git pull --rebase -X theirs origin "${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+          exit $code

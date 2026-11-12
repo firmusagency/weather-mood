@@ -1734,3 +1734,29 @@ a {
   margin: -16px -16px 10px;
   border-radius: var(--radius) var(--radius) 0 0;
 }
+
+/* system status */
+.health-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+.health-list li span {
+  display: inline-block;
+  width: 1.4em;
+  font-weight: 700;
+}
+.health-ok span {
+  color: #1f7a4d;
+}
+.health-warn span {
+  color: #a86400;
+}
+.health-error {
+  font-weight: 600;
+}
+.health-error span {
+  color: #b3261e;
+}

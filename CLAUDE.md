@@ -51,6 +51,9 @@ decisions and conventions that are not obvious from the code.
   `only_if_missing=true` (`supabase/migrations/0004_second_chance.sql`, applied 2026-11-12); the workflow guard makes it a
   ten-second no-op when the first run produced its output. A failed forecast fetch no longer fails those workflows: they
   use the last snapshot (≤ 20 h). Applying a migration through the Supabase tool needs the owner's approval click.
+- Health check (`src/engine/health.ts`, `npm run health`): runs at the end of every evening and morning workflow and is strict
+  in the scheduler's second-chance run, so a missing evening message turns that run red (GitHub emails the owner). When you
+  add a recurring output, add its check there: three things broke silently for days before this existed.
 - Open-Meteo's free limit is per minute and counts locations × (variables × models / 10). The snapshot paces its day requests
   (25 s) and retries; adding variables or models to `MODEL_VARS`/`ATMOS_VARS` raises the cost of every run, so after such a
   change check that the next snapshot still has `outlook` (it silently lost it from 8 to 12 Nov 2026 after per-model rain).
