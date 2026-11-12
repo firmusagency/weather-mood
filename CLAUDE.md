@@ -47,6 +47,10 @@ decisions and conventions that are not obvious from the code.
   evening/morning/weekly workflows skip it unless the output is really missing and the Athens hour still makes sense
   (the first guard compared file dates and let a fallback through at 01:50; never judge by "tomorrow" in a late job). Needs the vault secret `github_dispatch_token`
   (fine-grained PAT, Actions: write, no expiry; in place since 2026-11-07); `select * from ops.dispatch_status` shows what happened.
+- Second chance: the scheduler dispatches the evening (18:10) and the morning check (06:15) once more with
+  `only_if_missing=true` (`supabase/migrations/0004_second_chance.sql`, applied 2026-11-12); the workflow guard makes it a
+  ten-second no-op when the first run produced its output. A failed forecast fetch no longer fails those workflows: they
+  use the last snapshot (≤ 20 h). Applying a migration through the Supabase tool needs the owner's approval click.
 - Open-Meteo's free limit is per minute and counts locations × (variables × models / 10). The snapshot paces its day requests
   (25 s) and retries; adding variables or models to `MODEL_VARS`/`ATMOS_VARS` raises the cost of every run, so after such a
   change check that the next snapshot still has `outlook` (it silently lost it from 8 to 12 Nov 2026 after per-model rain).
