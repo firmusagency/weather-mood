@@ -57,6 +57,17 @@ const POS: Partial<Record<Factor['key'], L>> = {
   },
 };
 
+/** Wave height as a guest reads it: one decimal, comma outside English ("0,9" not "0.89"). */
+export function waveText(v: unknown, lang: GuestLang): string {
+  const n = Number(v);
+  if (v == null || v === '' || !Number.isFinite(n)) return '';
+  const s = n.toFixed(1);
+  return lang === 'en' ? s : s.replace('.', ',');
+}
+
+/** Whole degrees for guests ("21", not "21.2"). */
+const degText = (v: unknown) => (v == null || v === '' || v === '-' || !Number.isFinite(Number(v)) ? '' : String(Math.round(Number(v))));
+
 /** The calm-sea line without the swimming promise, for cool days. */
 const SEA_CALM_COOL: L = { el: 'Ήρεμη θάλασσα', en: 'Calm sea', de: 'Ruhiges Meer', fr: 'Mer calme' };
 
@@ -196,9 +207,13 @@ const WARN: Partial<Record<Factor['key'], L>> = {
 function candidates(sc: SpotScore, lang: GuestLang): { pos: GuestLine[]; warn?: GuestLine } {
   const pos: GuestLine[] = [];
   const all = [...sc.fit.filter((f) => f.key === 'opportunity'), ...sc.factors.filter((f) => f.impact > 0), ...sc.fit.filter((f) => f.key === 'goodForBadWeather')];
-  // "ideal for swimming" is a summer sentence: with cool air or fresh water the sea is just calm
-  const coolSwim = sc.factors.some((f) => (f.key === 'cool' || f.key === 'coldWater' || f.key === 'coolSwim' || f.key === 'coldSwim') && f.impact <= -4);
+  // "ideal for swimming" is a warm, dry sentence: with cool air, fresh water or likely rain the sea is just calm
+  const NOT_IDEAL = new Set<Factor['key']>(['cool', 'coldWater', 'coolSwim', 'coldSwim', 'rain', 'rainRisk', 'rainyDay', 'thunder']);
+  const coolSwim = sc.factors.some((f) => NOT_IDEAL.has(f.key) && f.impact <= -4);
+  const hasCalmSea = all.some((f) => f.key === 'seaCalm');
   for (const f of all) {
+    // "calm sea" and "calm water close to the shore" say the same thing twice on one card
+    if (f.key === 'offshoreWind' && hasCalmSea) continue;
     const tpl = f.key === 'seaCalm' && coolSwim ? SEA_CALM_COOL : POS[f.key];
     if (!tpl) continue;
     pos.push({ kind: 'pos', text: t(tpl, lang, { dir: f.params.dir != null ? compassG(Number(f.params.dir), lang) : '', temp: f.params.apparent ?? '' }) });
@@ -212,7 +227,7 @@ function candidates(sc: SpotScore, lang: GuestLang): { pos: GuestLine[]; warn?: 
   const warnFactor = sc.factors.find((f) => f.impact <= -5 && WARN[f.key]);
   const p = warnFactor?.params;
   let warn = warnFactor
-    ? { kind: 'warn' as const, text: t(WARN[warnFactor.key]!, lang, { wave: p!.wave ?? '', gust: p!.gust ?? '', pp: p!.pp ?? '', temp: p!.apparent ?? '', sst: p!.sst ?? '', bf: p!.bf ?? '' }) }
+    ? { kind: 'warn' as const, text: t(WARN[warnFactor.key]!, lang, { wave: waveText(p!.wave, lang), gust: p!.gust ?? '', pp: p!.pp ?? '', temp: p!.apparent ?? '', sst: degText(p!.sst), bf: p!.bf ?? '' }) }
     : undefined;
   // a calm window before the wind arrives: the time to leave matters more than a mild caveat
   if (sc.laterWind && (!warnFactor || warnFactor.impact > -10)) {
@@ -270,7 +285,7 @@ export function factorText(f: Factor | undefined, lang: GuestLang): string | und
   const tpl = WARN[f.key];
   if (!tpl) return undefined;
   const p = f.params;
-  return t(tpl, lang, { wave: p.wave ?? '', gust: p.gust ?? '', pp: p.pp ?? '', temp: p.apparent ?? '', sst: p.sst ?? '', bf: p.bf ?? '' });
+  return t(tpl, lang, { wave: waveText(p.wave, lang), gust: p.gust ?? '', pp: p.pp ?? '', temp: p.apparent ?? '', sst: degText(p.sst), bf: p.bf ?? '' });
 }
 
 /** The main problem with a place on this day — for the "better not" list. */
@@ -343,7 +358,7 @@ export function mapsUrl(spot: Spot, profile: ProfileId) {
   return `https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lon}${mode}`;
 }
 
-const SUMMARY: Record<'calm' | 'wind' | 'rain' | 'rainCoast' | 'hot', L> = {
+const SUMMARY: Record<'calm' | 'wind' | 'rain' | 'showers' | 'rainCoast' | 'hot', L> = {
   calm: {
     el: 'Ελαφρύς αέρας και ήρεμη θάλασσα σχεδόν παντού: καλή μέρα και για τα πιο εκτεθειμένα μέρη.',
     en: 'Light wind and a calm sea almost everywhere: a good day even for the exposed spots.',
@@ -361,6 +376,12 @@ const SUMMARY: Record<'calm' | 'wind' | 'rain' | 'rainCoast' | 'hot', L> = {
     en: 'Rain likely ({pp}%): keep a town or museum plan as backup.',
     de: 'Regen wahrscheinlich ({pp}%): Stadt oder Museum als Alternative einplanen.',
     fr: 'Pluie probable ({pp}%) : prévoyez la ville ou un musée en plan B.',
+  },
+  showers: {
+    el: 'Πιθανές μπόρες ({pp}%): πάρτε ένα αδιάβροχο μαζί.',
+    en: 'Showers possible ({pp}%): take a rain jacket along.',
+    de: 'Schauer möglich ({pp}%): eine Regenjacke mitnehmen.',
+    fr: 'Averses possibles ({pp} %) : emportez un imperméable.',
   },
   rainCoast: {
     el: 'Πιθανή βροχή στη {coast} ακτή ({pp}%)· η πόλη και οι άλλες ακτές πιο στεγνές.',
@@ -389,20 +410,28 @@ const WIND_WORD: L[] = [
 ];
 
 /** One sentence that explains the day, so the picks below make sense. */
+/** Wording steps for region-wide rain in the day summary (not verdict thresholds: those are the hard limits). */
+export const RAIN_WORDS = { showers: 40, likely: 60 };
+
 export function daySummary(syn: Synopsis, lang: GuestLang): string[] {
   const out: string[] = [];
   const rough = syn.coasts.filter((c) => (c.waveMax ?? 0) >= 1.0);
   // a coast-confined blow (afternoon southerly on the west coast) counts at its peak, not the day's mean
   const wc = syn.takeaways.find((x) => x.key === 'windCoast');
   const bf = Math.max(syn.wind.bf, Number(wc?.params.bf) || 0);
-  if (bf <= 2 && !rough.length) out.push(t(SUMMARY.calm, lang));
-  else if (rough.length) {
+  // region-wide rain at 60% or more is not "a good day even for the exposed spots", however flat the sea
+  const rainyDay = !syn.rain.coast && syn.rain.probMax >= RAIN_WORDS.likely;
+  if (bf <= 2 && !rough.length) {
+    if (!rainyDay) out.push(t(SUMMARY.calm, lang));
+  } else if (rough.length) {
     const coast = rough.sort((a, b) => (b.waveMax ?? 0) - (a.waveMax ?? 0))[0].id.replace('ref-', '') as 'north' | 'west' | 'south';
     out.push(t(SUMMARY.wind, lang, { word: t(WIND_WORD[windLevel(bf)], lang), dir: compassG(syn.wind.dir, lang), coast: t(COAST_WORD[coast] ?? COAST_WORD.north, lang) }));
   }
   // rain that sits on one coast is named (the town figure alone would hide it)
   if (syn.rain.coast) out.push(t(SUMMARY.rainCoast, lang, { pp: syn.rain.probMax, coast: t(COAST_WORD[syn.rain.coast.replace('ref-', '') as 'north' | 'west' | 'south'] ?? COAST_WORD.north, lang) }));
-  else if (syn.rain.probMax >= 50) out.push(t(SUMMARY.rain, lang, { pp: syn.rain.probMax }));
+  else if (rainyDay) out.push(t(SUMMARY.rain, lang, { pp: syn.rain.probMax }));
+  // 40–59%: half the rainy station-days of Oct 2026 sat here or lower; say it, without calling the day off
+  else if (syn.rain.probMax >= RAIN_WORDS.showers) out.push(t(SUMMARY.showers, lang, { pp: syn.rain.probMax }));
   if ((syn.town.apparentMax ?? 0) >= 32) out.push(t(SUMMARY.hot, lang, { temp: Math.round(syn.town.apparentMax!) }));
   return out;
 }

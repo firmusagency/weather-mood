@@ -59,7 +59,7 @@ decisions and conventions that are not obvious from the code.
 - Samaria official status is read twice a day (`scripts/samaria-status.ts` → `public/data/closures.json`, engine `closures.ts`);
   the in-season weather-closure wording has not been seen yet, so check `data/closures/log.jsonl` in May 2027 and adjust the parser.
 - Rain calibration (`docs/rain-calibration-2026-11-01.md`): re-run `npm run rain:calibration` at ~30 days; the proposal is
-  caution ≥ 40% / 0.5 mm for the sea. Per-model rain is in the snapshot and the verification rows since 2026-11-08, so the
+  caution ≥ 40% / 0.5 mm for the sea (the wording part is done: "showers possible" from 40% in the day summary, `RAIN_WORDS`). Per-model rain is in the snapshot and the verification rows since 2026-11-08, so the
   per-model table in that script fills up from the 2026-11-09 verification on.
 - Station gust calibration (`src/engine/stationcal.ts`, `docs/station-gusts-2026-11-10.md`) activates by itself at 30 days per
   station: expect Paleochora ~17 Nov and Falasarna ~20 Nov 2026 at about ×1.18. Check the dashboard panel then; nothing to do unless

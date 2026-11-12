@@ -2,7 +2,9 @@ import { describe, expect, it } from 'vitest';
 import { SPOTS } from '../src/data/spots';
 import { BASES } from '../src/data/region';
 import { analyzeDay, recommend } from '../src/engine/recommend';
-import { guestReasons } from '../src/guest/advice';
+import { REF_POINTS } from '../src/data/region';
+import { buildSynopsis } from '../src/engine/synopsis';
+import { daySummary, guestReasons, mainProblem, waveText } from '../src/guest/advice';
 import { scenario } from './helpers';
 
 const calm = { windKmh: 6, windDir: 20, waveM: 0.2, waveDir: 20 };
@@ -70,5 +72,43 @@ describe('a mild November day is not a July beach day', () => {
     // a park has no sunbeds in any month
     expect(text(july, 'botanical-park', 'senior')).toMatch(/Food and toilets on site/);
     expect(text(july, 'botanical-park', 'senior')).not.toMatch(/Sunbeds/);
+  });
+});
+
+describe('rain and sea wording for guests', () => {
+  const warm = { ...calm, apparent: 27, sst: 25, cloud: 30, date: '2026-07-15' };
+  const summary = (s: Parameters<typeof scenario>[0]) => daySummary(buildSynopsis(scenario(s), REF_POINTS), 'en').join(' ');
+
+  it('does not call the sea "ideal for swimming" when rain is likely', () => {
+    expect(text({ ...warm, precipProb: 20 }, 'agioi-apostoloi')).toMatch(/ideal for swimming/);
+    const rainy = text({ ...warm, precipProb: 65 }, 'agioi-apostoloi');
+    expect(rainy).toMatch(/Calm sea/);
+    expect(rainy).not.toMatch(/ideal for swimming/);
+    expect(rainy).toMatch(/Rain likely \(65%\)/);
+  });
+
+  it('does not say "calm sea" twice in different words', () => {
+    // a light offshore wind on a flat day earns both factors; one line is enough
+    const lines = guestReasons(day({ ...warm, windKmh: 18, windDir: 180 }).scores['agioi-apostoloi'], 'en').map((l) => l.text);
+    expect(lines.filter((l) => /Calm/.test(l))).toHaveLength(1);
+  });
+
+  it('mentions showers from 40%, likely rain from 60%, and drops "a good day everywhere" on a rainy day', () => {
+    expect(summary({ ...warm, precipProb: 30 })).not.toMatch(/rain|Showers/i);
+    expect(summary({ ...warm, precipProb: 45 })).toMatch(/Showers possible \(45%\): take a rain jacket/);
+    expect(summary({ ...warm, precipProb: 45 })).toMatch(/a good day even for the exposed spots/);
+    const wet = summary({ ...warm, precipProb: 65 });
+    expect(wet).toMatch(/Rain likely \(65%\)/);
+    expect(wet).not.toMatch(/a good day even for the exposed spots/);
+  });
+
+  it('writes wave heights and water temperature the way a guest reads them', () => {
+    expect(waveText(0.89, 'en')).toBe('0.9');
+    expect(waveText(0.89, 'el')).toBe('0,9');
+    expect(waveText('', 'el')).toBe('');
+    const windy = day({ ...warm, windKmh: 30, windDir: 270, waveM: 1.3, waveDir: 270 }, 'couple').scores.falasarna;
+    expect(mainProblem(windy, 'el')).toMatch(/~\d,\d m\)/);
+    expect(mainProblem(windy, 'en')).toMatch(/~\d\.\d m\)/);
+    expect(text({ ...november, apparent: 25, sst: 20.4 }, 'agioi-apostoloi')).toMatch(/Fresh water \(20°C\)/);
   });
 });
