@@ -6,6 +6,11 @@ on:
   schedule:
     - cron: '50 2 * * *' # late fallback only; the on-time 05:50 Athens run is dispatched by Supabase pg_cron
   workflow_dispatch:
+    inputs:
+      only_if_missing:
+        description: 'Second-chance run from the scheduler: do nothing when the output already exists'
+        required: false
+        default: 'false'
 
 permissions:
   contents: write
@@ -23,7 +28,7 @@ jobs:
       # cron arrives hours later and must not overwrite today's plan-B verdict or re-send it.
       - name: Skip the late fallback when today's check exists
         id: guard
-        if: github.event_name == 'schedule'
+        if: github.event_name == 'schedule' || inputs.only_if_missing == 'true'
         run: |
           today=$(TZ=Europe/Athens date +%F)
           hour=$(TZ=Europe/Athens date +%-H)
@@ -41,8 +46,12 @@ jobs:
           cache: npm
       - run: npm ci
         if: steps.guard.outputs.skip != 'true'
-      - run: npm run snapshot:fetch
+      # A fresh forecast when the provider answers (the script retries); when it does not, the
+      # message is still built from the last snapshot in the repository, which is a few hours old.
+      - name: Fresh forecast (the last snapshot is used if this fails)
+        run: npm run snapshot:fetch
         if: steps.guard.outputs.skip != 'true'
+        continue-on-error: true
         env:
           OPEN_METEO_API_KEY: ${{ secrets.OPEN_METEO_API_KEY }}
       # the park's own open/closed notice; a failure here must not stop the message

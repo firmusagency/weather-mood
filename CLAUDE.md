@@ -47,6 +47,9 @@ decisions and conventions that are not obvious from the code.
   evening/morning/weekly workflows skip it unless the output is really missing and the Athens hour still makes sense
   (the first guard compared file dates and let a fallback through at 01:50; never judge by "tomorrow" in a late job). Needs the vault secret `github_dispatch_token`
   (fine-grained PAT, Actions: write, no expiry; in place since 2026-11-07); `select * from ops.dispatch_status` shows what happened.
+- Open-Meteo's free limit is per minute and counts locations × (variables × models / 10). The snapshot paces its day requests
+  (25 s) and retries; adding variables or models to `MODEL_VARS`/`ATMOS_VARS` raises the cost of every run, so after such a
+  change check that the next snapshot still has `outlook` (it silently lost it from 8 to 12 Nov 2026 after per-model rain).
 - Open-Meteo is not reachable from the cloud sandbox: data comes from the GitHub Actions; trigger `snapshot.yml` to
   refresh and pull the result.
 - The owner reads Greek; reply in Greek, keep code and commit messages in English.

@@ -32,6 +32,9 @@ import { notificationFromMessage, pushEnv, pushMissing, sendPush } from './push'
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
+/** Oldest forecast an evening message or a plan-B check may be built on. */
+export const MAX_FORECAST_AGE_H = 20;
+
 export interface EveningPack {
   date: string;
   generatedAt: string;
@@ -61,6 +64,10 @@ async function main() {
   const snap = JSON.parse(readFileSync(join(root, 'public/data/snapshot-latest.json'), 'utf8')) as { generatedAt: string; days: Record<string, RawBundle> };
   const raw = snap.days[date];
   if (!raw) throw new Error(`snapshot has no forecast for ${date} (has ${Object.keys(snap.days).join(', ')})`);
+  // when the fresh fetch failed the workflow carries on with the last snapshot: fine for a few hours, not for a day
+  const ageH = (Date.now() - Date.parse(snap.generatedAt)) / 3_600_000;
+  console.log(`using the forecast fetched ${ageH.toFixed(1)} h ago (${snap.generatedAt})`);
+  if (ageH > MAX_FORECAST_AGE_H) throw new Error(`the newest forecast is ${ageH.toFixed(0)} h old (limit ${MAX_FORECAST_AGE_H} h): no message is better than a stale one`);
   const pack = buildEveningPack(raw, date, snap.generatedAt);
 
   const latest = join(root, 'public/data/evening.json');

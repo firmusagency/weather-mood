@@ -22,14 +22,23 @@ async function main() {
   const plan = planPoints(SPOTS, REF_POINTS);
   const dates = [0, 1, 2].map((d) => athensDate(d));
   const days: Record<string, RawBundle> = {};
-  for (const date of dates) {
-    days[date] = await fetchRaw(plan, date, process.env.OPEN_METEO_API_KEY);
+  // Open-Meteo's free tier counts requests per minute (every location and every 10 variables×models
+  // count), and one day of ours is close to half that budget: fired back to back, the last request
+  // of the run (the 7-day outlook) was refused with 429 on every run from 8 to 12 Nov 2026. So the
+  // days are spaced out, and every request retries.
+  const pace = Number(process.env.SNAPSHOT_PACE_MS ?? 25_000);
+  const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+  const opts = { retries: 3, log: (m: string) => console.warn(`  ${m}`) };
+  for (const [i, date] of dates.entries()) {
+    if (i > 0 && pace > 0) await sleep(pace);
+    days[date] = await fetchRaw(plan, date, process.env.OPEN_METEO_API_KEY, fetch, date, opts);
     console.log(`fetched ${date}: ${plan.land.length} land points, ${plan.marine.length} marine points`);
   }
   // 7-day outlook for the stay planner: reference points only, one multi-day request per endpoint
   let outlook: RawBundle | undefined;
   try {
-    outlook = await fetchRaw(outlookPlan(REF_POINTS), dates[0], process.env.OPEN_METEO_API_KEY, fetch, athensDate(OUTLOOK_DAYS));
+    if (pace > 0) await sleep(pace);
+    outlook = await fetchRaw(outlookPlan(REF_POINTS), dates[0], process.env.OPEN_METEO_API_KEY, fetch, athensDate(OUTLOOK_DAYS), opts);
     console.log(`fetched outlook ${dates[0]} → ${athensDate(OUTLOOK_DAYS)} at ${REF_POINTS.length} reference points`);
   } catch (e) {
     console.warn('outlook fetch failed, snapshot keeps the 3 full days only', e);

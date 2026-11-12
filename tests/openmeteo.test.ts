@@ -55,3 +55,47 @@ describe('previous-days rain request', () => {
     expect(ds.land.p.models.gfs_seamless[0].precip).toBeNull();
   });
 });
+
+describe('patience with the weather provider', () => {
+  const ok = (body: unknown) => ({ ok: true, status: 200, statusText: 'OK', json: async () => body }) as Response;
+  const bad = (status: number, reason: string) => ({ ok: false, status, statusText: reason, json: async () => ({ error: true, reason }) }) as Response;
+  const run = async (responses: (Response | Error)[], retries = 2) => {
+    const waits: number[] = [];
+    let calls = 0;
+    const fetchImpl = (async () => {
+      const r = responses[Math.min(calls, responses.length - 1)];
+      calls += 1;
+      if (r instanceof Error) throw r;
+      return r;
+    }) as unknown as typeof fetch;
+    const { getWithRetry } = await import('../src/engine/openmeteo');
+    const result = await getWithRetry('https://marine-api.open-meteo.com/v1/marine?x=1', fetchImpl, { retries, sleep: async (ms) => void waits.push(ms) }).then(
+      (v) => ({ v }),
+      (e: Error) => ({ e }),
+    );
+    return { ...result, calls, waits } as { v?: unknown; e?: Error; calls: number; waits: number[] };
+  };
+
+  it('retries a connect timeout and a 5xx, then succeeds', async () => {
+    const r = await run([new TypeError('fetch failed'), bad(502, 'Bad Gateway'), ok({ hourly: {} })]);
+    expect(r.v).toEqual({ hourly: {} });
+    expect(r.calls).toBe(3);
+    expect(r.waits).toHaveLength(2);
+  });
+
+  it('waits a full minute after "too many requests"', async () => {
+    const { RATE_LIMIT_WAIT_MS } = await import('../src/engine/openmeteo');
+    const r = await run([bad(429, 'Minutely API request limit exceeded'), ok({ hourly: {} })]);
+    expect(r.v).toEqual({ hourly: {} });
+    expect(r.waits).toEqual([RATE_LIMIT_WAIT_MS]);
+  });
+
+  it('does not retry a request that is simply wrong, and gives up after the last attempt', async () => {
+    const wrong = await run([bad(400, 'Cannot initialize WeatherVariable')]);
+    expect(wrong.e?.message).toMatch(/400/);
+    expect(wrong.calls).toBe(1);
+    const down = await run([new TypeError('fetch failed')], 2);
+    expect(down.e?.message).toMatch(/fetch failed/);
+    expect(down.calls).toBe(3);
+  });
+});

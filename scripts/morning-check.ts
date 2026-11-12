@@ -74,6 +74,14 @@ async function main() {
   const snap = JSON.parse(readFileSync(join(root, 'public/data/snapshot-latest.json'), 'utf8')) as { generatedAt: string; days: Record<string, RawBundle> };
   const raw = snap.days[date];
   if (!raw) throw new Error(`snapshot has no forecast for ${date}`);
+  const ageH = (Date.now() - Date.parse(snap.generatedAt)) / 3_600_000;
+  console.log(`using the forecast fetched ${ageH.toFixed(1)} h ago (${snap.generatedAt})`);
+  // A check against the very forecast the evening message used would always say "no change". Write
+  // nothing in that case: plan-b.json keeps yesterday's date, so the second-chance run tries again.
+  if (Date.parse(snap.generatedAt) <= Date.parse(pack.basedOn)) {
+    console.warn('no forecast newer than the evening message (the fetch failed?): plan B not checked');
+    return;
+  }
   const report = buildPlanB(pack, raw);
   writeFileSync(out, JSON.stringify(report, null, 1));
   appendFileSync(join(root, 'data/plan-b-log.jsonl'), JSON.stringify({ date: report.date, checkedAt: report.checkedAt, changed: report.changed }) + '\n');

@@ -229,14 +229,53 @@ export function datasetFromRaw(raw: RawBundle, source: Dataset['source']): Datas
   return { date: raw.date, fetchedAt: raw.fetchedAt, source, land, marine, waveModels, recentRain };
 }
 
-export async function fetchRaw(plan: PointPlan, date: string, apiKey?: string, fetchImpl: typeof fetch = fetch, endDate = date): Promise<RawBundle> {
+export interface FetchOptions {
+  /** Extra attempts after the first one, for timeouts, 5xx and "too many requests" (default 2). */
+  retries?: number;
+  /** Injected in tests so they do not really wait. */
+  sleep?: (ms: number) => Promise<void>;
+  log?: (msg: string) => void;
+}
+
+/** Open-Meteo's free limit is per minute: after a 429 the only useful wait is a full minute. */
+export const RATE_LIMIT_WAIT_MS = 62_000;
+const RETRY_WAITS_MS = [3_000, 12_000, 30_000];
+const realSleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+/**
+ * One GET with patience. A connect timeout, a 5xx or a 429 is the provider having a bad moment
+ * (12 Nov 2026: a 10 s connect timeout on the marine API cancelled the whole evening message);
+ * any other 4xx is our request being wrong and is not retried.
+ */
+export async function getWithRetry(url: string, fetchImpl: typeof fetch = fetch, opts: FetchOptions = {}): Promise<unknown> {
+  const retries = opts.retries ?? 2;
+  const sleep = opts.sleep ?? realSleep;
+  const host = url.split('/')[2] ?? 'open-meteo';
+  let last: Error = new Error('no attempt made');
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    let wait = RETRY_WAITS_MS[Math.min(attempt, RETRY_WAITS_MS.length - 1)];
+    try {
+      const res = await fetchImpl(url);
+      const body = (await res.json().catch(() => null)) as { reason?: string } | null;
+      if (res.ok) return body;
+      last = new Error(`Open-Meteo ${res.status}: ${body?.reason ?? res.statusText}`);
+      if (res.status === 429) wait = RATE_LIMIT_WAIT_MS;
+      else if (res.status < 500) throw Object.assign(last, { fatal: true });
+    } catch (e) {
+      if ((e as { fatal?: boolean }).fatal) throw e;
+      last = e as Error;
+    }
+    if (attempt < retries) {
+      opts.log?.(`${host}: ${last.message}; retrying in ${Math.round(wait / 1000)} s (${attempt + 1}/${retries})`);
+      await sleep(wait);
+    }
+  }
+  throw last;
+}
+
+export async function fetchRaw(plan: PointPlan, date: string, apiKey?: string, fetchImpl: typeof fetch = fetch, endDate = date, opts: FetchOptions = {}): Promise<RawBundle> {
   const urls = buildUrls(plan, date, apiKey, endDate);
-  const get = async (url: string) => {
-    const res = await fetchImpl(url);
-    const body = await res.json();
-    if (!res.ok) throw new Error(`Open-Meteo ${res.status}: ${body?.reason ?? res.statusText}`);
-    return body;
-  };
+  const get = (url: string) => getWithRetry(url, fetchImpl, opts);
   const [atmos, models, marine, waves, recentRain] = await Promise.all([get(urls.atmos), get(urls.models), get(urls.marine), get(urls.waves), urls.recentRain
       ? get(urls.recentRain).catch((e: unknown) => {
           // the gorges fall back to today's rain only; the snapshot itself must not fail over it
