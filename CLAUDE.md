@@ -19,8 +19,13 @@ decisions and conventions that are not obvious from the code.
 - Water temperature (owner's request, 2026-11-13; sources in `docs/water-temperature-2026-11-13.md`): the bands are `WATER_BANDS`
   (26 / 22 / 20 / 18 / 16), comfort is per profile (`waterComfort`: 22°, 23° for family and senior), the cold hard limits stay at
   18° / 16° water for ordinary guests. Winter swimmers are a seventh profile (`winter`, `WINTER_SWIM`): lower cold limits, same sea, wind
-  and rain limits, and a cold-water note on the card below 20°. The owner has not confirmed the numbers yet: they are the proposal.
+  and rain limits, and a cold-water note on the card below 20°. The owner confirmed these numbers on 2026-11-13 («κράτα τα έτσι»); the
+  winter profile is shown all year.
 - Guest-facing text is plain language in EL/EN/DE/FR, never scores or jargon. Staff see numbers in the dashboard.
+- Privacy (2026-11-13, README «Απόρρητο επισκεπτών», `docs/privacy-2026-11-13.md`): the guest pages load nothing from third parties
+  (fonts are self-hosted; do not add hosted fonts, analytics or embeds), the privacy note (`src/guest/privacy.ts`) states only what the
+  code does and must change in the same commit as any change to what is stored, sent or kept (`src/engine/retention.ts`,
+  `tests/privacy.test.ts`). The repository and the site are public: nothing a guest typed leaves the database unmasked.
 - Never put model identifiers or AI attribution in repo files, PR titles or commit bodies beyond the standard trailer.
 
 ## Where things live
@@ -86,6 +91,8 @@ decisions and conventions that are not obvious from the code.
 - Season sense (2026-11-10): beaches lose points below feels-like 24° (`SWIM_COMFORT`) / water below the profile's comfort, outdoor windows end by
   sunset, sunbeds/canteens are promised May–October only. These are score tunings, not hard limits; the owner has not
   reviewed the numbers. Revisit in spring when beaches return to the top of the picks.
+- Push subscriptions lapse after 10 days without a page open and the browser re-registers by itself on the next open (`PUSH_IDLE`,
+  `refreshPush`); the evening log line reports `lapsed`. If the owner's own phone stops getting the message, that is why: open the page.
 - Push: the only setting is the secret `VAPID_PRIVATE_KEY` (the owner generated their own key on 2026-11-11; nobody else has
   it). The public key is derived from it, in the deploy (`scripts/vapid-public.ts` → page build) and in the sending scripts,
   so the pair cannot drift; `.env` holds only a fallback. Browsers that opted in under an older key renew themselves when

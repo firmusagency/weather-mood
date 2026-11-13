@@ -213,3 +213,18 @@ export function visitStats(rows: { created_at: string; view: string; lang: strin
     perDay: [...perDay.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([date, n]) => ({ date, n })),
   };
 }
+
+/**
+ * A guest's comment is shown to the property and kept in the public data files, so contact details that
+ * somebody typed into it are blanked first: e-mail addresses, links and phone numbers (nine digits or more;
+ * dates and times have fewer).
+ */
+export function maskPersonal(note: string | null | undefined): string | null {
+  if (!note) return null;
+  const out = note
+    .replace(/[^\s@]+@[^\s@]+\.[^\s@]+/g, '[email]')
+    .replace(/(?:https?:\/\/|www\.)\S+/gi, '[link]')
+    .replace(/\+?\d(?:[\s().\-/]*\d){8,}/g, '[phone]')
+    .trim();
+  return out || null;
+}

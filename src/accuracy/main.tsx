@@ -1,6 +1,8 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { AccuracyApp } from './AccuracyApp';
+import '../fonts.css';
+import '../fonts-data.css';
 import '../styles.css';
 import './accuracy.css';
 

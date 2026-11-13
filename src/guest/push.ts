@@ -53,6 +53,38 @@ export function pushNeedsRenewal(): boolean {
   }
 }
 
+const SEEN_KEY = 'wm:push-seen';
+
+/**
+ * Notifications lapse when the page stays closed for ten days (scripts/push.ts): the guest has gone home.
+ * A guest who comes back, or stayed longer, opens the page and is registered again here, with the
+ * subscription the browser already holds: no prompt, at most once a day.
+ */
+export async function refreshPush(propertyId: string, lang: string, profile: ProfileId, today = new Date().toISOString().slice(0, 10)): Promise<PushState> {
+  if (pushState() !== 'on') return pushState();
+  try {
+    if (localStorage.getItem(SEEN_KEY) === today) return 'on';
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription();
+    if (!sub) {
+      // the browser dropped the subscription (site data cleared, permission reset): offer the button again
+      localStorage.removeItem('wm:push');
+      return 'off';
+    }
+    const j = sub.toJSON();
+    // 201 when the row had lapsed, 409 when it is still there: both are fine
+    const res = await fetch(`${FEEDBACK_API.url}/rest/v1/push_subscriptions`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', apikey: FEEDBACK_API.key, authorization: `Bearer ${FEEDBACK_API.key}`, prefer: 'return=minimal' },
+      body: JSON.stringify({ property_id: propertyId, endpoint: sub.endpoint, p256dh: j.keys?.p256dh, auth: j.keys?.auth, lang, profile, client_id: clientId(), app_version: APP_VERSION }),
+    });
+    if (res.ok || res.status === 409) localStorage.setItem(SEEN_KEY, today);
+  } catch {
+    /* offline or blocked: try again at the next page load */
+  }
+  return pushState();
+}
+
 /** Turns notifications off on this device. The stored subscription dies with it and is removed at the next send. */
 export async function disablePush(): Promise<PushState> {
   try {

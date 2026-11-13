@@ -19,8 +19,8 @@
   --sea-2: #b57d0b;
   --sea-3: #c23b2b;
   --scrim: rgb(10 20 24 / 0.45);
-  --font-display: 'Literata', Georgia, 'Times New Roman', serif;
-  --font-body: 'Commissioner', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Literata Variable', 'Literata', Georgia, 'Times New Roman', serif;
+  --font-body: 'Commissioner Variable', 'Commissioner', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --gl: max(16px, env(safe-area-inset-left, 0px));
   --gr: max(16px, env(safe-area-inset-right, 0px));
 }
@@ -475,6 +475,36 @@ select {
   color: var(--muted);
   display: grid;
   gap: 4px;
+}
+
+.g-foot .g-link {
+  font-size: inherit;
+}
+
+/* ---------- privacy note ---------- */
+.g-privacy {
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+.g-privacy p {
+  margin: 0;
+}
+.g-privacy h3 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
+.g-privacy ul {
+  margin: 0;
+  padding-left: 1.15em;
+  display: grid;
+  gap: 6px;
+}
+.g-privacy li {
+  overflow-wrap: anywhere;
+}
+.g-privacy-updated {
+  color: var(--muted);
+  font-size: 0.8125rem;
 }
 
 /* ---------- sheet ---------- */
@@ -1168,7 +1198,7 @@ body[data-view='lobby'],
 }
 .g-qrcard-title {
   margin: 4px 0 0;
-  font-family: 'Literata', Georgia, serif;
+  font-family: 'Literata Variable', 'Literata', Georgia, serif;
   font-size: 1.6rem;
   font-weight: 600;
   line-height: 1.15;

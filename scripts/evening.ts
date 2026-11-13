@@ -29,7 +29,7 @@ import { eveningMessage } from '../src/guest/evening';
 import { DEMO_PROPERTY, GUEST_LANGS, PROPERTIES, propertyById, type GuestLang, type Property } from '../src/guest/property';
 import type { Delivery } from '../src/engine/health';
 import { mailEnv, sendMail } from './mail';
-import { notificationFromMessage, pushEnv, pushMissing, sendPush } from './push';
+import { PUSH_IDLE, notificationFromMessage, pushEnv, pushMissing, sendPush, withLastCall } from './push';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -110,7 +110,7 @@ async function main() {
     // notifications are a courtesy: whatever goes wrong here, the message files must still be committed
     try {
       // each property's subscribers get that property's picks and a link back to its own page
-      const total = { sent: 0, failed: 0, removed: 0 };
+      const total = { sent: 0, failed: 0, removed: 0, lapsed: 0 };
       for (const part of eveningParts(pack)) {
         const property = propertyById(part.property.id);
         if (!property) continue;
@@ -118,14 +118,15 @@ async function main() {
           const lang = (GUEST_LANGS as readonly string[]).includes(sub.lang ?? '') ? (sub.lang as GuestLang) : 'en';
           const profile = (sub.profile && part.messages[sub.profile as ProfileId] ? sub.profile : 'couple') as ProfileId;
           const msg = part.messages[profile]?.[lang];
-          return msg ? { title: `${property.name} · ${lang === 'el' ? 'Αύριο' : lang === 'de' ? 'Morgen' : lang === 'fr' ? 'Demain' : 'Tomorrow'}`, body: notificationFromMessage(msg), url: property.guestUrl, tag: `evening-${date}` } : null;
+          return msg ? { title: `${property.name} · ${lang === 'el' ? 'Αύριο' : lang === 'de' ? 'Morgen' : lang === 'fr' ? 'Demain' : 'Tomorrow'}`, body: withLastCall(notificationFromMessage(msg), sub), url: property.guestUrl, tag: `evening-${date}` } : null;
         });
         total.sent += r.sent;
         total.failed += r.failed;
         total.removed += r.removed;
+        total.lapsed += r.lapsed;
       }
       const r = total;
-      console.log(`push: ${r.sent} sent, ${r.failed} failed, ${r.removed} removed`);
+      console.log(`push: ${r.sent} sent, ${r.failed} failed, ${r.removed} removed, ${r.lapsed} lapsed (no page open for ${PUSH_IDLE.days} days)`);
       delivery.push = { state: 'sent', ...r };
     } catch (e) {
       delivery.push = { state: 'failed', reason: (e as Error).message };

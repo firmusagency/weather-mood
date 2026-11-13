@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import type { ProfileId } from '../engine/types';
 import { g } from './i18n';
 import type { GuestLang, Property } from './property';
-import { disablePush, enablePush, iosNeedsInstall, lastPushError, pushNeedsRenewal, pushState, pushSupported, type PushState } from './push';
+import { disablePush, enablePush, iosNeedsInstall, lastPushError, pushNeedsRenewal, pushState, pushSupported, refreshPush, type PushState } from './push';
 import { askEveningText, whatsappTo } from './evening';
 
 /** Evening-message opt-in: push notification where the browser allows it, WhatsApp otherwise. */
@@ -16,8 +16,14 @@ export function PushBox({ property, lang, profile }: { property: Property; lang:
   // the server key was replaced since this browser opted in: renew quietly (permission is already granted);
   // where the browser insists on a tap, the button below is shown again and does the same
   useEffect(() => {
-    if (!pushNeedsRenewal()) return;
     let alive = true;
+    if (!pushNeedsRenewal()) {
+      // still here (or back again): keep the subscription alive, it lapses after ten days without a page open
+      void refreshPush(property.id, lang, profile).then((s) => alive && setState(s));
+      return () => {
+        alive = false;
+      };
+    }
     void enablePush(property.id, lang, profile).then((s) => alive && setState(s));
     return () => {
       alive = false;

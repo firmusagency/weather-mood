@@ -3,6 +3,8 @@ import { spotById } from '../data/spots';
 import { athensDate } from '../engine/dates';
 import type { Dataset, ProfileId, Spot, SpotScore } from '../engine/types';
 import type { Adjustments } from '../engine/adjust';
+import { PrivacySheet } from './PrivacySheet';
+import { privacyNotice } from './privacy';
 import { PROFILES } from '../data/profiles';
 import { daySummary, dedupeReasons, mainProblem, mapsUrl, seaLevel, sharePlanText, travelLabel, uvLevel, windLevel, type GuestLine } from './advice';
 import { ShareButton } from './Share';
@@ -94,6 +96,7 @@ export function PhoneView({
 }) {
   const d = g(lang);
   const [open, setOpen] = useState<string | null>(null);
+  const [privacy, setPrivacy] = useState(() => typeof location !== 'undefined' && location.hash === '#privacy');
   const { syn, rec, scores, conditions } = plan;
   const today = athensDate(0);
   const hourNow = Number(new Intl.DateTimeFormat('en-GB', { hour: 'numeric', hourCycle: 'h23', timeZone: 'Europe/Athens' }).format(new Date()));
@@ -344,7 +347,14 @@ export function PhoneView({
         <p className={ageHours >= 12 ? 'g-stale' : ''}>
           {d.updated} {updated} · {d.poweredBy}
         </p>
+        <p>
+          <button type="button" className="g-link" onClick={() => setPrivacy(true)}>
+            {privacyNotice(lang, { property: property.name }).link}
+          </button>
+        </p>
       </footer>
+
+      {privacy && <PrivacySheet property={property} lang={lang} onClose={() => setPrivacy(false)} />}
 
       {openSpot && (
         <SpotSheet

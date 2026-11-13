@@ -36,6 +36,8 @@ export interface Property {
   whatsapp?: string;
   /** Where the weekly report and reception digests go. */
   email?: string;
+  /** Shown in the privacy note as the address for data questions (the reception is named when absent). */
+  privacyContact?: string;
   /** Spots the property especially recommends: shown with a badge. */
   favourites?: string[];
   tips?: PropertyTip[];

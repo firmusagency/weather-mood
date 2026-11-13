@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { GuestApp } from './GuestApp';
 import { EMBEDDED } from '../ui/data';
 import { currentProperty, isDefaultProperty } from './property';
+import '../fonts.css';
 import './guest.css';
 
 createRoot(document.getElementById('root')!).render(

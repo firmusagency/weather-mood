@@ -115,7 +115,7 @@ async function sendPlanB() {
   const push = pushEnv();
   if (push) {
     try {
-      const r = { sent: 0, failed: 0, removed: 0 };
+      const r = { sent: 0, failed: 0, removed: 0, lapsed: 0 };
       for (const part of planBParts(report).filter((p) => p.changed)) {
         const property = propertyById(part.property.id);
         if (!property) continue;
@@ -128,6 +128,7 @@ async function sendPlanB() {
         r.sent += one.sent;
         r.failed += one.failed;
         r.removed += one.removed;
+        r.lapsed += one.lapsed;
       }
       console.log(`push: ${r.sent} sent, ${r.failed} failed, ${r.removed} removed`);
       delivery.push = { state: 'sent', ...r };

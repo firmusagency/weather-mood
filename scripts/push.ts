@@ -4,6 +4,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import webpush from 'web-push';
 import { dbEnv, deleteRow, fetchAll, patchRow, type DbEnv } from './db';
+import { RETENTION } from '../src/engine/retention';
 
 /*
  * Sends the evening message (and the morning plan B) as web push notifications to every browser
@@ -124,7 +125,49 @@ export interface Subscription {
   auth: string;
   lang: string | null;
   profile: string | null;
+  created_at?: string | null;
+  client_id?: string | null;
+  /** Set for the last messages before the subscription lapses: the notification invites the guest to open the page. */
+  lastCall?: boolean;
 }
+
+/*
+ * A stay ends, and the evening message has to end with it: nobody opts out on the way to the airport.
+ * A subscription lives while its browser shows a sign of life (it subscribed, or it opened the page, which
+ * a tap on a notification also does). After `days` without one it is deleted; the last `noticeDays`
+ * messages say so, and opening the page keeps it. A browser whose row was deleted registers again by
+ * itself the next time the guest opens the page (src/guest/push.ts, refreshPush).
+ */
+export const PUSH_IDLE = { days: RETENTION.pushIdleDays, noticeDays: RETENTION.pushNoticeDays };
+
+/** Whole days since the browser last subscribed or opened the page. */
+export function idleDays(sub: Pick<Subscription, 'created_at' | 'client_id'>, lastVisit: Map<string, string>, now: Date): number {
+  const seen = [sub.created_at, sub.client_id ? lastVisit.get(sub.client_id) : undefined].filter((x): x is string => Boolean(x)).map((x) => Date.parse(x)).filter(Number.isFinite);
+  // a row without a date cannot be judged: keep it
+  if (!seen.length) return 0;
+  return Math.max(0, Math.floor((now.getTime() - Math.max(...seen)) / 86_400_000));
+}
+
+/** Who still gets the message, who gets it with the "still here?" line, and whose subscription has lapsed. */
+export function pushAudience<T extends Pick<Subscription, 'created_at' | 'client_id'>>(subs: T[], lastVisit: Map<string, string>, now: Date): { keep: (T & { lastCall: boolean })[]; lapsed: T[] } {
+  const keep: (T & { lastCall: boolean })[] = [];
+  const lapsed: T[] = [];
+  for (const sub of subs) {
+    const idle = idleDays(sub, lastVisit, now);
+    if (idle >= PUSH_IDLE.days) lapsed.push(sub);
+    else keep.push({ ...sub, lastCall: idle >= PUSH_IDLE.days - PUSH_IDLE.noticeDays });
+  }
+  return { keep, lapsed };
+}
+
+/** The line added to the last messages before a subscription lapses. */
+export const LAST_CALL: Record<string, string> = {
+  el: 'Ακόμη στα Χανιά; Ανοίξτε τη σελίδα για να συνεχίσετε να λαμβάνετε το μήνυμα.',
+  en: 'Still in Chania? Open the page to keep getting this message.',
+  de: 'Noch in Chania? Öffnen Sie die Seite, um die Nachricht weiter zu erhalten.',
+  fr: 'Encore à La Canée ? Ouvrez la page pour continuer à recevoir ce message.',
+};
+export const withLastCall = (body: string, sub: Pick<Subscription, 'lastCall' | 'lang'>) => (sub.lastCall ? `${body}\n${LAST_CALL[sub.lang ?? ''] ?? LAST_CALL.en}` : body);
 
 export interface PushPayload {
   title: string;
@@ -136,9 +179,16 @@ export interface PushPayload {
 const MAX_FAILURES = 5;
 
 /** Sends one notification per subscription of the property; `build` returns null to skip a subscriber. */
-export async function sendPush(cfg: PushEnv, propertyId: string, build: (sub: Subscription) => PushPayload | null): Promise<{ sent: number; removed: number; failed: number }> {
+export async function sendPush(cfg: PushEnv, propertyId: string, build: (sub: Subscription) => PushPayload | null, now = new Date()): Promise<{ sent: number; removed: number; failed: number; lapsed: number }> {
   webpush.setVapidDetails(cfg.subject, cfg.publicKey, cfg.privateKey);
-  const subs = await fetchAll<Subscription>(cfg.db, 'push_subscriptions', `select=id,endpoint,p256dh,auth,lang,profile,failures&property_id=eq.${encodeURIComponent(propertyId)}`);
+  const property = `property_id=eq.${encodeURIComponent(propertyId)}`;
+  const all = await fetchAll<Subscription>(cfg.db, 'push_subscriptions', `select=id,endpoint,p256dh,auth,lang,profile,failures,created_at,client_id&${property}`);
+  // page opens of the last days tell a guest who is still here from one who went home
+  const since = new Date(now.getTime() - PUSH_IDLE.days * 86_400_000).toISOString();
+  const visits = all.length ? await fetchAll<{ client_id: string; created_at: string }>(cfg.db, 'visits', `select=client_id,created_at&${property}&created_at=gte.${since}&order=created_at.asc`) : [];
+  const lastVisit = new Map(visits.map((v) => [v.client_id, v.created_at]));
+  const { keep: subs, lapsed } = pushAudience(all, lastVisit, now);
+  for (const sub of lapsed) await deleteRow(cfg.db, 'push_subscriptions', sub.id);
   let sent = 0;
   let removed = 0;
   let failed = 0;
@@ -161,7 +211,7 @@ export async function sendPush(cfg: PushEnv, propertyId: string, build: (sub: Su
       }
     }
   }
-  return { sent, removed, failed };
+  return { sent, removed, failed, lapsed: lapsed.length };
 }
 
 /** Title + first useful lines of a plain-text message, for a notification body. */

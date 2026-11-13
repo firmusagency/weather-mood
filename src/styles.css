@@ -28,8 +28,8 @@
   --shadow: 0 1px 2px rgb(16 36 46 / 0.06), 0 6px 18px rgb(16 36 46 / 0.06);
   --backdrop: rgb(8 20 26 / 0.45);
 
-  --font-display: 'Literata', Georgia, 'Times New Roman', serif;
-  --font-body: 'Commissioner', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Literata Variable', 'Literata', Georgia, 'Times New Roman', serif;
+  --font-body: 'Commissioner Variable', 'Commissioner', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-data: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
 
   --fs-xs: 0.75rem;

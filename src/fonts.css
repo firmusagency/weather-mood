@@ -1,0 +1,7 @@
+/*
+ * The page's fonts, served from our own site. They used to come from Google Fonts, which told Google the
+ * address of every guest who opened the page. The single-file demo builds swap this file for an empty one
+ * (vite.config.ts) and keep the hosted stylesheet, because they cannot ship font files.
+ */
+@import '@fontsource-variable/commissioner/wght.css';
+@import '@fontsource-variable/literata/opsz.css';

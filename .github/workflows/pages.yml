@@ -59,6 +59,9 @@ jobs:
           VITE_DASHBOARD_URL: ${{ vars.VITE_DASHBOARD_URL || 'https://firmusagency.github.io/weather-mood/' }}
           VITE_RECEPTION_WHATSAPP: ${{ vars.VITE_RECEPTION_WHATSAPP }}
           VITE_PROPERTY_ID: ${{ vars.VITE_PROPERTY_ID }}
+          # shown in the guests' privacy note; without them it points to the reception
+          VITE_PRIVACY_OPERATOR: ${{ vars.VITE_PRIVACY_OPERATOR }}
+          VITE_PRIVACY_CONTACT: ${{ vars.VITE_PRIVACY_CONTACT }}
       - uses: actions/configure-pages@v5
         with:
           enablement: true

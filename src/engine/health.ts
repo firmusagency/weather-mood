@@ -30,7 +30,7 @@ export interface Delivery {
   kind: 'evening' | 'planB';
   date: string;
   at: string;
-  push: { state: 'sent' | 'off' | 'failed'; sent?: number; failed?: number; removed?: number; reason?: string };
+  push: { state: 'sent' | 'off' | 'failed'; sent?: number; failed?: number; removed?: number; lapsed?: number; reason?: string };
   email: { state: 'sent' | 'off' | 'failed'; reason?: string };
 }
 

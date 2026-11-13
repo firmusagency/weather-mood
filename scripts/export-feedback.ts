@@ -14,7 +14,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { SPOTS } from '../src/data/spots';
 import { BASES } from '../src/data/region';
-import { calibrate, forecastAtVisit, summarizeFeedback, visitStats, type FeedbackRow, type JoinedRow } from '../src/engine/feedback';
+import { calibrate, forecastAtVisit, maskPersonal, summarizeFeedback, visitStats, type FeedbackRow, type JoinedRow } from '../src/engine/feedback';
 import { datasetFromRaw, type RawBundle } from '../src/engine/openmeteo';
 import { analyzeDay } from '../src/engine/recommend';
 import type { Dataset, ProfileId } from '../src/engine/types';
@@ -110,7 +110,8 @@ async function main() {
   }
 
   const known = new Set(SPOTS.map((s) => s.id));
-  const rows = feedback.filter((r) => known.has(r.spot_id)).map(joinRow);
+  // comments leave the database without e-mail addresses, links or phone numbers
+  const rows = feedback.filter((r) => known.has(r.spot_id)).map((r) => joinRow({ ...r, note: maskPersonal(r.note) }));
   const summary = summarizeFeedback(rows, visitStats(visits, VISIT_DAYS));
   const calib = calibrate(rows);
 

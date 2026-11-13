@@ -1,0 +1,3 @@
+/* The monospace face of the numbers in the dashboard and the accuracy page (self-hosted, see fonts.css). */
+@import '@fontsource/jetbrains-mono/400.css';
+@import '@fontsource/jetbrains-mono/500.css';

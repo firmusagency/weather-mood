@@ -16,6 +16,13 @@ const scriptsFromCdn = (srcs: string[]): Plugin => ({
   transformIndexHtml: () => srcs.map((src) => ({ tag: 'script', attrs: { src, crossorigin: 'anonymous' }, injectTo: 'head-prepend' as const })),
 });
 
+/** The demo pages cannot carry font files: they keep the hosted stylesheet the live site no longer uses. */
+const DEMO_FONTS = 'https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&family=Literata:opsz,wght@7..72,500;7..72,600&family=JetBrains+Mono:wght@400;500&display=swap';
+const hostedFonts = (): Plugin => ({
+  name: 'hosted-fonts-for-demos',
+  transformIndexHtml: () => [{ tag: 'link', attrs: { rel: 'stylesheet', href: DEMO_FONTS }, injectTo: 'head' as const }],
+});
+
 /*
  * Pages: index.html = hotel dashboard, guest.html = guest phone page + reception screen.
  *
@@ -29,7 +36,9 @@ export default defineConfig(({ mode }) => {
   return {
     // GitHub Pages serves the site under /weather-mood/ (set VITE_BASE in the deploy workflow)
     base: single ? '/' : process.env.VITE_BASE || '/',
-    plugins: single ? [react({ jsxRuntime: 'classic' }), scriptsFromCdn(libs), viteSingleFile()] : [react()],
+    plugins: single ? [react({ jsxRuntime: 'classic' }), scriptsFromCdn(libs), hostedFonts(), viteSingleFile()] : [react()],
+    // the live site serves its own fonts (src/fonts.css); a single-file demo gets an empty file in their place
+    resolve: single ? { alias: [{ find: /^.*\/fonts(-data)?\.css$/, replacement: resolve(__dirname, 'src/fonts-demo.css') }] } : undefined,
     esbuild: single ? { jsxInject: `import React from 'react'` } : undefined,
     publicDir: single ? false : 'public',
     build: {
