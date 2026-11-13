@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-11-13T03:35:37.712Z",
+ "updatedAt": "2026-11-13T09:54:18.018Z",
  "station": {
   "id": "LGSA",
   "name": "Chania airport (Akrotiri)",
@@ -867,7 +867,7 @@
    "tempMaxMae": 2,
    "rainAgreeRate": 0.92,
    "picks": 12,
-   "picksHeld": 9,
+   "picksHeld": 10,
    "recent": [
     {
      "date": "2026-11-06",
@@ -1133,13 +1133,13 @@
      },
      "pick": {
       "spotId": "paleochora-sandy",
-      "verdict": "avoid",
+      "verdict": "caution",
       "window": {
        "start": 13,
        "end": 17
       },
       "gustInWindow": false,
-      "held": false
+      "held": true
      }
     }
    ]
