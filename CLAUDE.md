@@ -16,6 +16,10 @@ decisions and conventions that are not obvious from the code.
   engine rather than argue. Every engine change comes with a test in `tests/`.
 - Hard limits sit above the score (`hardLimits` in `src/engine/scoring.ts`): cold or rainy days are not beach days,
   rain in the mountains rules gorges out. Thresholds are in README; change them only with the owner.
+- Water temperature (owner's request, 2026-11-13; sources in `docs/water-temperature-2026-11-13.md`): the bands are `WATER_BANDS`
+  (26 / 22 / 20 / 18 / 16), comfort is per profile (`waterComfort`: 22°, 23° for family and senior), the cold hard limits stay at
+  18° / 16° water for ordinary guests. Winter swimmers are a seventh profile (`winter`, `WINTER_SWIM`): lower cold limits, same sea, wind
+  and rain limits, and a cold-water note on the card below 20°. The owner has not confirmed the numbers yet: they are the proposal.
 - Guest-facing text is plain language in EL/EN/DE/FR, never scores or jargon. Staff see numbers in the dashboard.
 - Never put model identifiers or AI attribution in repo files, PR titles or commit bodies beyond the standard trailer.
 
@@ -79,7 +83,7 @@ decisions and conventions that are not obvious from the code.
 - Station gust calibration (`src/engine/stationcal.ts`, `docs/station-gusts-2026-11-10.md`) activates by itself at 30 days per
   station: expect Paleochora ~17 Nov and Falasarna ~20 Nov 2026 at about ×1.18. Check the dashboard panel then; nothing to do unless
   the factor looks wrong. Elafonisi and Kissamos stations read low and are never used to lower a forecast.
-- Season sense (2026-11-10): beaches lose points below feels-like 24° / water 23° (`SWIM_COMFORT`), outdoor windows end by
+- Season sense (2026-11-10): beaches lose points below feels-like 24° (`SWIM_COMFORT`) / water below the profile's comfort, outdoor windows end by
   sunset, sunbeds/canteens are promised May–October only. These are score tunings, not hard limits; the owner has not
   reviewed the numbers. Revisit in spring when beaches return to the top of the picks.
 - Push: the only setting is the secret `VAPID_PRIVATE_KEY` (the owner generated their own key on 2026-11-11; nobody else has

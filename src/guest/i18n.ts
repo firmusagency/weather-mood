@@ -83,7 +83,8 @@ type Dict = {
   qrPrint: string;
   qrHint: string;
   water: string;
-  waterWords: [string, string, string, string];
+  /** Very cold (<18°), cold (<20°), fresh (<22°), pleasant (<26°), warm. */
+  waterWords: [string, string, string, string, string];
   sunrise: string;
   sunset: string;
   sunsetHere: string;
@@ -216,6 +217,7 @@ const EL: Dict = {
     active: 'Περιπέτεια & πεζοπορία',
     senior: 'Χαλαρό πρόγραμμα',
     nocar: 'Χωρίς αυτοκίνητο',
+    winter: 'Χειμερινός κολυμβητής',
   },
   types: {
     beach: 'Παραλία',
@@ -230,7 +232,7 @@ const EL: Dict = {
     museum: 'Μουσείο',
   },
   water: 'Νερό',
-  waterWords: ['κρύο', 'δροσερό', 'ευχάριστο', 'ζεστό'],
+  waterWords: ['πολύ κρύο', 'κρύο', 'δροσερό', 'ευχάριστο', 'ζεστό'],
   sunrise: 'Ανατολή',
   sunset: 'Ηλιοβασίλεμα',
   sunsetHere: 'Ηλιοβασίλεμα εδώ στις {t}',
@@ -356,6 +358,7 @@ const EN: Dict = {
     active: 'Adventure & hiking',
     senior: 'Easy-going pace',
     nocar: 'No car',
+    winter: 'Winter swimmer',
   },
   types: {
     beach: 'Beach',
@@ -370,7 +373,7 @@ const EN: Dict = {
     museum: 'Museum',
   },
   water: 'Water',
-  waterWords: ['cold', 'fresh', 'pleasant', 'warm'],
+  waterWords: ['very cold', 'cold', 'fresh', 'pleasant', 'warm'],
   sunrise: 'Sunrise',
   sunset: 'Sunset',
   sunsetHere: 'Sunset here at {t}',
@@ -496,6 +499,7 @@ const DE: Dict = {
     active: 'Abenteuer & Wandern',
     senior: 'Gemütliches Tempo',
     nocar: 'Ohne Auto',
+    winter: 'Winterschwimmer',
   },
   types: {
     beach: 'Strand',
@@ -510,7 +514,7 @@ const DE: Dict = {
     museum: 'Museum',
   },
   water: 'Wasser',
-  waterWords: ['kalt', 'frisch', 'angenehm', 'warm'],
+  waterWords: ['sehr kalt', 'kalt', 'frisch', 'angenehm', 'warm'],
   sunrise: 'Sonnenaufgang',
   sunset: 'Sonnenuntergang',
   sunsetHere: 'Sonnenuntergang hier um {t}',
@@ -636,6 +640,7 @@ const FR: Dict = {
     active: 'Aventure & randonnée',
     senior: 'Rythme tranquille',
     nocar: 'Sans voiture',
+    winter: 'Nageur d’hiver',
   },
   types: {
     beach: 'Plage',
@@ -650,7 +655,7 @@ const FR: Dict = {
     museum: 'Musée',
   },
   water: 'Eau',
-  waterWords: ['froide', 'fraîche', 'agréable', 'chaude'],
+  waterWords: ['très froide', 'froide', 'fraîche', 'agréable', 'chaude'],
   sunrise: 'Lever du soleil',
   sunset: 'Coucher du soleil',
   sunsetHere: 'Coucher du soleil ici à {t}',

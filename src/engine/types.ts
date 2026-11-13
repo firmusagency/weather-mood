@@ -88,7 +88,7 @@ export interface Spot {
   verified: boolean;
 }
 
-export type ProfileId = 'family' | 'couple' | 'solo' | 'active' | 'senior' | 'nocar';
+export type ProfileId = 'family' | 'couple' | 'solo' | 'active' | 'senior' | 'nocar' | 'winter';
 
 export interface Base {
   id: string;
@@ -294,6 +294,7 @@ export type FactorKey =
   | 'notForProfile'
   | 'coldSwim'
   | 'coolSwim'
+  | 'winterSwim'
   | 'rainyDay'
   | 'rainRisk'
   | 'floodRisk';

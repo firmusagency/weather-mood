@@ -1,5 +1,6 @@
 import { haversineKm } from '../engine/geo';
 import { spotById } from '../data/spots';
+import { WATER_BANDS, waterBand } from '../engine/scoring';
 import type { Factor, HourConditions, ProfileId, Spot, SpotScore } from '../engine/types';
 import type { Synopsis } from '../engine/synopsis';
 import type { GuestLang } from './property';
@@ -140,6 +141,12 @@ const WARN: Partial<Record<Factor['key'], L>> = {
   },
   cold: { el: 'Κρύο (αίσθηση {temp}°C)', en: 'Chilly (feels like {temp}°C)', de: 'Kühl (gefühlt {temp}°C)', fr: 'Frais (ressenti {temp}°C)' },
   coldWater: { el: 'Δροσερό νερό ({sst}°C)', en: 'Fresh water ({sst}°C)', de: 'Frisches Wasser ({sst}°C)', fr: 'Eau fraîche ({sst}°C)' },
+  winterSwim: {
+    el: 'Νερό {sst}°C: μόνο για συνηθισμένους. Μπείτε σταδιακά, ποτέ μόνοι',
+    en: 'Sea at {sst}°C: only if you are used to it. Get in slowly, never alone',
+    de: 'Wasser {sst}°C: nur für Geübte. Langsam hineingehen, nie allein',
+    fr: 'Mer à {sst}°C : seulement pour les habitués. Entrez progressivement, jamais seul',
+  },
   cloudy: { el: 'Αρκετή συννεφιά', en: 'Mostly cloudy', de: 'Überwiegend bewölkt', fr: 'Plutôt nuageux' },
   ripCurrents: {
     el: 'Με κύμα δημιουργούνται επικίνδυνα ρεύματα, προσέξτε τις σημαίες',
@@ -204,6 +211,23 @@ const WARN: Partial<Record<Factor['key'], L>> = {
   },
 };
 
+/** Under 20° the water is no longer "fresh": it is cold, and a swim becomes a short dip. */
+const COLD_WATER_DIP: L = {
+  el: 'Κρύο νερό ({sst}°C): για μια σύντομη βουτιά',
+  en: 'Cold water ({sst}°C): a quick dip at most',
+  de: 'Kaltes Wasser ({sst}°C): höchstens ein kurzes Bad',
+  fr: 'Eau froide ({sst}°C) : un bain rapide tout au plus',
+};
+/** The guest sentence for a warning factor (the water wording follows the temperature band the guest reads). */
+function warnTemplate(f: Factor): L | undefined {
+  if (f.key === 'coldWater' && Number.isFinite(Number(f.params.sst)) && Math.round(Number(f.params.sst)) < WATER_BANDS.fresh) return COLD_WATER_DIP;
+  return WARN[f.key];
+}
+const warnText = (f: Factor, lang: GuestLang) => {
+  const p = f.params;
+  return t(warnTemplate(f)!, lang, { wave: waveText(p.wave, lang), gust: p.gust ?? '', pp: p.pp ?? '', temp: p.apparent ?? '', sst: degText(p.sst), bf: p.bf ?? '' });
+};
+
 function candidates(sc: SpotScore, lang: GuestLang): { pos: GuestLine[]; warn?: GuestLine } {
   const pos: GuestLine[] = [];
   const all = [...sc.fit.filter((f) => f.key === 'opportunity'), ...sc.factors.filter((f) => f.impact > 0), ...sc.fit.filter((f) => f.key === 'goodForBadWeather')];
@@ -224,13 +248,13 @@ function candidates(sc: SpotScore, lang: GuestLang): { pos: GuestLine[]; warn?: 
   const isBeach = spotById(sc.spotId)?.type === 'beach';
   for (const tr of traits) pos.push({ kind: 'pos', text: TRAITS[tr === 'facilities' && !isBeach ? 'facilitiesPlain' : tr][lang] });
 
-  const warnFactor = sc.factors.find((f) => f.impact <= -5 && WARN[f.key]);
-  const p = warnFactor?.params;
-  let warn = warnFactor
-    ? { kind: 'warn' as const, text: t(WARN[warnFactor.key]!, lang, { wave: waveText(p!.wave, lang), gust: p!.gust ?? '', pp: p!.pp ?? '', temp: p!.apparent ?? '', sst: degText(p!.sst), bf: p!.bf ?? '' }) }
-    : undefined;
+  let warnFactor = sc.factors.find((f) => f.impact <= -5 && WARN[f.key]);
+  // a winter swimmer knows it is cool: the water temperature and the cold-water advice say more than "cool for swimming"
+  const winterNote = sc.factors.find((f) => f.key === 'winterSwim');
+  if (winterNote && (!warnFactor || warnFactor.key === 'cool' || warnFactor.key === 'coldWater')) warnFactor = winterNote;
+  let warn = warnFactor ? { kind: 'warn' as const, text: warnText(warnFactor, lang) } : undefined;
   // a calm window before the wind arrives: the time to leave matters more than a mild caveat
-  if (sc.laterWind && (!warnFactor || warnFactor.impact > -10)) {
+  if (sc.laterWind && (!warnFactor || (warnFactor.impact > -10 && warnFactor.key !== 'winterSwim'))) {
     const lw = sc.laterWind;
     warn = { kind: 'warn', text: t(LATER_WIND, lang, { from: lw.fromHour, dir: compassG(lw.dir, lang), bf: lw.bf, end: Math.min(sc.window.end, lw.fromHour) }) };
   }
@@ -282,10 +306,7 @@ export function factorText(f: Factor | undefined, lang: GuestLang): string | und
   if (!f) return undefined;
   if (f.key === 'closed') return t(f.params.kind === 'tooLate' ? UNSUITABLE.tooLate : f.params.kind === 'official' ? UNSUITABLE.official : UNSUITABLE.closed, lang);
   if (f.key === 'notForProfile') return t(UNSUITABLE[String(f.params.why)] ?? UNSUITABLE.mobility, lang);
-  const tpl = WARN[f.key];
-  if (!tpl) return undefined;
-  const p = f.params;
-  return t(tpl, lang, { wave: waveText(p.wave, lang), gust: p.gust ?? '', pp: p.pp ?? '', temp: p.apparent ?? '', sst: degText(p.sst), bf: p.bf ?? '' });
+  return warnTemplate(f) ? warnText(f, lang) : undefined;
 }
 
 /** The main problem with a place on this day — for the "better not" list. */
@@ -306,6 +327,12 @@ const TIPS: Record<string, L> = {
   snorkel: { el: 'Μάσκα για snorkeling', en: 'A snorkel mask', de: 'Eine Schnorchelmaske', fr: 'Un masque de snorkeling' },
   boatTimes: { el: 'Ελέγξτε τα δρομολόγια του πλοίου', en: 'Check the boat timetable', de: 'Fahrplan des Bootes prüfen', fr: 'Vérifiez les horaires du bateau' },
   cash: { el: 'Μετρητά για parking/είσοδο', en: 'Cash for parking or entry', de: 'Bargeld für Parken oder Eintritt', fr: 'Espèces pour parking ou entrée' },
+  warmUp: {
+    el: 'Ζεστά ρούχα και κάτι ζεστό να πιείτε για μετά το μπάνιο',
+    en: 'Warm clothes and a hot drink for after the swim',
+    de: 'Warme Kleidung und ein heißes Getränk für nach dem Bad',
+    fr: 'Des vêtements chauds et une boisson chaude pour après le bain',
+  },
 };
 
 export function guestTips(spot: Spot, sc: SpotScore, conds: HourConditions[], lang: GuestLang): string[] {
@@ -314,6 +341,8 @@ export function guestTips(spot: Spot, sc: SpotScore, conds: HourConditions[], la
   const min = (f: (c: HourConditions) => number | null | undefined) => Math.min(Infinity, ...w.map((c) => f(c) ?? Infinity));
   const outdoor = spot.type !== 'museum';
   const keys: string[] = [];
+  // first, so it is never cut: the coldest moment of a winter swim comes ten minutes after it
+  if (sc.factors.some((f) => f.key === 'winterSwim')) keys.push('warmUp');
   if (outdoor && max((c) => c.uv) >= 6) keys.push('sunscreen');
   if (spot.type === 'gorge' || spot.type === 'hike') keys.push('shoes', 'water');
   else if (outdoor && max((c) => c.apparent) >= 30) keys.push('water');
@@ -335,10 +364,8 @@ export function seaLevel(wave: number): 0 | 1 | 2 | 3 {
 export function uvLevel(uv: number): 0 | 1 | 2 | 3 {
   return uv <= 2 ? 0 : uv <= 5 ? 1 : uv <= 7 ? 2 : 3;
 }
-/** Sea temperature as felt by a swimmer: cold (<20), fresh (<23), pleasant (<26), warm. */
-export function waterLevel(sst: number): 0 | 1 | 2 | 3 {
-  return sst < 20 ? 0 : sst < 23 ? 1 : sst < 26 ? 2 : 3;
-}
+/** Sea temperature as felt by a swimmer: very cold (<18), cold (<20), fresh (<22), pleasant (<26), warm. */
+export const waterLevel = waterBand;
 export function windLevel(bf: number): 0 | 1 | 2 | 3 {
   return bf <= 1 ? 0 : bf <= 3 ? 1 : bf <= 5 ? 2 : 3;
 }

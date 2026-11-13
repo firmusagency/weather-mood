@@ -488,10 +488,17 @@ export function factorText(fct: Factor, lang: Lang): string {
         : el
           ? `Πιθανό κλείσιμο λόγω βροχής (${p.mm} mm/ώρα)`
           : `May close due to rain (${p.mm} mm/h)`;
+    // the limits travel with the factor: a winter swimmer's are lower (older saved factors carry none)
     case 'coldSwim':
-      return el ? `Κρύο για μπάνιο: αίσθηση ${p.apparent}°C, νερό ${p.sst}°C (όριο 18°/18°, αποφυγή κάτω από 15°/16°)` : `Too cold for swimming: feels like ${p.apparent}°C, sea ${p.sst}°C (limit 18°/18°, avoid below 15°/16°)`;
+      return el
+        ? `Κρύο για μπάνιο: αίσθηση ${p.apparent}°C, νερό ${p.sst}°C (όριο ${p.capA ?? 18}°/${p.capS ?? 18}°, αποφυγή κάτω από ${p.minA ?? 15}°/${p.minS ?? 16}°)`
+        : `Too cold for swimming: feels like ${p.apparent}°C, sea ${p.sst}°C (limit ${p.capA ?? 18}°/${p.capS ?? 18}°, avoid below ${p.minA ?? 15}°/${p.minS ?? 16}°)`;
     case 'coolSwim':
-      return el ? `Δροσερά για μπάνιο: αίσθηση ${p.apparent}°C, νερό ${p.sst}°C (όριο 18°/18°)` : `Cool for swimming: feels like ${p.apparent}°C, sea ${p.sst}°C (limit 18°/18°)`;
+      return el
+        ? `Δροσερά για μπάνιο: αίσθηση ${p.apparent}°C, νερό ${p.sst}°C (όριο ${p.capA ?? 18}°/${p.capS ?? 18}°)`
+        : `Cool for swimming: feels like ${p.apparent}°C, sea ${p.sst}°C (limit ${p.capA ?? 18}°/${p.capS ?? 18}°)`;
+    case 'winterSwim':
+      return el ? `Χειμερινή κολύμβηση: νερό ${p.sst}°C, μόνο για συνηθισμένους (σημείωση κάτω από 20°)` : `Winter swimming: sea ${p.sst}°C, only for those used to it (note shown below 20°)`;
     case 'rainRisk':
       return el ? `Πιθανή βροχή ${p.pp}% / ${p.mm} mm στο παράθυρο: θάλασσα μόνο με επιφύλαξη (όριο 60%)` : `Rain likely ${p.pp}% / ${p.mm} mm in the window: sea only with reservations (limit 60%)`;
     case 'rainyDay':

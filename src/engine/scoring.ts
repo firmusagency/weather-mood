@@ -49,8 +49,9 @@ function evalBeach(c: HourConditions, spot: Spot, p: Profile): HourEval {
       push(out, 'longSwell', -ramp(c.sea.period, 8, 12) * 8, { period: round(c.sea.period, 0), wave: round(eff, 1) });
     }
     if (spot.ripRisk && eff > 0.7) push(out, 'ripCurrents', -15, { wave: round(eff, 1) });
-    // water under 23° is fresh for most guests; under 18° the hard limit takes over
-    if (c.sea.sst != null) push(out, 'coldWater', -ramp(SWIM_COMFORT.sst - c.sea.sst, 0, 5) * 18, { sst: round(c.sea.sst, 1) });
+    // water under the guest's comfort (22°, 23° with children or older guests, 16° for winter swimmers) costs points
+    // down to the hard limit, which then takes over
+    if (c.sea.sst != null) push(out, 'coldWater', -ramp(p.waterComfort - c.sea.sst, 0, p.waterComfort - swimLimitsFor(p).sstCaution) * 22, { sst: round(c.sea.sst, 1) });
   }
 
   const onshore = c.wind.speed * c.windExposure;
@@ -65,8 +66,10 @@ function evalBeach(c: HourConditions, spot: Spot, p: Profile): HourEval {
   push(out, c.gustyNow ? 'downslopeGusts' : 'gusts', -ramp(c.effectiveGust, 30, 70) * 28, { gust: Math.round(c.effectiveGust) });
   weatherBasics(c, out, 35, 35);
   if (c.apparent != null) {
-    // a beach day wants 24° and up; at 21° it is a walk on the sand with a quick dip
-    push(out, 'cool', -ramp(SWIM_COMFORT.apparent - c.apparent, 0, 8) * 28, { apparent: Math.round(c.apparent) });
+    // a beach day wants 24° and up; at 21° it is a walk on the sand with a quick dip.
+    // A winter swimmer came for the swim, not the sunbed: cool air starts to matter at 16° and weighs less
+    if (p.coldAdapted) push(out, 'cool', -ramp(WINTER_SWIM.airComfort - c.apparent, 0, 8) * 16, { apparent: Math.round(c.apparent) });
+    else push(out, 'cool', -ramp(SWIM_COMFORT.apparent - c.apparent, 0, 8) * 28, { apparent: Math.round(c.apparent) });
     if (p.heatSensitive && !spot.traits.shade) push(out, 'heat', -ramp(c.apparent, 32, 38) * 15, { apparent: Math.round(c.apparent) });
   }
   // cloud takes the sun off the beach when it is not hot anyway; on a hot day it is a relief
@@ -251,6 +254,10 @@ function traitBonus(spot: Spot, p: Profile, month: number): { bonus: number; tra
     case 'nocar':
       picks.push([spot.access.bus === 'yes', 4, 'bus'], [t.facilities, 2, 'facilities']);
       break;
+    case 'winter':
+      // a short walk back to dry clothes matters more than sunbeds
+      picks.push([spot.type === 'beach' && spot.access.difficulty === 'easy', 3, 'easyAccess'], [t.scenic, 2, 'scenic']);
+      break;
   }
   const hit = picks.filter(([ok]) => ok);
   return { bonus: hit.reduce((s, [, b]) => s + b, 0), traits: hit.map(([, , name]) => name) };
@@ -264,6 +271,7 @@ const TYPE_PREF: Record<ProfileId, Partial<Record<Spot['type'], number>>> = {
   active: { beach: 1, boat: 1 },
   senior: { town: 4, village: 4, culture: 3, museum: 2, beach: 2 },
   nocar: { town: 3, beach: 2 },
+  winter: { beach: 10, lake: 2 },
 };
 
 /** How much the wave models disagree, relative to the sea state: 0.3 m apart matters on a 0.5 m day, not on a 2 m day. */
@@ -320,13 +328,32 @@ function mergeFactors(hours: HourEval[]): Factor[] {
  * on a day with real rain is a flash-flood and closure risk whatever the temperature. These cap the
  * verdict (and the score, so ranking follows) and add one explaining factor.
  */
-/** Below these the beach still is a "go", but it loses points to the town, the villages and the walks. */
-export const SWIM_COMFORT = { apparent: 24, sst: 23 };
+/**
+ * Sea temperature as an ordinary holiday swimmer feels it (sources in docs/water-temperature-2026-11-13.md):
+ * 26° and up warm like a pool, 22–26° comfortable for as long as you like, 20–22° fresh on the way in,
+ * 18–20° cold (a short dip), under 18° only for swimmers who are used to it, under 16° not for guests at all.
+ */
+export const WATER_BANDS = { warm: 26, pleasant: 22, fresh: 20, cold: 18, veryCold: 16 };
+/** 0 very cold (<18°), 1 cold (<20°), 2 fresh (<22°), 3 pleasant (<26°), 4 warm. */
+export function waterBand(sst: number): 0 | 1 | 2 | 3 | 4 {
+  return sst < WATER_BANDS.cold ? 0 : sst < WATER_BANDS.fresh ? 1 : sst < WATER_BANDS.pleasant ? 2 : sst < WATER_BANDS.warm ? 3 : 4;
+}
+/**
+ * Below this feels-like temperature the beach still is a "go", but it loses points to the town, the villages
+ * and the walks. The matching water temperature is per guest: `Profile.waterComfort`.
+ */
+export const SWIM_COMFORT = { apparent: 24 };
 /** Months when organised beaches run their sunbeds, canteens and toilets. */
 export const FACILITIES_SEASON = { from: 5, to: 10 };
 /** Places that need daylight for the whole visit (a town is fine after dark, a museum has a roof). */
 const NEEDS_DAYLIGHT = (type: Spot['type']) => type !== 'town' && type !== 'museum';
 export const SWIM_LIMITS = { apparentCaution: 18, apparentAvoid: 15, sstCaution: 18, sstAvoid: 16 };
+/**
+ * Winter swimmers (profile `winter`): the cold limits sit lower, the sea, wind and rain limits do not move.
+ * Under 20° their beach cards carry the water temperature and the cold-water advice (`winterSwim`).
+ */
+export const WINTER_SWIM = { airComfort: 16, noteBelow: 20, limits: { apparentCaution: 10, apparentAvoid: 5, sstCaution: 14, sstAvoid: 10 } };
+export const swimLimitsFor = (p?: Profile) => (p?.coldAdapted ? WINTER_SWIM.limits : SWIM_LIMITS);
 export const RAIN_LIMITS = { ppCaution: 60, ppAvoid: 80, mmCaution: 1, mmAvoid: 3 };
 export const GORGE_RAIN = { ppCautionBelow: 20, mmCaution: 1, mmAvoid: 3 };
 /** Rain that already fell: the stream beds carry it into a dry day (Samaria stays shut after a wet day). */
@@ -335,7 +362,7 @@ export const AFTER_RAIN = { prevDayMmCaution: 10, prevDayMmAvoid: 25, threeDayMm
 const mean = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null);
 const nn = (xs: (number | null | undefined)[]) => xs.filter((x): x is number => x != null);
 
-export function hardLimits(spot: Spot, windowConds: HourConditions[], dayConds: HourConditions[]): { cap: Verdict; factor: Factor } | null {
+export function hardLimits(spot: Spot, windowConds: HourConditions[], dayConds: HourConditions[], profile?: Profile): { cap: Verdict; factor: Factor } | null {
   if (!windowConds.length) return null;
   const type = spot.type;
   const swim = type === 'beach' || type === 'lake';
@@ -349,9 +376,11 @@ export function hardLimits(spot: Spot, windowConds: HourConditions[], dayConds: 
   if (sea) {
     const apparent = mean(nn(windowConds.map((c) => c.apparent)));
     const sst = mean(nn(windowConds.map((c) => c.sea?.sst)));
-    const params = { apparent: apparent == null ? '-' : Math.round(apparent), sst: sst == null ? '-' : round(sst, 1), pp: ppWin, mm: round(mmWin, 1) };
-    const coldAvoid = (apparent != null && apparent < SWIM_LIMITS.apparentAvoid) || (sst != null && sst < SWIM_LIMITS.sstAvoid);
-    const coldCaution = (apparent != null && apparent < SWIM_LIMITS.apparentCaution) || (sst != null && sst < SWIM_LIMITS.sstCaution);
+    // a winter swimmer's lower limits are for the swim; on the deck of a boat everybody is equally cold
+    const lim = swim ? swimLimitsFor(profile) : SWIM_LIMITS;
+    const params = { apparent: apparent == null ? '-' : Math.round(apparent), sst: sst == null ? '-' : round(sst, 1), pp: ppWin, mm: round(mmWin, 1), capA: lim.apparentCaution, capS: lim.sstCaution, minA: lim.apparentAvoid, minS: lim.sstAvoid };
+    const coldAvoid = (apparent != null && apparent < lim.apparentAvoid) || (sst != null && sst < lim.sstAvoid);
+    const coldCaution = (apparent != null && apparent < lim.apparentCaution) || (sst != null && sst < lim.sstCaution);
     if (ppWin >= RAIN_LIMITS.ppAvoid || mmWin >= RAIN_LIMITS.mmAvoid) return { cap: 'avoid', factor: f('rainyDay', 0, params) };
     // a boat trip in cool weather is still a boat trip; a beach is not
     if (coldAvoid) return swim ? { cap: 'avoid', factor: f('coldSwim', 0, params) } : { cap: 'caution', factor: f('coolSwim', 0, params) };
@@ -408,7 +437,7 @@ export function scoreSpot(spot: Spot, conditions: HourConditions[], profileId: P
   const factors = merged.filter((x) => !RANK_ONLY.has(x.key));
   let score = windowEvals.length ? Math.round(windowEvals.reduce((s, h) => s + h.score, 0) / windowEvals.length) : 0;
   // hard limits: cap the verdict (and the score, so the ranking follows) and say why
-  const limit = hardLimits(spot, windowConds, conditions.filter((c) => c.hour >= 6 && c.hour <= 20));
+  const limit = hardLimits(spot, windowConds, conditions.filter((c) => c.hour >= 6 && c.hour <= 20), p);
   if (limit) {
     const capped = Math.min(score, limit.cap === 'avoid' ? 49 : 69);
     // when the limit is what actually lowers the verdict it is the headline reason; when the
@@ -417,6 +446,11 @@ export function scoreSpot(spot: Spot, conditions: HourConditions[], profileId: P
     limit.factor.impact = score > capped ? -Math.max(20, score - capped, loudest + 1) : -8;
     score = capped;
     factors.push(limit.factor);
+  }
+  // a winter swimmer's beach card says how cold the water is and repeats the cold-water advice
+  if (p.coldAdapted && spot.type === 'beach') {
+    const sst = mean(nn(windowConds.map((c) => c.sea?.sst)));
+    if (sst != null && sst < WINTER_SWIM.noteBelow) factors.push(f('winterSwim', 0, { sst: round(sst, 1) }));
   }
 
   // 2. fit: everything that is not weather
