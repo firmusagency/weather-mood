@@ -1,14 +1,14 @@
 {
- "updatedAt": "2026-11-12T10:10:02.641Z",
+ "updatedAt": "2026-11-13T03:35:37.713Z",
  "minDays": 30,
  "stations": [
   {
    "station": "falasarna",
    "name": "Falasarna (NOA)",
-   "days": 22,
-   "medianRatio": 1.18,
-   "underShare": 0.86,
-   "corr": 0.89,
+   "days": 23,
+   "medianRatio": 1.16,
+   "underShare": 0.83,
+   "corr": 0.87,
    "status": "collecting",
    "gustFactor": 1,
    "spots": [
@@ -18,9 +18,9 @@
   {
    "station": "elafonisi",
    "name": "Elafonisi (NOA)",
-   "days": 25,
+   "days": 26,
    "medianRatio": 0.64,
-   "underShare": 0.2,
+   "underShare": 0.19,
    "corr": 0.73,
    "status": "collecting",
    "gustFactor": 1,
@@ -32,9 +32,9 @@
   {
    "station": "paleochora",
    "name": "Paleochora (NOA)",
-   "days": 25,
+   "days": 26,
    "medianRatio": 1.18,
-   "underShare": 0.84,
+   "underShare": 0.81,
    "corr": 0.8,
    "status": "collecting",
    "gustFactor": 1,
@@ -46,7 +46,7 @@
   {
    "station": "kissamos",
    "name": "Kissamos (NOA)",
-   "days": 25,
+   "days": 26,
    "medianRatio": 0.72,
    "underShare": 0.04,
    "corr": 0.86,
