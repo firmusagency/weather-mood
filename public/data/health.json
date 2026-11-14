@@ -1,5 +1,5 @@
 {
- "checkedAt": "2026-11-14T04:15:13.668Z",
+ "checkedAt": "2026-11-14T06:30:21.619Z",
  "ok": true,
  "errors": 0,
  "warnings": 0,
@@ -7,8 +7,8 @@
   {
    "id": "snapshot",
    "level": "ok",
-   "el": "Πρόγνωση 8.5 ωρών.",
-   "en": "Forecast 8.5 h old."
+   "el": "Πρόγνωση 0.0 ωρών.",
+   "en": "Forecast 0.0 h old."
   },
   {
    "id": "days",
@@ -27,6 +27,18 @@
    "level": "ok",
    "el": "Βραδινό μήνυμα για 2026-11-14.",
    "en": "Evening message for 2026-11-14."
+  },
+  {
+   "id": "planB",
+   "level": "ok",
+   "el": "Πρωινός έλεγχος Plan B έγινε.",
+   "en": "Morning plan-B check done."
+  },
+  {
+   "id": "verification",
+   "level": "ok",
+   "el": "Επαλήθευση ως 2026-11-13.",
+   "en": "Verification up to 2026-11-13."
   },
   {
    "id": "push",
