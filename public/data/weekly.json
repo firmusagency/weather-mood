@@ -1,30 +1,40 @@
 {
- "generatedAt": "2026-11-09T13:21:01.331Z",
+ "generatedAt": "2026-11-16T05:40:13.648Z",
  "property": {
   "id": "demo-alkyoni",
   "name": "Alkyoni Suites"
  },
- "weekStart": "2026-11-02",
- "weekEnd": "2026-11-08",
+ "weekStart": "2026-11-09",
+ "weekEnd": "2026-11-15",
  "visits": {
-  "total": 3,
-  "prev": 4,
+  "total": 8,
+  "prev": 3,
   "byView": {
-   "phone": 3
+   "phone": 8
   },
   "byLang": {
-   "el": 3
+   "en": 2,
+   "el": 6
   },
   "byProfile": {
-   "family": 3
+   "couple": 6,
+   "family": 2
   },
   "perDay": [
    {
-    "date": "2026-11-08",
-    "n": 3
+    "date": "2026-11-11",
+    "n": 6
+   },
+   {
+    "date": "2026-11-13",
+    "n": 1
+   },
+   {
+    "date": "2026-11-14",
+    "n": 1
    }
   ],
-  "devices": 1
+  "devices": 6
  },
  "votes": {
   "total": 0,
@@ -38,37 +48,37 @@
  "picks": [
   {
    "spotId": "old-town",
-   "days": 6
-  },
-  {
-   "spotId": "botanical-park",
-   "days": 5
+   "days": 7
   },
   {
    "spotId": "aptera",
+   "days": 7
+  },
+  {
+   "spotId": "botanical-park",
+   "days": 7
+  },
+  {
+   "spotId": "theriso",
    "days": 4
   },
   {
-   "spotId": "sfakia-ferry",
+   "spotId": "marathi",
    "days": 3
   },
   {
-   "spotId": "marathi",
-   "days": 2
-  },
-  {
    "spotId": "polyrinia",
-   "days": 2
+   "days": 3
   }
  ],
- "planBDays": 1,
+ "planBDays": 0,
  "pushSubscribers": 1,
  "accuracy": {
-  "days": 22,
+  "days": 29,
   "bfWithin1Rate": 1,
-  "windMae": 4.5,
-  "picksHeld": 180,
-  "picks": 180,
-  "stationDays": 85
+  "windMae": 4.4,
+  "picksHeld": 243,
+  "picks": 243,
+  "stationDays": 113
  }
 }
