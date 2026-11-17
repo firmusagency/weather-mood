@@ -1,5 +1,5 @@
 {
- "checkedAt": "2026-11-16T23:49:35.715Z",
+ "checkedAt": "2026-11-17T03:53:01.688Z",
  "ok": false,
  "errors": 1,
  "warnings": 0,
@@ -7,8 +7,8 @@
   {
    "id": "snapshot",
    "level": "error",
-   "el": "Η πρόγνωση είναι 17.3 ωρών: οι λήψεις αποτυγχάνουν.",
-   "en": "The forecast is 17.3 h old: fetching is failing."
+   "el": "Η πρόγνωση είναι 21.3 ωρών: οι λήψεις αποτυγχάνουν.",
+   "en": "The forecast is 21.3 h old: fetching is failing."
   },
   {
    "id": "days",
