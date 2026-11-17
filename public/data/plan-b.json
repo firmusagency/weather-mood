@@ -1,19 +1,19 @@
 {
- "date": "2026-11-16",
- "checkedAt": "2026-11-16T03:51:44.935Z",
- "eveningGeneratedAt": "2026-11-15T15:42:39.517Z",
+ "date": "2026-11-17",
+ "checkedAt": "2026-11-17T04:17:45.825Z",
+ "eveningGeneratedAt": "2026-11-16T15:43:04.304Z",
  "changed": false,
  "byProfile": {
   "family": {
    "diff": {
-    "date": "2026-11-16",
+    "date": "2026-11-17",
     "profile": "family",
     "significant": false,
     "changes": [],
     "before": {
-     "date": "2026-11-16",
+     "date": "2026-11-17",
      "profile": "family",
-     "generatedAt": "2026-11-15T15:42:39.517Z",
+     "generatedAt": "2026-11-16T15:43:04.304Z",
      "picks": [
       {
        "spotId": "old-town",
@@ -38,30 +38,32 @@
        "verdict": "go",
        "score": 100,
        "window": {
-        "start": 10,
-        "end": 13
+        "start": 9,
+        "end": 12
        }
       }
      ],
-     "avoid": [],
+     "avoid": [
+      "falasarna"
+     ],
      "wind": {
-      "bf": 2,
-      "dir": 311,
-      "gust": 15
+      "bf": 4,
+      "dir": 256,
+      "gust": 32
      },
      "rainProbMax": 0,
-     "rainProbMaxRegion": 0,
+     "rainProbMaxRegion": 38,
      "rainCoast": null,
      "coasts": {
-      "ref-north": 0.3,
-      "ref-west": 0.4,
-      "ref-south": 0.3
+      "ref-north": 0.8,
+      "ref-west": 0.7,
+      "ref-south": 0.4
      }
     },
     "after": {
-     "date": "2026-11-16",
+     "date": "2026-11-17",
      "profile": "family",
-     "generatedAt": "2026-11-16T03:51:44.935Z",
+     "generatedAt": "2026-11-17T04:17:45.825Z",
      "picks": [
       {
        "spotId": "old-town",
@@ -86,24 +88,26 @@
        "verdict": "go",
        "score": 100,
        "window": {
-        "start": 10,
-        "end": 13
+        "start": 9,
+        "end": 12
        }
       }
      ],
-     "avoid": [],
+     "avoid": [
+      "falasarna"
+     ],
      "wind": {
-      "bf": 2,
-      "dir": 298,
-      "gust": 15
+      "bf": 3,
+      "dir": 225,
+      "gust": 32
      },
      "rainProbMax": 0,
-     "rainProbMaxRegion": 0,
-     "rainCoast": null,
+     "rainProbMaxRegion": 50,
+     "rainCoast": "ref-west",
      "coasts": {
-      "ref-north": 0.3,
-      "ref-west": 0.4,
-      "ref-south": 0.3
+      "ref-north": 0.8,
+      "ref-west": 0.7,
+      "ref-south": 0.4
      }
     }
    },
@@ -111,24 +115,15 @@
   },
   "couple": {
    "diff": {
-    "date": "2026-11-16",
+    "date": "2026-11-17",
     "profile": "couple",
     "significant": false,
     "changes": [],
     "before": {
-     "date": "2026-11-16",
+     "date": "2026-11-17",
      "profile": "couple",
-     "generatedAt": "2026-11-15T15:42:39.517Z",
+     "generatedAt": "2026-11-16T15:43:04.304Z",
      "picks": [
-      {
-       "spotId": "falasarna",
-       "verdict": "go",
-       "score": 93,
-       "window": {
-        "start": 12,
-        "end": 16
-       }
-      },
       {
        "spotId": "old-town",
        "verdict": "go",
@@ -139,53 +134,44 @@
        }
       },
       {
-       "spotId": "paleochora-sandy",
+       "spotId": "aptera",
        "verdict": "go",
-       "score": 99,
+       "score": 100,
        "window": {
-        "start": 12,
-        "end": 16
+        "start": 9,
+        "end": 11
+       }
+      },
+      {
+       "spotId": "polyrinia",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 11
        }
       }
      ],
      "avoid": [],
      "wind": {
-      "bf": 2,
-      "dir": 311,
-      "gust": 15
+      "bf": 4,
+      "dir": 256,
+      "gust": 32
      },
      "rainProbMax": 0,
-     "rainProbMaxRegion": 0,
+     "rainProbMaxRegion": 38,
      "rainCoast": null,
      "coasts": {
-      "ref-north": 0.3,
-      "ref-west": 0.4,
-      "ref-south": 0.3
+      "ref-north": 0.8,
+      "ref-west": 0.7,
+      "ref-south": 0.4
      }
     },
     "after": {
-     "date": "2026-11-16",
+     "date": "2026-11-17",
      "profile": "couple",
-     "generatedAt": "2026-11-16T03:51:44.935Z",
+     "generatedAt": "2026-11-17T04:17:45.825Z",
      "picks": [
-      {
-       "spotId": "falasarna",
-       "verdict": "go",
-       "score": 94,
-       "window": {
-        "start": 12,
-        "end": 16
-       }
-      },
-      {
-       "spotId": "paleochora-sandy",
-       "verdict": "go",
-       "score": 100,
-       "window": {
-        "start": 12,
-        "end": 16
-       }
-      },
       {
        "spotId": "old-town",
        "verdict": "go",
@@ -194,21 +180,39 @@
         "start": 9,
         "end": 12
        }
+      },
+      {
+       "spotId": "aptera",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 11
+       }
+      },
+      {
+       "spotId": "polyrinia",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 9,
+        "end": 11
+       }
       }
      ],
      "avoid": [],
      "wind": {
-      "bf": 2,
-      "dir": 298,
-      "gust": 15
+      "bf": 3,
+      "dir": 225,
+      "gust": 32
      },
      "rainProbMax": 0,
-     "rainProbMaxRegion": 0,
-     "rainCoast": null,
+     "rainProbMaxRegion": 50,
+     "rainCoast": "ref-west",
      "coasts": {
-      "ref-north": 0.3,
-      "ref-west": 0.4,
-      "ref-south": 0.3
+      "ref-north": 0.8,
+      "ref-west": 0.7,
+      "ref-south": 0.4
      }
     }
    },
@@ -216,14 +220,14 @@
   },
   "solo": {
    "diff": {
-    "date": "2026-11-16",
+    "date": "2026-11-17",
     "profile": "solo",
     "significant": false,
     "changes": [],
     "before": {
-     "date": "2026-11-16",
+     "date": "2026-11-17",
      "profile": "solo",
-     "generatedAt": "2026-11-15T15:42:39.517Z",
+     "generatedAt": "2026-11-16T15:43:04.304Z",
      "picks": [
       {
        "spotId": "old-town",
@@ -235,43 +239,43 @@
        }
       },
       {
-       "spotId": "falasarna",
+       "spotId": "imbros",
        "verdict": "go",
-       "score": 93,
+       "score": 100,
        "window": {
-        "start": 12,
-        "end": 16
+        "start": 7,
+        "end": 10
        }
       },
       {
-       "spotId": "paleochora-sandy",
+       "spotId": "gouverneto-katholiko",
        "verdict": "go",
-       "score": 99,
+       "score": 100,
        "window": {
-        "start": 12,
-        "end": 16
+        "start": 7,
+        "end": 9
        }
       }
      ],
      "avoid": [],
      "wind": {
-      "bf": 2,
-      "dir": 311,
-      "gust": 15
+      "bf": 4,
+      "dir": 256,
+      "gust": 32
      },
      "rainProbMax": 0,
-     "rainProbMaxRegion": 0,
+     "rainProbMaxRegion": 38,
      "rainCoast": null,
      "coasts": {
-      "ref-north": 0.3,
-      "ref-west": 0.4,
-      "ref-south": 0.3
+      "ref-north": 0.8,
+      "ref-west": 0.7,
+      "ref-south": 0.4
      }
     },
     "after": {
-     "date": "2026-11-16",
+     "date": "2026-11-17",
      "profile": "solo",
-     "generatedAt": "2026-11-16T03:51:44.935Z",
+     "generatedAt": "2026-11-17T04:17:45.825Z",
      "picks": [
       {
        "spotId": "old-town",
@@ -283,37 +287,37 @@
        }
       },
       {
-       "spotId": "falasarna",
-       "verdict": "go",
-       "score": 94,
-       "window": {
-        "start": 12,
-        "end": 16
-       }
-      },
-      {
-       "spotId": "paleochora-sandy",
+       "spotId": "imbros",
        "verdict": "go",
        "score": 100,
        "window": {
-        "start": 12,
-        "end": 16
+        "start": 7,
+        "end": 10
+       }
+      },
+      {
+       "spotId": "gouverneto-katholiko",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 7,
+        "end": 9
        }
       }
      ],
      "avoid": [],
      "wind": {
-      "bf": 2,
-      "dir": 298,
-      "gust": 15
+      "bf": 3,
+      "dir": 225,
+      "gust": 32
      },
      "rainProbMax": 0,
-     "rainProbMaxRegion": 0,
-     "rainCoast": null,
+     "rainProbMaxRegion": 50,
+     "rainCoast": "ref-west",
      "coasts": {
-      "ref-north": 0.3,
-      "ref-west": 0.4,
-      "ref-south": 0.3
+      "ref-north": 0.8,
+      "ref-west": 0.7,
+      "ref-south": 0.4
      }
     }
    },
@@ -321,14 +325,14 @@
   },
   "active": {
    "diff": {
-    "date": "2026-11-16",
+    "date": "2026-11-17",
     "profile": "active",
     "significant": false,
     "changes": [],
     "before": {
-     "date": "2026-11-16",
+     "date": "2026-11-17",
      "profile": "active",
-     "generatedAt": "2026-11-15T15:42:39.517Z",
+     "generatedAt": "2026-11-16T15:43:04.304Z",
      "picks": [
       {
        "spotId": "imbros",
@@ -349,34 +353,34 @@
        }
       },
       {
-       "spotId": "elafonisi",
+       "spotId": "old-town",
        "verdict": "go",
-       "score": 95,
+       "score": 100,
        "window": {
-        "start": 11,
-        "end": 15
+        "start": 9,
+        "end": 12
        }
       }
      ],
      "avoid": [],
      "wind": {
-      "bf": 2,
-      "dir": 311,
-      "gust": 15
+      "bf": 4,
+      "dir": 256,
+      "gust": 32
      },
      "rainProbMax": 0,
-     "rainProbMaxRegion": 0,
+     "rainProbMaxRegion": 38,
      "rainCoast": null,
      "coasts": {
-      "ref-north": 0.3,
-      "ref-west": 0.4,
-      "ref-south": 0.3
+      "ref-north": 0.8,
+      "ref-west": 0.7,
+      "ref-south": 0.4
      }
     },
     "after": {
-     "date": "2026-11-16",
+     "date": "2026-11-17",
      "profile": "active",
-     "generatedAt": "2026-11-16T03:51:44.935Z",
+     "generatedAt": "2026-11-17T04:17:45.825Z",
      "picks": [
       {
        "spotId": "imbros",
@@ -397,28 +401,28 @@
        }
       },
       {
-       "spotId": "paleochora-sandy",
+       "spotId": "old-town",
        "verdict": "go",
        "score": 100,
        "window": {
-        "start": 12,
-        "end": 16
+        "start": 9,
+        "end": 12
        }
       }
      ],
      "avoid": [],
      "wind": {
-      "bf": 2,
-      "dir": 298,
-      "gust": 15
+      "bf": 3,
+      "dir": 225,
+      "gust": 32
      },
      "rainProbMax": 0,
-     "rainProbMaxRegion": 0,
-     "rainCoast": null,
+     "rainProbMaxRegion": 50,
+     "rainCoast": "ref-west",
      "coasts": {
-      "ref-north": 0.3,
-      "ref-west": 0.4,
-      "ref-south": 0.3
+      "ref-north": 0.8,
+      "ref-west": 0.7,
+      "ref-south": 0.4
      }
     }
    },
@@ -426,14 +430,14 @@
   },
   "senior": {
    "diff": {
-    "date": "2026-11-16",
+    "date": "2026-11-17",
     "profile": "senior",
     "significant": false,
     "changes": [],
     "before": {
-     "date": "2026-11-16",
+     "date": "2026-11-17",
      "profile": "senior",
-     "generatedAt": "2026-11-15T15:42:39.517Z",
+     "generatedAt": "2026-11-16T15:43:04.304Z",
      "picks": [
       {
        "spotId": "old-town",
@@ -449,8 +453,8 @@
        "verdict": "go",
        "score": 100,
        "window": {
-        "start": 10,
-        "end": 13
+        "start": 9,
+        "end": 12
        }
       },
       {
@@ -465,23 +469,23 @@
      ],
      "avoid": [],
      "wind": {
-      "bf": 2,
-      "dir": 311,
-      "gust": 15
+      "bf": 4,
+      "dir": 256,
+      "gust": 32
      },
      "rainProbMax": 0,
-     "rainProbMaxRegion": 0,
+     "rainProbMaxRegion": 38,
      "rainCoast": null,
      "coasts": {
-      "ref-north": 0.3,
-      "ref-west": 0.4,
-      "ref-south": 0.3
+      "ref-north": 0.8,
+      "ref-west": 0.7,
+      "ref-south": 0.4
      }
     },
     "after": {
-     "date": "2026-11-16",
+     "date": "2026-11-17",
      "profile": "senior",
-     "generatedAt": "2026-11-16T03:51:44.935Z",
+     "generatedAt": "2026-11-17T04:17:45.825Z",
      "picks": [
       {
        "spotId": "old-town",
@@ -497,8 +501,8 @@
        "verdict": "go",
        "score": 100,
        "window": {
-        "start": 10,
-        "end": 13
+        "start": 9,
+        "end": 12
        }
       },
       {
@@ -513,17 +517,17 @@
      ],
      "avoid": [],
      "wind": {
-      "bf": 2,
-      "dir": 298,
-      "gust": 15
+      "bf": 3,
+      "dir": 225,
+      "gust": 32
      },
      "rainProbMax": 0,
-     "rainProbMaxRegion": 0,
-     "rainCoast": null,
+     "rainProbMaxRegion": 50,
+     "rainCoast": "ref-west",
      "coasts": {
-      "ref-north": 0.3,
-      "ref-west": 0.4,
-      "ref-south": 0.3
+      "ref-north": 0.8,
+      "ref-west": 0.7,
+      "ref-south": 0.4
      }
     }
    },
@@ -531,14 +535,14 @@
   },
   "nocar": {
    "diff": {
-    "date": "2026-11-16",
+    "date": "2026-11-17",
     "profile": "nocar",
     "significant": false,
     "changes": [],
     "before": {
-     "date": "2026-11-16",
+     "date": "2026-11-17",
      "profile": "nocar",
-     "generatedAt": "2026-11-15T15:42:39.517Z",
+     "generatedAt": "2026-11-16T15:43:04.304Z",
      "picks": [
       {
        "spotId": "old-town",
@@ -550,18 +554,18 @@
        }
       },
       {
-       "spotId": "platanias",
+       "spotId": "almyrida",
        "verdict": "go",
-       "score": 95,
+       "score": 94,
        "window": {
-        "start": 12,
-        "end": 16
+        "start": 13,
+        "end": 17
        }
       },
       {
-       "spotId": "kolymbari",
+       "spotId": "agia-marina",
        "verdict": "go",
-       "score": 93,
+       "score": 82,
        "window": {
         "start": 11,
         "end": 15
@@ -570,23 +574,23 @@
      ],
      "avoid": [],
      "wind": {
-      "bf": 2,
-      "dir": 311,
-      "gust": 15
+      "bf": 4,
+      "dir": 256,
+      "gust": 32
      },
      "rainProbMax": 0,
-     "rainProbMaxRegion": 0,
+     "rainProbMaxRegion": 38,
      "rainCoast": null,
      "coasts": {
-      "ref-north": 0.3,
-      "ref-west": 0.4,
-      "ref-south": 0.3
+      "ref-north": 0.8,
+      "ref-west": 0.7,
+      "ref-south": 0.4
      }
     },
     "after": {
-     "date": "2026-11-16",
+     "date": "2026-11-17",
      "profile": "nocar",
-     "generatedAt": "2026-11-16T03:51:44.935Z",
+     "generatedAt": "2026-11-17T04:17:45.825Z",
      "picks": [
       {
        "spotId": "old-town",
@@ -598,37 +602,37 @@
        }
       },
       {
-       "spotId": "platanias",
+       "spotId": "agia-marina",
        "verdict": "go",
-       "score": 96,
+       "score": 89,
        "window": {
-        "start": 12,
-        "end": 16
+        "start": 13,
+        "end": 17
        }
       },
       {
-       "spotId": "kolymbari",
+       "spotId": "stavros",
        "verdict": "go",
-       "score": 95,
+       "score": 87,
        "window": {
-        "start": 12,
-        "end": 16
+        "start": 13,
+        "end": 17
        }
       }
      ],
      "avoid": [],
      "wind": {
-      "bf": 2,
-      "dir": 298,
-      "gust": 15
+      "bf": 3,
+      "dir": 225,
+      "gust": 32
      },
      "rainProbMax": 0,
-     "rainProbMaxRegion": 0,
-     "rainCoast": null,
+     "rainProbMaxRegion": 50,
+     "rainCoast": "ref-west",
      "coasts": {
-      "ref-north": 0.3,
-      "ref-west": 0.4,
-      "ref-south": 0.3
+      "ref-north": 0.8,
+      "ref-west": 0.7,
+      "ref-south": 0.4
      }
     }
    },
@@ -636,28 +640,19 @@
   },
   "winter": {
    "diff": {
-    "date": "2026-11-16",
+    "date": "2026-11-17",
     "profile": "winter",
     "significant": false,
     "changes": [],
     "before": {
-     "date": "2026-11-16",
+     "date": "2026-11-17",
      "profile": "winter",
-     "generatedAt": "2026-11-15T15:42:39.517Z",
+     "generatedAt": "2026-11-16T15:43:04.304Z",
      "picks": [
-      {
-       "spotId": "falasarna",
-       "verdict": "go",
-       "score": 100,
-       "window": {
-        "start": 8,
-        "end": 12
-       }
-      },
       {
        "spotId": "stavros",
        "verdict": "go",
-       "score": 100,
+       "score": 99,
        "window": {
         "start": 8,
         "end": 12
@@ -668,47 +663,47 @@
        "verdict": "go",
        "score": 100,
        "window": {
-        "start": 8,
-        "end": 12
+        "start": 11,
+        "end": 15
+       }
+      },
+      {
+       "spotId": "almyrida",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 13,
+        "end": 17
        }
       }
      ],
      "avoid": [],
      "wind": {
-      "bf": 2,
-      "dir": 311,
-      "gust": 15
+      "bf": 4,
+      "dir": 256,
+      "gust": 32
      },
      "rainProbMax": 0,
-     "rainProbMaxRegion": 0,
+     "rainProbMaxRegion": 38,
      "rainCoast": null,
      "coasts": {
-      "ref-north": 0.3,
-      "ref-west": 0.4,
-      "ref-south": 0.3
+      "ref-north": 0.8,
+      "ref-west": 0.7,
+      "ref-south": 0.4
      }
     },
     "after": {
-     "date": "2026-11-16",
+     "date": "2026-11-17",
      "profile": "winter",
-     "generatedAt": "2026-11-16T03:51:44.935Z",
+     "generatedAt": "2026-11-17T04:17:45.825Z",
      "picks": [
-      {
-       "spotId": "falasarna",
-       "verdict": "go",
-       "score": 100,
-       "window": {
-        "start": 8,
-        "end": 12
-       }
-      },
       {
        "spotId": "stavros",
        "verdict": "go",
-       "score": 100,
+       "score": 99,
        "window": {
-        "start": 8,
-        "end": 12
+        "start": 13,
+        "end": 17
        }
       },
       {
@@ -716,24 +711,33 @@
        "verdict": "go",
        "score": 100,
        "window": {
-        "start": 8,
-        "end": 12
+        "start": 13,
+        "end": 17
+       }
+      },
+      {
+       "spotId": "agioi-apostoloi",
+       "verdict": "go",
+       "score": 100,
+       "window": {
+        "start": 14,
+        "end": 17
        }
       }
      ],
      "avoid": [],
      "wind": {
-      "bf": 2,
-      "dir": 298,
-      "gust": 15
+      "bf": 3,
+      "dir": 225,
+      "gust": 32
      },
      "rainProbMax": 0,
-     "rainProbMaxRegion": 0,
-     "rainCoast": null,
+     "rainProbMaxRegion": 50,
+     "rainCoast": "ref-west",
      "coasts": {
-      "ref-north": 0.3,
-      "ref-west": 0.4,
-      "ref-south": 0.3
+      "ref-north": 0.8,
+      "ref-west": 0.7,
+      "ref-south": 0.4
      }
     }
    },
