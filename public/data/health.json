@@ -1,5 +1,5 @@
 {
- "checkedAt": "2026-11-18T22:40:52.255Z",
+ "checkedAt": "2026-11-19T03:52:26.483Z",
  "ok": true,
  "errors": 0,
  "warnings": 0,
@@ -7,8 +7,8 @@
   {
    "id": "snapshot",
    "level": "ok",
-   "el": "Πρόγνωση 2.1 ωρών.",
-   "en": "Forecast 2.1 h old."
+   "el": "Πρόγνωση 0.0 ωρών.",
+   "en": "Forecast 0.0 h old."
   },
   {
    "id": "days",
