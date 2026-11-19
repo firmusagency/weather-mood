@@ -1,13 +1,13 @@
 {
- "updatedAt": "2026-11-18T10:37:25.627Z",
+ "updatedAt": "2026-11-19T03:35:18.663Z",
  "minDays": 30,
  "stations": [
   {
    "station": "falasarna",
    "name": "Falasarna (NOA)",
-   "days": 28,
-   "medianRatio": 1.15,
-   "underShare": 0.75,
+   "days": 29,
+   "medianRatio": 1.14,
+   "underShare": 0.72,
    "corr": 0.85,
    "status": "collecting",
    "gustFactor": 1,
@@ -18,10 +18,10 @@
   {
    "station": "elafonisi",
    "name": "Elafonisi (NOA)",
-   "days": 31,
+   "days": 32,
    "medianRatio": 0.65,
    "underShare": 0.16,
-   "corr": 0.77,
+   "corr": 0.76,
    "status": "reads-low",
    "gustFactor": 1,
    "spots": [
@@ -32,12 +32,12 @@
   {
    "station": "paleochora",
    "name": "Paleochora (NOA)",
-   "days": 31,
-   "medianRatio": 1.17,
-   "underShare": 0.74,
+   "days": 32,
+   "medianRatio": 1.16,
+   "underShare": 0.72,
    "corr": 0.78,
    "status": "applied",
-   "gustFactor": 1.17,
+   "gustFactor": 1.16,
    "spots": [
     "paleochora-sandy",
     "paleochora-pebble"
@@ -46,10 +46,10 @@
   {
    "station": "kissamos",
    "name": "Kissamos (NOA)",
-   "days": 31,
-   "medianRatio": 0.73,
-   "underShare": 0.1,
-   "corr": 0.82,
+   "days": 32,
+   "medianRatio": 0.72,
+   "underShare": 0.09,
+   "corr": 0.83,
    "status": "reads-low",
    "gustFactor": 1,
    "spots": [
@@ -60,11 +60,11 @@
  ],
  "spots": {
   "paleochora-sandy": {
-   "gustFactor": 1.17,
+   "gustFactor": 1.16,
    "station": "paleochora"
   },
   "paleochora-pebble": {
-   "gustFactor": 1.17,
+   "gustFactor": 1.16,
    "station": "paleochora"
   }
  }
