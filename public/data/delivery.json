@@ -1,16 +1,16 @@
 {
- "kind": "evening",
+ "kind": "planB",
  "date": "2026-11-26",
- "at": "2026-11-25T15:41:53.065Z",
+ "at": "2026-11-26T06:30:13.944Z",
  "push": {
   "state": "sent",
-  "sent": 1,
+  "sent": 0,
   "failed": 0,
   "removed": 0,
   "lapsed": 0
  },
  "email": {
   "state": "off",
-  "reason": "SMTP not configured"
+  "reason": "the reception email goes with the 05:50 check"
  }
 }
