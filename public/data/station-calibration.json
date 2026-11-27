@@ -1,5 +1,5 @@
 {
- "updatedAt": "2026-11-26T11:24:27.356Z",
+ "updatedAt": "2026-11-27T03:35:21.560Z",
  "minDays": 30,
  "stations": [
   {
@@ -18,7 +18,7 @@
   {
    "station": "elafonisi",
    "name": "Elafonisi (NOA)",
-   "days": 39,
+   "days": 40,
    "medianRatio": 0.68,
    "underShare": 0.15,
    "corr": 0.73,
@@ -32,12 +32,12 @@
   {
    "station": "paleochora",
    "name": "Paleochora (NOA)",
-   "days": 39,
-   "medianRatio": 1.15,
-   "underShare": 0.72,
-   "corr": 0.77,
+   "days": 40,
+   "medianRatio": 1.14,
+   "underShare": 0.73,
+   "corr": 0.78,
    "status": "applied",
-   "gustFactor": 1.15,
+   "gustFactor": 1.14,
    "spots": [
     "paleochora-sandy",
     "paleochora-pebble"
@@ -60,11 +60,11 @@
  ],
  "spots": {
   "paleochora-sandy": {
-   "gustFactor": 1.15,
+   "gustFactor": 1.14,
    "station": "paleochora"
   },
   "paleochora-pebble": {
-   "gustFactor": 1.15,
+   "gustFactor": 1.14,
    "station": "paleochora"
   }
  }
